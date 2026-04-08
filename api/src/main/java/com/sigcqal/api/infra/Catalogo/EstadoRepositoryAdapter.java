@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.cat_estados;
+package com.sigcqal.api.infra.Catalogo;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.sigcqal.api.domain.cat_estados.Estado;
-import com.sigcqal.api.domain.cat_estados.EstadoRepositoryPort;
+import com.sigcqal.api.domain.Catalogo.Estado;
+import com.sigcqal.api.domain.Catalogo.EstadoRepositoryPort;
 
 @Component
 public class EstadoRepositoryAdapter implements EstadoRepositoryPort {

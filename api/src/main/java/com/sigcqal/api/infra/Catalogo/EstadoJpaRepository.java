@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.cat_estados;
+package com.sigcqal.api.infra.Catalogo;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.sigcqal.api.domain.Catalogo.Estado;
 import com.sigcqal.api.domain.Catalogo.Municipio;
 import com.sigcqal.api.domain.Catalogo.MunicipioRepositoryPort;
 
@@ -31,11 +32,19 @@ public class MunicipioRepositoryAdapter implements MunicipioRepositoryPort {
                 .collect(Collectors.toList());
     }
 
-    private Municipio mapToDomain(MunicipioEntity e) {
-        Municipio dom = new Municipio(); 
-        dom.setId(e.getId());
-        dom.setNombreMunicipio(e.getNombreMunicipio());
-        return dom; 
+   private Municipio mapToDomain(MunicipioEntity e) {
+    Municipio dom = new Municipio(); 
+    dom.setId(e.getId());
+    dom.setNombreMunicipio(e.getNombreMunicipio());
+
+    if (e.getEstado() != null) {
+        Estado estadoDom = new Estado();
+        estadoDom.setIdEstado(e.getEstado().getIdEstado()); 
+        estadoDom.setNombreEstado(e.getEstado().getNombreEstado()); 
+        
+        dom.setEstado(estadoDom); 
     }
-    
+
+    return dom; 
+}
 }

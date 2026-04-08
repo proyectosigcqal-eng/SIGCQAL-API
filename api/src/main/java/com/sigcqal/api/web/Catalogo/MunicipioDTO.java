@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MunicipioDTO {
     private String nombreMunicipio;
-    private Integer idEstado;
+    private String nombreEstado; 
     
 }

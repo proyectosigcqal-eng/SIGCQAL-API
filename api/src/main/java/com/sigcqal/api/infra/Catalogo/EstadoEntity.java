@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.cat_estados;
+package com.sigcqal.api.infra.Catalogo;
 
 import lombok.Data;
 import jakarta.persistence.*;
