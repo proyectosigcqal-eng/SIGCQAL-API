@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.cat_estados;
+package com.sigcqal.api.web.Catalogo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

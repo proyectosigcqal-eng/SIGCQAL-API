@@ -1,4 +1,4 @@
-package com.sigcqal.api.domain.cat_estados;
+package com.sigcqal.api.domain.Catalogo;
 
 import java.util.List;
 import java.util.Optional;

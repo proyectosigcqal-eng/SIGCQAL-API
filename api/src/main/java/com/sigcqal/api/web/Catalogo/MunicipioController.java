@@ -30,7 +30,7 @@ public class MunicipioController {
     private MunicipioDTO mapToResponse(Municipio dom) {
         MunicipioDTO res = new MunicipioDTO();
         res.setNombreMunicipio(dom.getNombreMunicipio());
-        res.setIdEstado(dom.getIdEstado());
+        res.setNombreEstado(dom.getEstado().getNombreEstado());
         return res;
     }
     

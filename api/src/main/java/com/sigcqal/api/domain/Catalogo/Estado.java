@@ -1,4 +1,4 @@
-package com.sigcqal.api.domain.cat_estados;
+package com.sigcqal.api.domain.Catalogo;
 
 public class Estado {
 
