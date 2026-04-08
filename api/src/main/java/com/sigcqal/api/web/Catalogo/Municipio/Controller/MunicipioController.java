@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.Catalogo;
+package com.sigcqal.api.web.Catalogo.Municipio.Controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigcqal.api.domain.Catalogo.Municipio;
-import com.sigcqal.api.domain.Catalogo.MunicipioRepositoryPort;
+import com.sigcqal.api.domain.Catalogo.Municipio.Model.Municipio;
+import com.sigcqal.api.domain.Catalogo.Municipio.Port.MunicipioRepositoryPort;
+import com.sigcqal.api.web.Catalogo.Municipio.Dto.MunicipioDTO;
 
 @RestController
 @RequestMapping("/catalogos/municipios")

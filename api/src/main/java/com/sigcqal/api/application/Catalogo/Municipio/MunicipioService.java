@@ -1,9 +1,9 @@
-package com.sigcqal.api.application.Catalogo;
+package com.sigcqal.api.application.Catalogo.Municipio;
 
 import java.util.List;
 
-import com.sigcqal.api.domain.Catalogo.Municipio;
-import com.sigcqal.api.domain.Catalogo.MunicipioRepositoryPort;
+import com.sigcqal.api.domain.Catalogo.Municipio.Model.Municipio;
+import com.sigcqal.api.domain.Catalogo.Municipio.Port.MunicipioRepositoryPort;
 
 public class MunicipioService {
 

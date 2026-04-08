@@ -1,4 +1,4 @@
-package com.sigcqal.api.domain.Catalogo;
+package com.sigcqal.api.domain.Catalogo.Estado.Model;
 
 public class Estado {
 

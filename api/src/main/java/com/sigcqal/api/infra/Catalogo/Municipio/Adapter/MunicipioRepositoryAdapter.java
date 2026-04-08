@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.Catalogo;
+package com.sigcqal.api.infra.Catalogo.Municipio.Adapter;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.sigcqal.api.domain.Catalogo.Estado;
-import com.sigcqal.api.domain.Catalogo.Municipio;
-import com.sigcqal.api.domain.Catalogo.MunicipioRepositoryPort;
+import com.sigcqal.api.domain.Catalogo.Estado.Model.Estado;
+import com.sigcqal.api.domain.Catalogo.Municipio.Model.Municipio;
+import com.sigcqal.api.domain.Catalogo.Municipio.Port.MunicipioRepositoryPort;
+import com.sigcqal.api.infra.Catalogo.Municipio.Entity.MunicipioEntity;
+import com.sigcqal.api.infra.Catalogo.Municipio.Repository.MunicipioJpaRepository;
 
 @Component
 public class MunicipioRepositoryAdapter implements MunicipioRepositoryPort {

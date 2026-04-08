@@ -1,6 +1,9 @@
-package com.sigcqal.api.infra.Catalogo;
+package com.sigcqal.api.infra.Catalogo.Municipio.Entity;
 
 import lombok.Data;
+
+import com.sigcqal.api.infra.Catalogo.Estado.Entity.EstadoEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

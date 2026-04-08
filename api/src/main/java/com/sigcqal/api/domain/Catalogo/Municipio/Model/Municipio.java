@@ -1,4 +1,6 @@
-package com.sigcqal.api.domain.Catalogo;
+package com.sigcqal.api.domain.Catalogo.Municipio.Model;
+
+import com.sigcqal.api.domain.Catalogo.Estado.Model.Estado;
 
 public class Municipio {
    private Long id;
