@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.MAIQR_CU_28;
+package com.sigcqal.api.infra.Catalogo;
 
 import lombok.Data;
 import jakarta.persistence.Column;
@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "cat_municipios") 
 @Data
-public class ConvenioEntity {
+public class MunicipioEntity {
    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_municipio")
@@ -21,8 +21,7 @@ public class ConvenioEntity {
     @Column(name = "nombre_municipio")
     private String nombreMunicipio;
 
-    @Column(name = "vigente")
-    private boolean vigente; 
-   
-}
+    @Column(name = "id_estado")
+    private Integer idEstado;
 
+}
