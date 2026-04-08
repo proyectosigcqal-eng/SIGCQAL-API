@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.Catalogo;
+package com.sigcqal.api.infra.Catalogo.Estado.Entity;
 
 import lombok.Data;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.Catalogo;
+package com.sigcqal.api.web.Catalogo.Estado.Controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sigcqal.api.domain.Catalogo.Estado;
-import com.sigcqal.api.domain.Catalogo.EstadoRepositoryPort;
+import com.sigcqal.api.domain.Catalogo.Estado.Model.Estado;
+import com.sigcqal.api.domain.Catalogo.Estado.Port.EstadoRepositoryPort;
+import com.sigcqal.api.web.Catalogo.Estado.Dto.EstadoDTO;
 
 @RestController
 @RequestMapping("/catalogos/estados")

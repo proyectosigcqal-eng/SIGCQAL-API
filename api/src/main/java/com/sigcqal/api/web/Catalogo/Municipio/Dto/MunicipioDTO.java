@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.Catalogo;
+package com.sigcqal.api.web.Catalogo.Municipio.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,9 @@
-package com.sigcqal.api.domain.Catalogo;
+package com.sigcqal.api.domain.Catalogo.Estado.Port;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.sigcqal.api.domain.Catalogo.Estado.Model.Estado;
 
 public interface EstadoRepositoryPort {
 
