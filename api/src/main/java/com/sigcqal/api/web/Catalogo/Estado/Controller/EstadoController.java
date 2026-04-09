@@ -1,36 +1,24 @@
 package com.sigcqal.api.web.Catalogo.Estado.Controller;
-
 import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
 
-import com.sigcqal.api.domain.Catalogo.Estado.Model.Estado;
-import com.sigcqal.api.domain.Catalogo.Estado.Port.EstadoRepositoryPort;
+import com.sigcqal.api.application.Catalogo.Estado.EstadoService;
 import com.sigcqal.api.web.Catalogo.Estado.Dto.EstadoDTO;
 
 @RestController
 @RequestMapping("/catalogos/estados")
+@RequiredArgsConstructor
 public class EstadoController {
 
-    private final EstadoRepositoryPort repositoryPort;
-
-    public EstadoController(EstadoRepositoryPort repositoryPort) {
-        this.repositoryPort = repositoryPort;
-    }
+    private final EstadoService estadoService;
 
     @GetMapping
-    public List<EstadoDTO> listar() {
-        return repositoryPort.ListAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    private EstadoDTO mapToResponse(Estado dom) {
-        EstadoDTO res = new EstadoDTO();
-        res.setNombreEstado(dom.getNombreEstado());
-        return res;
+    public ResponseEntity<List<EstadoDTO>> listarEstados() {
+        return ResponseEntity.ok(estadoService.obtenerEstados());
+        
     }
 }

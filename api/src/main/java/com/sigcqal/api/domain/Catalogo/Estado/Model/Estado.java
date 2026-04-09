@@ -14,3 +14,7 @@ public class Estado {
     public void setIdEstado(Integer idEstado) { this.idEstado = idEstado; }
     public void setNombreEstado(String nombreEstado) { this.nombreEstado = nombreEstado; }
 }
+
+
+
+
