@@ -1,38 +1,25 @@
 package com.sigcqal.api.web.Catalogo.Municipio.Controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
 
-import com.sigcqal.api.domain.Catalogo.Municipio.Model.Municipio;
-import com.sigcqal.api.domain.Catalogo.Municipio.Port.MunicipioRepositoryPort;
+import com.sigcqal.api.application.Catalogo.Municipio.MunicipioService;
 import com.sigcqal.api.web.Catalogo.Municipio.Dto.MunicipioDTO;
 
 @RestController
 @RequestMapping("/catalogos/municipios")
+@RequiredArgsConstructor
 public class MunicipioController {
 
-     private final MunicipioRepositoryPort repositoryPort;
-
-    public MunicipioController(MunicipioRepositoryPort repositoryPort) {
-        this.repositoryPort = repositoryPort;
-    }
+    private final MunicipioService municipioService;
 
     @GetMapping
-    public List<MunicipioDTO> listarParaAdmin() {
-        return repositoryPort.ListAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<MunicipioDTO>> listarMunicipios() {
+        return ResponseEntity.ok(municipioService.obtenerMunicipios());
+        
     }
-
-    private MunicipioDTO mapToResponse(Municipio dom) {
-        MunicipioDTO res = new MunicipioDTO();
-        res.setNombreMunicipio(dom.getNombreMunicipio());
-        res.setNombreEstado(dom.getEstado().getNombreEstado());
-        return res;
-    }
-    
 }
