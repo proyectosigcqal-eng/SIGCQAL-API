@@ -10,19 +10,30 @@ import org.springframework.stereotype.Service;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Port.AcuseReciboInternoRepositoryPort;
 import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.*;
 
+import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Model.AcuseReciboInterno;
+
 import lombok.RequiredArgsConstructor;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Mapper.AcuseReciboInternoMapper;
 
 @Service
 @RequiredArgsConstructor
 public class AcuseReciboInternoService {
 
-    private final AcuseReciboInternoRepositoryPort repository;
+    @Autowired
+    private AcuseReciboInternoRepositoryPort repository;
 
+    @Autowired
+    private AcuseReciboInternoMapper mapper;
     // ✅ 1. LISTA DE MEMOS
     public List<AcuseReciboInternoResponseDTO> listarPorUsuario(Long idUsuario) {
         return repository.findByUsuario(idUsuario)
                 .stream()
-                .map(AcuseReciboInternoResponseDTO::fromDomain)
+                .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -31,7 +42,7 @@ public class AcuseReciboInternoService {
         var acuse = repository.findById(idAcuse)
                 .orElseThrow(() -> new RuntimeException("Acuse no encontrado"));
 
-        return AcuseReciboInternoResponseDTO.fromDomain(acuse);
+        return mapper.toResponse(acuse);
     }
 
     // ✅ 3. RESPONDER
@@ -46,4 +57,38 @@ public class AcuseReciboInternoService {
 
         repository.save(acuse);
     }
+
+
+@Transactional
+    public AcuseReciboInternoResponseDTO crearAcuseAutomatico(AcuseReciboInternoRequestDTO request) {
+
+    AcuseReciboInterno acuse = new AcuseReciboInterno();
+
+    acuse.setIdMemorandum(request.getIdMemorandum());
+    acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
+    acuse.setEsDelArea(null);
+
+   
+            //acuse.setIdCorrespondencia(request.getIdCorrespondencia());
+            acuse.setNumMemo(request.getNumMemo());
+            acuse.setFechaEmision(request.getFechaEmision());
+            acuse.setIdUsuarioEmisor(request.getIdUsuarioEmisor());
+            acuse.setFolioUnico(request.getFolioUnico());
+            acuse.setObservaciones(request.getObservaciones());
+            acuse.setUrlMemorandumGenerado(request.getUrlMemorandumGenerado());
+            acuse.setIdPlantilla(request.getIdPlantilla());
+            acuse.setIdUsuarioFirmante(request.getIdUsuarioFirmante());
+
+
+    
+    AcuseReciboInterno saved = repository.save(acuse);
+
+    return mapper.toResponse(saved);
+}
+
+public boolean existePorMemorandum(Long idMemorandum) {
+    return repository.existePorMemorandum(idMemorandum);
+}
+
+
 }

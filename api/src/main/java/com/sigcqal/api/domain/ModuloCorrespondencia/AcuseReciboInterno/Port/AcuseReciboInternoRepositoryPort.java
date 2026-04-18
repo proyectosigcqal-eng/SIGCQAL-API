@@ -12,4 +12,6 @@ public interface AcuseReciboInternoRepositoryPort {
     Optional<AcuseReciboInterno> findById(Long id);
 
     AcuseReciboInterno save(AcuseReciboInterno acuse);
+
+    boolean existePorMemorandum(Long idMemorandum);
 }

@@ -48,4 +48,9 @@ public AcuseReciboInterno save(AcuseReciboInterno acuse) {
 
     return mapper.toDomain(saved);
 }
+
+@Override
+public boolean existePorMemorandum(Long idMemorandum) {
+    return repository.existsByMemorandum_Id(idMemorandum);
+}
 }

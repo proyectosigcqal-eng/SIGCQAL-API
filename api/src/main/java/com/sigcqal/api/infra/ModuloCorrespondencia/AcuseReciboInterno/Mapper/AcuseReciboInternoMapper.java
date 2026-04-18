@@ -5,40 +5,40 @@ import org.springframework.stereotype.Component;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Model.AcuseReciboInterno;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Entity.AcuseReciboInternoEntity;
 
+import com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Entity.MemorandumEntity;
+import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
+
+import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.AcuseReciboInternoResponseDTO;
+
 @Component
 public class AcuseReciboInternoMapper {
 
     public AcuseReciboInterno toDomain(AcuseReciboInternoEntity entity) {
-        if (entity == null) return null;
+    if (entity == null) return null;
 
-        AcuseReciboInterno domain = new AcuseReciboInterno();
+    AcuseReciboInterno domain = new AcuseReciboInterno();
+    domain.setIdAcuse(entity.getIdAcuse());
+    domain.setEsDelArea(entity.getEsDelArea());
+    domain.setFechaAceptacion(entity.getFechaAceptacion());
 
-        domain.setIdAcuse(entity.getIdAcuse());
-        domain.setEsDelArea(entity.getEsDelArea());
-        domain.setFechaAceptacion(entity.getFechaAceptacion());
-        domain.setHoraAceptacion(entity.getHoraAceptacion());
+    // 1. EXTRAER EL MEMO UNA SOLA VEZ (Evita los errores de su imagen)
+    if (entity.getMemorandum() != null) {
+        var memo = entity.getMemorandum(); 
 
-        if (entity.getUsuarioRevisor() != null) {
-            domain.setIdUsuarioRevisor(entity.getUsuarioRevisor().getId());
-        }
-
-        if (entity.getMemorandum() != null) {
-            var memo = entity.getMemorandum();
-
-            domain.setIdMemorandum(memo.getId());
-            domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
-            domain.setNumMemo(memo.getNumMemo());
-            domain.setFechaEmision(memo.getFechaEmision().toString());
-            domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());
-            domain.setFolioUnico(memo.getFolioUnico());
-            domain.setObservaciones(memo.getObservaciones());
-            domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
-            domain.setIdPlantilla(memo.getPlantilla().getId());
-            domain.setIdUsuarioFirmante(memo.getUsuarioFirmante().getId());
-        }
-
-        return domain;
+        // 2. CORREGIR EL ID: Usamos el ID del memo, no el del acuse
+        domain.setIdMemorandum(memo.getId()); 
+        domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
+        
+        // 3. PASAR DATOS CORRECTOS (Evita errores de "Incompatible Types")
+        domain.setNumMemo(memo.getNumMemo());
+        domain.setFolioUnico(memo.getFolioUnico());
+        domain.setFechaEmision(memo.getFechaEmision().toString());
+        domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());
+        domain.setObservaciones(memo.getObservaciones());
+        domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
     }
+    return domain;
+}
 
     public AcuseReciboInternoEntity toEntity(AcuseReciboInterno domain) {
         AcuseReciboInternoEntity entity = new AcuseReciboInternoEntity();
@@ -48,6 +48,49 @@ public class AcuseReciboInternoMapper {
         entity.setFechaAceptacion(domain.getFechaAceptacion());
         entity.setHoraAceptacion(domain.getHoraAceptacion());
 
+        if (domain.getIdMemorandum() != null) {
+            MemorandumEntity memorandum = new MemorandumEntity();
+            memorandum.setId(domain.getIdMemorandum());
+            entity.setMemorandum(memorandum);
+        }
+        
+        if (domain.getIdUsuarioRevisor() != null) {
+            UsuarioEntity usuario = new UsuarioEntity();
+            usuario.setId(domain.getIdUsuarioRevisor());
+            entity.setUsuarioRevisor(usuario);
+        }
+
         return entity;
+    }
+
+
+    public AcuseReciboInternoResponseDTO toResponse(AcuseReciboInterno d) {
+
+        AcuseReciboInternoResponseDTO dto = new AcuseReciboInternoResponseDTO();
+
+        dto.setIdAcuse(d.getIdAcuse());
+        dto.setEsDelArea(d.getEsDelArea());
+
+        dto.setFechaAceptacion(
+            d.getFechaAceptacion() != null ? d.getFechaAceptacion().toString() : null
+        );
+
+        dto.setHoraAceptacion(
+            d.getHoraAceptacion() != null ? d.getHoraAceptacion().toString() : null
+        );
+
+        dto.setIdMemorandum(d.getIdMemorandum());
+        dto.setIdCorrespondencia(d.getIdCorrespondencia());
+        dto.setNumMemo(d.getNumMemo());
+        dto.setFechaEmision(d.getFechaEmision());
+        dto.setIdUsuarioEmisor(d.getIdUsuarioEmisor());
+        dto.setFolioUnico(d.getFolioUnico());
+        dto.setObservaciones(d.getObservaciones());
+        dto.setUrlMemorandumGenerado(d.getUrlMemorandumGenerado());
+        dto.setIdPlantilla(d.getIdPlantilla());
+        dto.setIdArea(d.getIdArea());
+        dto.setIdUsuarioFirmante(d.getIdUsuarioFirmante());
+
+        return dto;
     }
 }

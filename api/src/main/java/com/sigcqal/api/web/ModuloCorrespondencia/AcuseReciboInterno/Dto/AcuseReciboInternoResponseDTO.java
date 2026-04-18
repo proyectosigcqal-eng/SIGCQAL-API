@@ -12,6 +12,7 @@ public class AcuseReciboInternoResponseDTO {
 
     private String fechaAceptacion;
     private String horaAceptacion;
+    private Long idUsuarioRevisor;
 
     // 🔹 Memorandum
     private Long idMemorandum;
@@ -26,33 +27,5 @@ public class AcuseReciboInternoResponseDTO {
     private Long idArea;
     private Long idUsuarioFirmante;
 
-    public static AcuseReciboInternoResponseDTO fromDomain(AcuseReciboInterno d) {
-
-        AcuseReciboInternoResponseDTO dto = new AcuseReciboInternoResponseDTO();
-
-        dto.setIdAcuse(d.getIdAcuse());
-        dto.setEsDelArea(d.getEsDelArea());
-
-        dto.setFechaAceptacion(
-            d.getFechaAceptacion() != null ? d.getFechaAceptacion().toString() : null
-        );
-
-        dto.setHoraAceptacion(
-            d.getHoraAceptacion() != null ? d.getHoraAceptacion().toString() : null
-        );
-
-        dto.setIdMemorandum(d.getIdMemorandum());
-        dto.setIdCorrespondencia(d.getIdCorrespondencia());
-        dto.setNumMemo(d.getNumMemo());
-        dto.setFechaEmision(d.getFechaEmision());
-        dto.setIdUsuarioEmisor(d.getIdUsuarioEmisor());
-        dto.setFolioUnico(d.getFolioUnico());
-        dto.setObservaciones(d.getObservaciones());
-        dto.setUrlMemorandumGenerado(d.getUrlMemorandumGenerado());
-        dto.setIdPlantilla(d.getIdPlantilla());
-        dto.setIdArea(d.getIdArea());
-        dto.setIdUsuarioFirmante(d.getIdUsuarioFirmante());
-
-        return dto;
-    }
+    
 }
