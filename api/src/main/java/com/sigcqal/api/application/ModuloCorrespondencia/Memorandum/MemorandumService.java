@@ -13,10 +13,6 @@ import com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Mapper.MemorandumM
 import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumResponseDTO;
 
-import com.sigcqal.api.application.ModuloCorrespondencia.AcuseReciboInterno.AcuseReciboInternoService;
-
-import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.AcuseReciboInternoRequestDTO;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -27,11 +23,6 @@ public class MemorandumService {
 
    @Autowired
     private MemorandumMapper mapper; 
-
-    @Autowired
-    private AcuseReciboInternoService acuseService;
-
-
 
     @Transactional
     public MemorandumResponseDTO guardarMemorandum(MemorandumRequestDTO request) {
@@ -49,25 +40,8 @@ public class MemorandumService {
 
      
         Memorandum saved = repositoryPort.save(memo);
-
-            // Línea 54: Verificamos si ya existe el acuse
-        boolean yaExiste = acuseService.existePorMemorandum(saved.getId());
-
-        if (!yaExiste) {
-            // 1. Instanciar el objeto RequestDTO que el servicio espera
-            AcuseReciboInternoRequestDTO acuseRequest = new AcuseReciboInternoRequestDTO();
-            
-            // 2. Llenar los datos usando el objeto 'saved' (que es el memo recién guardado)
-            acuseRequest.setIdMemorandum(saved.getId());
-            acuseRequest.setIdUsuarioRevisor(saved.getIdUsuarioFirmante());
-            
-            // 3. Llamar al método pasando el objeto completo, no los Long sueltos
-            acuseService.crearAcuseAutomatico(acuseRequest);
-        }
-
-            // Continuar con el retorno normal del método
-            return mapper.toResponse(saved);
-                }
+        return mapper.toResponse(saved);
+    }
 
     public List<MemorandumResponseDTO> listarMemorandum() {
         List<Memorandum> memorandums = repositoryPort.findAll();
