@@ -19,11 +19,12 @@ public class AuditoriaRepositoryAdapter implements AuditoriaPort {
     @Override
     public void registrarRegistroCorrespondencia(Long idCorrespondencia, Long idUsuario, String folioUnico) {
         AuditoriaCorrespondenciaEntity entity = new AuditoriaCorrespondenciaEntity();
-        entity.setIdCorrespondencia(idCorrespondencia);
-        entity.setIdUsuario(idUsuario);
-        entity.setFolioUnico(folioUnico);
-        entity.setAccion("REGISTRO_CORRESPONDENCIA_ENTRADA");
-        entity.setFechaRegistro(LocalDateTime.now());
+        entity.setIdFolio(idCorrespondencia);
+        entity.setIdUsuarioAccion(idUsuario);
+        entity.setIdEstadoAnterior(null);
+        entity.setIdEstadoNuevo(1L);
+        entity.setObservaciones("REGISTRO_CORRESPONDENCIA_ENTRADA folio=" + folioUnico);
+        entity.setFechaMovimiento(LocalDateTime.now());
         jpaRepository.save(entity);
     }
 }

@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class CorrespondenciaEntradaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_correspondencia")
+    @Column(name = "id_folio")
     private Long id;
 
     @Column(name = "folio_unico", unique = true)
@@ -34,7 +34,7 @@ public class CorrespondenciaEntradaEntity {
     @Column(name = "num_oficio_externo")
     private String numeroOficio;
 
-    @Column(name = "fecha_expedicion")
+    @Column(name = "fecha_oficio")
     private LocalDate fechaExpedicion;
 
     @Column(name = "dependencia_remitente")
