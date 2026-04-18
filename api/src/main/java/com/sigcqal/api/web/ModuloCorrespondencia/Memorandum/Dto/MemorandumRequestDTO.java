@@ -10,5 +10,8 @@ private Long idCorrespondencia;
     private Long idUsuarioEmisor; 
     private Long idUsuarioFirmante; 
     private Long idPlantilla; 
+    private Long idArea;
     private String folioUnico;
+    private String urlSolicitudMemorandum;
+
 }

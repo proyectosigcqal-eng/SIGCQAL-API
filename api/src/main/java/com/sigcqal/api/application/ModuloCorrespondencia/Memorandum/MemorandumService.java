@@ -22,10 +22,10 @@ public class MemorandumService {
     private MemorandumRepositoryPort repositoryPort;
 
    @Autowired
-    private MemorandumMapper Mapper; 
+    private MemorandumMapper mapper; 
 
     @Transactional
-    public MemorandumResponseDTO generarMemorandum(MemorandumRequestDTO request) {
+    public MemorandumResponseDTO guardarMemorandum(MemorandumRequestDTO request) {
 
         Memorandum memo = new Memorandum();
         memo.setIdCorrespondencia(request.getIdCorrespondencia());
@@ -34,19 +34,16 @@ public class MemorandumService {
         memo.setIdUsuarioFirmante(request.getIdUsuarioFirmante());
         memo.setInstruccionSeguimiento(request.getInstruccionSeguimiento());
         memo.setObservaciones(request.getObservaciones());
-        
-       
-        validarCampos(memo);
         memo.setFolioUnico(generarFolioSeguro());
+        memo.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
+        memo.setIdArea(null);
 
      
         Memorandum saved = repositoryPort.save(memo);
-
-       
-        return Mapper.toResponse(saved);
+        return mapper.toResponse(saved);
     }
 
-    public List<MemorandumResponseDTO> listarTodos() {
+    public List<MemorandumResponseDTO> listarMemorandum() {
         List<Memorandum> memorandums = repositoryPort.findAll();
         
         if (memorandums == null) {
@@ -56,7 +53,7 @@ public class MemorandumService {
 
         return memorandums.stream()
             .filter(memo -> memo != null) 
-            .map(Mapper::toResponse) 
+            .map(mapper::toResponse) 
             .collect(Collectors.toList());
     }
 
@@ -68,9 +65,4 @@ public class MemorandumService {
         return nuevoFolio;
     }
 
-    private void validarCampos(Memorandum memo) {
-        if (memo.getIdCorrespondencia() == null) {
-            throw new IllegalArgumentException("El campo Correspondencia es obligatorio");
-        }
-    }
 }

@@ -28,13 +28,13 @@ public class MemorandumController {
 
     @PostMapping("/generar")
     public ResponseEntity<MemorandumResponseDTO> generar(@RequestBody MemorandumRequestDTO request) {
-        return ResponseEntity.ok(memorandumService.generarMemorandum(request));
+        return ResponseEntity.ok(memorandumService.guardarMemorandum(request));
     }
 
     @GetMapping("/listar")
 public ResponseEntity<List<MemorandumResponseDTO>> listar() {
     try {
-        List<MemorandumResponseDTO> lista = service.listarTodos();
+        List<MemorandumResponseDTO> lista = service.listarMemorandum();
         return ResponseEntity.ok(lista);
     } catch (Exception e) {
         e.printStackTrace(); 
