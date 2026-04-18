@@ -17,6 +17,7 @@ private Long id;
     private Long idUsuarioFirmante; 
     private Long idCorrespondencia; 
     private Long idPlantilla;       
+    private Long idArea;
     
     private String folioUnico; 
     private String instruccionSeguimiento; 

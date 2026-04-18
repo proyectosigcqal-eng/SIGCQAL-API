@@ -2,6 +2,7 @@ package com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Entity;
 
 import java.time.LocalDateTime;
 
+import com.sigcqal.api.infra.Catalogo.Area.Entity.AreaEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.PlantillaMemorandum.Entity.PlantillaMemorandumEntity;
@@ -48,9 +49,9 @@ public class MemorandumEntity {
     @JoinColumn(name = "id_plantilla")
     private PlantillaMemorandumEntity plantilla;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "id_area") 
-    // private Area area;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_area") 
+    private AreaEntity area;
 
     @Column(name = "num_memo") 
     private String numMemo;

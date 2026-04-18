@@ -25,7 +25,7 @@ public class MemorandumService {
     private MemorandumMapper Mapper; 
 
     @Transactional
-    public MemorandumResponseDTO generarMemorandum(MemorandumRequestDTO request) {
+    public MemorandumResponseDTO guardarMemorandum(MemorandumRequestDTO request) {
 
         Memorandum memo = new Memorandum();
         memo.setIdCorrespondencia(request.getIdCorrespondencia());
@@ -34,10 +34,9 @@ public class MemorandumService {
         memo.setIdUsuarioFirmante(request.getIdUsuarioFirmante());
         memo.setInstruccionSeguimiento(request.getInstruccionSeguimiento());
         memo.setObservaciones(request.getObservaciones());
-        
-       
-        validarCampos(memo);
         memo.setFolioUnico(generarFolioSeguro());
+        memo.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
+        memo.setIdArea(null);
 
      
         Memorandum saved = repositoryPort.save(memo);
@@ -46,7 +45,7 @@ public class MemorandumService {
         return Mapper.toResponse(saved);
     }
 
-    public List<MemorandumResponseDTO> listarTodos() {
+    public List<MemorandumResponseDTO> listarMemorandum() {
         List<Memorandum> memorandums = repositoryPort.findAll();
         
         if (memorandums == null) {
@@ -68,9 +67,4 @@ public class MemorandumService {
         return nuevoFolio;
     }
 
-    private void validarCampos(Memorandum memo) {
-        if (memo.getIdCorrespondencia() == null) {
-            throw new IllegalArgumentException("El campo Correspondencia es obligatorio");
-        }
-    }
 }
