@@ -20,21 +20,24 @@ import lombok.NoArgsConstructor;
 public class AuditoriaCorrespondenciaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_auditoria_correspondencia")
+    @Column(name = "id_log")
     private Long id;
 
-    @Column(name = "id_correspondencia")
-    private Long idCorrespondencia;
+    @Column(name = "id_folio")
+    private Long idFolio;
 
-    @Column(name = "id_usuario")
-    private Long idUsuario;
+    @Column(name = "id_usuario_accion")
+    private Long idUsuarioAccion;
 
-    @Column(name = "accion")
-    private String accion;
+    @Column(name = "id_estado_anterior")
+    private Long idEstadoAnterior;
 
-    @Column(name = "folio_unico")
-    private String folioUnico;
+    @Column(name = "id_estado_nuevo")
+    private Long idEstadoNuevo;
 
-    @Column(name = "fecha_registro")
-    private LocalDateTime fechaRegistro;
+    @Column(name = "observaciones")
+    private String observaciones;
+
+    @Column(name = "fecha_movimiento")
+    private LocalDateTime fechaMovimiento;
 }
