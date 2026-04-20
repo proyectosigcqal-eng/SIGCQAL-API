@@ -35,17 +35,11 @@ public class AcuseReciboInternoAdapter implements AcuseReciboInternoRepositoryPo
 
     @Override
 public AcuseReciboInterno save(AcuseReciboInterno acuse) {
-
-    var entity = repository.findById(acuse.getIdAcuse())
-        .orElseThrow(() -> new RuntimeException("Acuse no encontrado"));
-
+    // Transformamos el dominio a entidad directamente
+    // Como el idAcuse es null, JPA/Hibernate sabrá que debe hacer un INSERT y autogenerar el ID
+    var entity = mapper.toEntity(acuse);
     
-    entity.setEsDelArea(acuse.getEsDelArea());
-    entity.setFechaAceptacion(acuse.getFechaAceptacion());
-    entity.setHoraAceptacion(acuse.getHoraAceptacion());
-
     var saved = repository.save(entity);
-
     return mapper.toDomain(saved);
 }
 
