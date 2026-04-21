@@ -42,4 +42,12 @@ public class MemorandumAdapter implements MemorandumRepositoryPort {
                    .map(mapper::toDomain)
                    .collect(Collectors.toList());
 }
+
+@Override
+public List<Memorandum> findByArea(Long idArea) {
+    List<MemorandumEntity> entities = jpaRepository.findByAreaId(idArea);
+    return entities.stream()
+                   .map(mapper::toDomain)
+                   .collect(Collectors.toList());
+}
 }

@@ -7,7 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Entity.MemorandumEntity;
 
+import java.util.List;
 @Repository
 public interface MemorandumJpaRepository extends JpaRepository<MemorandumEntity, Long> {
     Optional<MemorandumEntity> findByFolioUnico(String folioUnico);
+
+    List<MemorandumEntity> findByAreaId(Long idArea);
 }

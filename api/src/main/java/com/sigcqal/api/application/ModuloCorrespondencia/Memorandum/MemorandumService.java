@@ -57,6 +57,19 @@ public class MemorandumService {
             .collect(Collectors.toList());
     }
 
+public List<MemorandumResponseDTO> listarPorArea(Long idArea) {
+    List<Memorandum> memorandums = repositoryPort.findByArea(idArea);
+    
+    if (memorandums == null) {
+        return List.of();
+    }
+
+    return memorandums.stream()
+        .filter(memo -> memo != null)
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
+
     private String generarFolioSeguro() {
         String nuevoFolio;
         do {

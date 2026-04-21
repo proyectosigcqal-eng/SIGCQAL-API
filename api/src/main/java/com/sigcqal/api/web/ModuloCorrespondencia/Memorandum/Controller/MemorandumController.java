@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,17 @@ public ResponseEntity<List<MemorandumResponseDTO>> listar() {
     } catch (Exception e) {
         e.printStackTrace(); 
         throw e;
+    }
+}
+
+@GetMapping("/area/{idArea}")
+public ResponseEntity<List<MemorandumResponseDTO>> listarPorArea(@PathVariable Long idArea) {
+    try {
+        List<MemorandumResponseDTO> lista = service.listarPorArea(idArea);
+        return ResponseEntity.ok(lista);
+    } catch (Exception e) {
+        e.printStackTrace(); 
+        throw e; 
     }
 }
 }

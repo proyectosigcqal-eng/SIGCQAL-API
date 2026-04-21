@@ -8,4 +8,7 @@ public interface MemorandumRepositoryPort {
     Memorandum save(Memorandum memorandum);
     boolean existeFolio(String folio);
     List<Memorandum> findAll();
+
+    List<Memorandum> findByArea(Long idArea);
 }
+
