@@ -70,6 +70,12 @@ public List<MemorandumResponseDTO> listarPorArea(Long idArea) {
         .collect(Collectors.toList());
 }
 
+public MemorandumResponseDTO buscarPorId(Long id) {
+    return repositoryPort.buscarPorId(id)
+        .map(mapper::toResponse)
+        .orElseThrow(() -> new RuntimeException("No se encontró el memorandum con ID: " + id));
+}
+
     private String generarFolioSeguro() {
         String nuevoFolio;
         do {

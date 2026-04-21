@@ -2,6 +2,7 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Adapter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -49,5 +50,11 @@ public List<Memorandum> findByArea(Long idArea) {
     return entities.stream()
                    .map(mapper::toDomain)
                    .collect(Collectors.toList());
+}
+
+@Override
+public Optional<Memorandum> buscarPorId(Long id) {
+    return jpaRepository.findById(id)
+                        .map(mapper::toDomain);
 }
 }

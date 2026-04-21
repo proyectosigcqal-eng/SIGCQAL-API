@@ -53,4 +53,9 @@ public ResponseEntity<List<MemorandumResponseDTO>> listarPorArea(@PathVariable L
         throw e; 
     }
 }
+
+@GetMapping("/{id}")
+public ResponseEntity<MemorandumResponseDTO> obtenerPorId(@PathVariable Long id) {
+    return ResponseEntity.ok(service.buscarPorId(id));
+}
 }

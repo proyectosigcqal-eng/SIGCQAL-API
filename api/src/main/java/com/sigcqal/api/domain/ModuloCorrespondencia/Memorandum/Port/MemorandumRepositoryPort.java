@@ -1,6 +1,7 @@
 package com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Port;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Model.Memorandum;
 
@@ -10,5 +11,6 @@ public interface MemorandumRepositoryPort {
     List<Memorandum> findAll();
 
     List<Memorandum> findByArea(Long idArea);
+    Optional<Memorandum> buscarPorId(Long id);
 }
 
