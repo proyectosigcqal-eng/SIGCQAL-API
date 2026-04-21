@@ -3,6 +3,7 @@ package com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Mapper;
 import org.springframework.stereotype.Component;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Model.Memorandum;
+import com.sigcqal.api.infra.Catalogo.Area.Entity.AreaEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Entity.MemorandumEntity;
@@ -50,6 +51,13 @@ public class MemorandumMapper {
             entity.setUsuarioEmisor(emisor);
         }
 
+        if (domain.getIdArea() != null) {
+            AreaEntity area = new AreaEntity();
+            area.setId(domain.getIdArea());
+            entity.setArea(area);
+            
+        }
+
         return entity;
     }
 
@@ -87,6 +95,11 @@ public class MemorandumMapper {
             domain.setNombreUsuarioFirmante(entity.getUsuarioFirmante().getUsuarioLogin());
         }
 
+         if (entity.getArea() != null) {
+            domain.setIdArea(entity.getArea().getId());
+            domain.setNombreArea(entity.getArea().getNombre());
+        }
+
         return domain; 
     }
 
@@ -98,6 +111,7 @@ public class MemorandumMapper {
         dto.setFolioUnico(domain.getFolioUnico());
         dto.setInstruccionSeguimiento(domain.getInstruccionSeguimiento());
         dto.setObservaciones(domain.getObservaciones());
+        dto.setIdArea(domain.getIdArea());
 
         dto.setIdCorrespondencia(domain.getIdCorrespondencia());
         dto.setIdUsuarioEmisor(domain.getIdUsuarioEmisor());

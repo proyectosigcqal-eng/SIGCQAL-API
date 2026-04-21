@@ -23,7 +23,7 @@ public class AuditoriaCorrespondenciaEntity {
     @Column(name = "id_log")
     private Long id;
 
-    @Column(name = "id_folio")
+    @Column(name = "id_correspondencia")
     private Long idFolio;
 
     @Column(name = "id_usuario_accion")

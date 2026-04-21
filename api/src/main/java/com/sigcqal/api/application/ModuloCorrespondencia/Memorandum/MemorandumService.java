@@ -36,7 +36,7 @@ public class MemorandumService {
         memo.setObservaciones(request.getObservaciones());
         memo.setFolioUnico(generarFolioSeguro());
         memo.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
-        memo.setIdArea(null);
+        memo.setIdArea(request.getIdArea());
 
      
         Memorandum saved = repositoryPort.save(memo);
