@@ -23,6 +23,7 @@ private Long id;
     private String instruccionSeguimiento; 
     private String observaciones;
     private String urlSolicitudMemorandum;
+    private String nombreArea;
 
     private String asunto;          
     private String numeroOficio;    
@@ -33,6 +34,7 @@ private Long id;
     
     private String nombreUsuarioFirmante;
     private String areaUsuarioFirmante;
+
 
 
 }

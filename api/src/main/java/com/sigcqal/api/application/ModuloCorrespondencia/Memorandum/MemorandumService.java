@@ -36,7 +36,7 @@ public class MemorandumService {
         memo.setObservaciones(request.getObservaciones());
         memo.setFolioUnico(generarFolioSeguro());
         memo.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
-        memo.setIdArea(null);
+        memo.setIdArea(request.getIdArea());
 
      
         Memorandum saved = repositoryPort.save(memo);
@@ -56,6 +56,25 @@ public class MemorandumService {
             .map(mapper::toResponse) 
             .collect(Collectors.toList());
     }
+
+public List<MemorandumResponseDTO> listarPorArea(Long idArea) {
+    List<Memorandum> memorandums = repositoryPort.findByArea(idArea);
+    
+    if (memorandums == null) {
+        return List.of();
+    }
+
+    return memorandums.stream()
+        .filter(memo -> memo != null)
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
+
+public MemorandumResponseDTO buscarPorId(Long id) {
+    return repositoryPort.buscarPorId(id)
+        .map(mapper::toResponse)
+        .orElseThrow(() -> new RuntimeException("No se encontró el memorandum con ID: " + id));
+}
 
     private String generarFolioSeguro() {
         String nuevoFolio;
