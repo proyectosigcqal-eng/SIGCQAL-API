@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
+import com.sigcqal.api.domain.ModuloCorrespondencia.BitacoraHistorica.Port.BitacoraHistoricaRepositoryPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.AuditoriaPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.CorrespondenciaRepositoryPort;
+import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.CorrespondenciaMapper;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
 
@@ -24,7 +26,10 @@ public class RegistrarCorrespondenciaService {
     private CorrespondenciaRepositoryPort repositoryPort;
 
     @Autowired
-    private AuditoriaPort auditoriaPort;
+    private BitacoraHistoricaRepositoryPort auditoriaPort;
+
+    @Autowired
+    private CorrespondenciaMapper mapper;
 
     @Transactional
     public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaRequestDTO request) {
@@ -34,15 +39,23 @@ public class RegistrarCorrespondenciaService {
             throw new InvalidRequestException("El número de oficio ya existe en el sistema");
         }
 
-        Correspondencia saved = guardarConFolioUnico(request);
-        auditoriaPort.registrarRegistroCorrespondencia(saved.getId(), saved.getIdUsuarioCaptura(), saved.getFolioUnico());
-
-        RegistrarCorrespondenciaResponseDTO response = new RegistrarCorrespondenciaResponseDTO();
-        response.setConsecutivo(saved.getConsecutivo());
-        response.setFolioUnico(saved.getFolioUnico());
-        response.setMensaje("Correspondencia registrada exitosamente. Consecutivo: " + saved.getConsecutivo());
-        response.setIdCorrespondencia(saved.getId());
-        return response;
+        Correspondencia correspondencia = new Correspondencia();        
+        correspondencia.setConsecutivo(request.getConsecutivo());
+        correspondencia.setFolioUnico(request.getFolioUnico());
+        correspondencia.setId(request.getId());
+        correspondencia.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
+        correspondencia.setIdArea(request.getIdArea());
+        correspondencia.setNombreArea(request.getNombreArea());
+        correspondencia.setObservaciones(request.getObservaciones());
+        correspondencia.setIdEstatus(request.getIdEstatus());
+        correspondencia.setNumeroOficio(request.getNumeroOficio());
+        correspondencia.setFechaExpedicion(request.getFechaExpedicion());
+        correspondencia.setDependenciaRemitente(request.getDependenciaRemitente());
+        correspondencia.setTitularDependencia(request.getTitularDependencia());
+        correspondencia.setAsunto(request.getAsunto());
+        correspondencia.setFechaRecibido(request.getFechaRecibido());
+        Correspondencia saved = repositoryPort.save(correspondencia);
+        return mapper.toResponse(saved);
     }
 
     public RegistrarCorrespondenciaResponseDTO obtenerPorId(Long id) {
@@ -51,12 +64,8 @@ public class RegistrarCorrespondenciaService {
         }
 
         Correspondencia dom = repositoryPort.findById(id).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
-        RegistrarCorrespondenciaResponseDTO response = new RegistrarCorrespondenciaResponseDTO();
-        response.setIdCorrespondencia(dom.getId());
-        response.setConsecutivo(dom.getConsecutivo());
-        response.setFolioUnico(dom.getFolioUnico());
-        response.setMensaje("OK");
-        return response;
+
+        return repositoryPort.findById(id).map(mapper::toResponse).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
     }
 
     private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {

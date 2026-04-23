@@ -8,17 +8,17 @@ import org.springframework.stereotype.Component;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.CorrespondenciaRepositoryPort;
-import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.CorrespondenciaEntradaMapper;
-import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Repository.CorrespondenciaEntradaJpaRepository;
+import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.CorrespondenciaMapper;
+import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Repository.CorrespondenciaJpaRepository;
 
 @Component
 public class CorrespondenciaRepositoryAdapter implements CorrespondenciaRepositoryPort {
     private static final Pattern FOLIO_PATTERN = Pattern.compile("^CEDECON-CORR-(\\d+)/(\\d{4})$");
 
-    private final CorrespondenciaEntradaJpaRepository jpaRepository;
-    private final CorrespondenciaEntradaMapper mapper;
+    private final CorrespondenciaJpaRepository jpaRepository;
+    private final CorrespondenciaMapper mapper;
 
-    public CorrespondenciaRepositoryAdapter(CorrespondenciaEntradaJpaRepository jpaRepository, CorrespondenciaEntradaMapper mapper) {
+    public CorrespondenciaRepositoryAdapter(CorrespondenciaJpaRepository jpaRepository, CorrespondenciaMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;
     }
