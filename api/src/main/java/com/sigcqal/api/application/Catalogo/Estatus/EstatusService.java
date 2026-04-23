@@ -18,7 +18,7 @@ public class EstatusService {
 private final EstatusRepositoryPort repositoryPort;
 
     public List<EstatusDTO> obtenerEstatus() {
-        return repositoryPort.ListAll().stream()
+        return repositoryPort.listAll().stream()
             .map(this::mapToResponse)
             .collect(Collectors.toList());
     }

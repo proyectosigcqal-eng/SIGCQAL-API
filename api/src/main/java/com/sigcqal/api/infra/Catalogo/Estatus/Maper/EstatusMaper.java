@@ -1,8 +1,11 @@
 package com.sigcqal.api.infra.Catalogo.Estatus.Maper;
 
+import org.springframework.stereotype.Component;
+
 import com.sigcqal.api.domain.Catalogo.Estatus.Model.Estatus;
 import com.sigcqal.api.infra.Catalogo.Estatus.Entity.EstatusEntity;
 
+@Component
 public class EstatusMaper {
 
 public Estatus toDomain(EstatusEntity entity) {

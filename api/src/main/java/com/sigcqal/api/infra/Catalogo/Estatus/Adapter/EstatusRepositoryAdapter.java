@@ -17,12 +17,10 @@ import com.sigcqal.api.infra.Catalogo.Estatus.Repository.EstatusJpaRepository;
 public class EstatusRepositoryAdapter implements EstatusRepositoryPort {
 
     @Autowired
-    private final EstatusJpaRepository jpaRepository;
+    private  EstatusJpaRepository jpaRepository;
+    
+    @Autowired
     private EstatusMaper maper;
-
-    public EstatusRepositoryAdapter(EstatusJpaRepository jpaRepository){
-        this.jpaRepository = jpaRepository;
-    }
 
     @Override
     public Optional<Estatus> findByName(String nombre) {
@@ -31,7 +29,7 @@ public class EstatusRepositoryAdapter implements EstatusRepositoryPort {
     }
 
     @Override
-    public List<Estatus> ListAll() {
+    public List<Estatus> listAll() {
         return jpaRepository.findAll().stream()
             .map(maper::toDomain)
             .collect(Collectors.toList());

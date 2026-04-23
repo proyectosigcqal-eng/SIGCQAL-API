@@ -9,8 +9,8 @@ public class BitacoraHistoricaResponseDTO {
     private Long idLog; 
     private Long idCorrespondencia; 
     private Long idUsuarioAccion; 
-    private Long estatusAnterior; 
-    private Long estatusNuevo; 
+    private Integer estatusAnterior; 
+    private Integer estatusNuevo; 
     private String observaciones; 
     private String nombreUsuario;
     private String nombreEstatusAnterior;

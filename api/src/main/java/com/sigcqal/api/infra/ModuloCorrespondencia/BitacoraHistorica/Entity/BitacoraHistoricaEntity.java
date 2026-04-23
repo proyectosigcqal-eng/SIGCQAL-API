@@ -2,7 +2,7 @@ package com.sigcqal.api.infra.ModuloCorrespondencia.BitacoraHistorica.Entity;
 
 import java.time.LocalDateTime;
 
-import com.sigcqal.api.domain.Catalogo.Estatus.EstatusEntity;
+import com.sigcqal.api.infra.Catalogo.Estatus.Entity.EstatusEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;
 
