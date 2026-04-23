@@ -2,6 +2,7 @@ package com.sigcqal.api.web.Catalogo.Municipio.Controller;
 
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import com.sigcqal.api.web.Catalogo.Municipio.Dto.MunicipioDTO;
 @RestController
 @RequestMapping("/catalogos/municipios")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*") 
 public class MunicipioController {
 
     private final MunicipioService municipioService;

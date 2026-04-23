@@ -15,8 +15,8 @@ public class BitacoraHistorica {
     private Long idLog; 
     private Long idCorrespondencia; 
     private Long idUsuarioAccion; 
-    private Long estatusAnterior; 
-    private Long estatusNuevo; 
+    private Integer estatusAnterior; 
+    private Integer estatusNuevo; 
     private String observaciones; 
     private LocalDateTime fechaMovimiento; 
     private String nombreUsuario;

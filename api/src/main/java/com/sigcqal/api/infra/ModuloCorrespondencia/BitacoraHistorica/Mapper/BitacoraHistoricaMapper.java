@@ -2,8 +2,9 @@ package com.sigcqal.api.infra.ModuloCorrespondencia.BitacoraHistorica.Mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.sigcqal.api.domain.Catalogo.Estatus.EstatusEntity;
+
 import com.sigcqal.api.domain.ModuloCorrespondencia.BitacoraHistorica.Model.BitacoraHistorica;
+import com.sigcqal.api.infra.Catalogo.Estatus.Entity.EstatusEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.BitacoraHistorica.Entity.BitacoraHistoricaEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;

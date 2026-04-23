@@ -9,5 +9,5 @@ public interface EstatusRepositoryPort {
     
     Optional<Estatus> findByName(String nombreEstatus);
 
-    List<Estatus> ListAll();
+    List<Estatus> listAll();
 }
