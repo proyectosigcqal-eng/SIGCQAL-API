@@ -20,30 +20,40 @@ public class AcuseReciboInternoMapper {
     domain.setIdAcuse(entity.getIdAcuse());
     domain.setEsDelArea(entity.getEsDelArea());
     domain.setFechaAceptacion(entity.getFechaAceptacion());
+    domain.setHoraAceptacion(entity.getHoraAceptacion()); // Asegúrate de mapear también la hora
 
-    // 1. EXTRAER EL MEMO
+    // 1. EXTRAER EL MEMO Y SUS RELACIONES
     if (entity.getMemorandum() != null) {
         var memo = entity.getMemorandum();
-        domain.setIdMemorandum(memo.getId()); 
-        
-        // 🔥 VALIDAMOS NULOS PARA EVITAR EL ERROR 500 AL CREAR 🔥
-        if (memo.getCorrespondencia() != null) {
-            domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
-        }
-        
+        domain.setIdMemorandum(memo.getId());
         domain.setNumMemo(memo.getNumMemo());
         domain.setFolioUnico(memo.getFolioUnico());
+        domain.setObservaciones(memo.getObservaciones());
+        domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
         
         if (memo.getFechaEmision() != null) {
             domain.setFechaEmision(memo.getFechaEmision().toString());
         }
-        
+
+        if (memo.getPlantilla() != null) {
+            domain.setIdPlantilla(memo.getPlantilla().getId());
+        }
+
         if (memo.getUsuarioEmisor() != null) {
             domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());
         }
         
-        domain.setObservaciones(memo.getObservaciones());
-        domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
+        if (memo.getCorrespondencia() != null) {
+            domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
+        }
+        
+        if (memo.getArea() != null) {
+            domain.setIdArea(memo.getArea().getId());
+        }
+        
+        if (memo.getUsuarioFirmante() != null) {
+            domain.setIdUsuarioFirmante(memo.getUsuarioFirmante().getId());
+        }
     }
     return domain;
 }

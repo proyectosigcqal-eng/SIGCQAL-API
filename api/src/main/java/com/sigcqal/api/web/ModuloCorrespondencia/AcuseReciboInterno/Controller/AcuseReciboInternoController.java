@@ -35,4 +35,10 @@ public class AcuseReciboInternoController {
         service.responder(request);
         return ResponseEntity.ok().build();
     }
+
+    //Por area y sean true
+    @GetMapping("/area/{idArea}")
+    public ResponseEntity<List<AcuseReciboInternoResponseDTO>> listarPorArea(@PathVariable Long idArea) {
+    return ResponseEntity.ok(service.listarPorArea(idArea));
+    }
 }

@@ -29,15 +29,21 @@ public class AcuseReciboInternoService {
 
     @Autowired
     private AcuseReciboInternoMapper mapper;
-    // ✅ 1. LISTA DE MEMOS
+    // LISTA DE MEMOS
     public List<AcuseReciboInternoResponseDTO> listarPorUsuario(Long idUsuario) {
-        return repository.findByUsuario(idUsuario)
-                .stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
+        List<AcuseReciboInternoResponseDTO> lista = repository.findByUsuario(idUsuario)
+            .stream()
+            .map(mapper::toResponse)
+            .collect(Collectors.toList());
+
+    if (lista.isEmpty()) {
+        throw new RuntimeException("No se encontraron acuses de recibo para el usuario con ID: " + idUsuario);
     }
 
-    // ✅ 2. DETALLE
+    return lista;
+    }
+
+    // DETALLE
     public AcuseReciboInternoResponseDTO obtenerDetalle(Long idAcuse) {
         var acuse = repository.findById(idAcuse)
                 .orElseThrow(() -> new RuntimeException("Acuse no encontrado"));
@@ -45,23 +51,28 @@ public class AcuseReciboInternoService {
         return mapper.toResponse(acuse);
     }
 
-    // ✅ 3. RESPONDER
+    // RESPONDER
     public void responder(AcuseReciboInternoRequestDTO request) {
     // Creamos una nueva instancia desde cero
     AcuseReciboInterno acuse = new AcuseReciboInterno();
     
-    // Seteamos los datos enviados desde Postman
     acuse.setEsDelArea(request.getEsDelArea());
     acuse.setIdMemorandum(request.getIdMemorandum());
     acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
     
-    // Asignamos la fecha y hora automáticamente
     acuse.setFechaAceptacion(LocalDate.now());
     acuse.setHoraAceptacion(LocalTime.now());
 
-    // Guardamos (el ID se generará solo en la base de datos)
     repository.save(acuse);
 }
+
+public List<AcuseReciboInternoResponseDTO> listarPorArea(Long idArea) {
+    return repository.findByArea(idArea)
+            .stream()
+            .map(mapper::toResponse)
+            .collect(Collectors.toList());
+
+        }
 
 
 @Transactional
