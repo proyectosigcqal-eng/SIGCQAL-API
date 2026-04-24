@@ -1,4 +1,4 @@
-package com.sigcqal.api.infra.ModuloCorrespondencia.SeguimientoCorrespondencia.Entity;
+package com.sigcqal.api.infra.ModuloCorrespondencia.SeguimientoMemorandum.Entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
