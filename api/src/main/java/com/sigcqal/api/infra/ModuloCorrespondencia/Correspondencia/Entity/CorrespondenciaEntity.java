@@ -27,7 +27,7 @@ public class CorrespondenciaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_folio")
+    @Column(name = "id_correspondencia")
     private Long id;
 
     @Column(name = "folio_unico", unique = true)
