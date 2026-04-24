@@ -20,30 +20,48 @@ public class AcuseReciboInternoMapper {
     domain.setIdAcuse(entity.getIdAcuse());
     domain.setEsDelArea(entity.getEsDelArea());
     domain.setFechaAceptacion(entity.getFechaAceptacion());
+    domain.setHoraAceptacion(entity.getHoraAceptacion()); // Asegúrate de mapear también la hora
 
-    // 1. EXTRAER EL MEMO
+    // 1. EXTRAER EL MEMO Y SUS RELACIONES
     if (entity.getMemorandum() != null) {
         var memo = entity.getMemorandum();
-        domain.setIdMemorandum(memo.getId()); 
-        
-        // 🔥 VALIDAMOS NULOS PARA EVITAR EL ERROR 500 AL CREAR 🔥
-        if (memo.getCorrespondencia() != null) {
-            domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
-        }
-        
+        domain.setIdMemorandum(memo.getId());
         domain.setNumMemo(memo.getNumMemo());
         domain.setFolioUnico(memo.getFolioUnico());
+        domain.setObservaciones(memo.getObservaciones());
+        domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
         
+        // Mapeo de la fecha de emisión (Cuidado: en entidad es LocalDateTime y en dominio String/LocalDate)
         if (memo.getFechaEmision() != null) {
             domain.setFechaEmision(memo.getFechaEmision().toString());
         }
+
+        // 🔥 AQUÍ ESTÁ EL FIX PARA TUS CAMPOS NULOS 🔥
         
+        // Mapeo de Plantilla
+        if (memo.getPlantilla() != null) {
+            domain.setIdPlantilla(memo.getPlantilla().getId());
+        }
+
+        // Mapeo de Usuario Emisor
         if (memo.getUsuarioEmisor() != null) {
             domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());
         }
         
-        domain.setObservaciones(memo.getObservaciones());
-        domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
+        // Mapeo de Correspondencia
+        if (memo.getCorrespondencia() != null) {
+            domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
+        }
+        
+        // Mapeo de Area
+        if (memo.getArea() != null) {
+            domain.setIdArea(memo.getArea().getId());
+        }
+        
+        // Mapeo de Usuario Firmante
+        if (memo.getUsuarioFirmante() != null) {
+            domain.setIdUsuarioFirmante(memo.getUsuarioFirmante().getId());
+        }
     }
     return domain;
 }
