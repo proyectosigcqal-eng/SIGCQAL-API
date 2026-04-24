@@ -6,7 +6,6 @@ import java.time.LocalTime;
 
 import com.sigcqal.api.infra.Catalogo.Estatus.Entity.EstatusEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
-import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CatEstatusEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;
 
 import jakarta.persistence.Column;
