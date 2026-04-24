@@ -22,7 +22,6 @@ public class AcuseReciboInterno {
     private LocalTime horaAceptacion;
     private Boolean esDelArea;
 
-    // 🔥 Datos del Memorandum (JOIN lógico)
     private Long idCorrespondencia;
     private String numMemo;
     private String fechaEmision;

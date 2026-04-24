@@ -56,16 +56,13 @@ public class AcuseReciboInternoService {
     // Creamos una nueva instancia desde cero
     AcuseReciboInterno acuse = new AcuseReciboInterno();
     
-    // Seteamos los datos enviados desde Postman
     acuse.setEsDelArea(request.getEsDelArea());
     acuse.setIdMemorandum(request.getIdMemorandum());
     acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
     
-    // Asignamos la fecha y hora automáticamente
     acuse.setFechaAceptacion(LocalDate.now());
     acuse.setHoraAceptacion(LocalTime.now());
 
-    // Guardamos (el ID se generará solo en la base de datos)
     repository.save(acuse);
 }
 

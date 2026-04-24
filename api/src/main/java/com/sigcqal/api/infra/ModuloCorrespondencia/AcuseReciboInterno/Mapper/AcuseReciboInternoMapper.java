@@ -31,34 +31,26 @@ public class AcuseReciboInternoMapper {
         domain.setObservaciones(memo.getObservaciones());
         domain.setUrlMemorandumGenerado(memo.getUrlMemorandumGenerado());
         
-        // Mapeo de la fecha de emisión (Cuidado: en entidad es LocalDateTime y en dominio String/LocalDate)
         if (memo.getFechaEmision() != null) {
             domain.setFechaEmision(memo.getFechaEmision().toString());
         }
 
-        // 🔥 AQUÍ ESTÁ EL FIX PARA TUS CAMPOS NULOS 🔥
-        
-        // Mapeo de Plantilla
         if (memo.getPlantilla() != null) {
             domain.setIdPlantilla(memo.getPlantilla().getId());
         }
 
-        // Mapeo de Usuario Emisor
         if (memo.getUsuarioEmisor() != null) {
             domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());
         }
         
-        // Mapeo de Correspondencia
         if (memo.getCorrespondencia() != null) {
             domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
         }
         
-        // Mapeo de Area
         if (memo.getArea() != null) {
             domain.setIdArea(memo.getArea().getId());
         }
         
-        // Mapeo de Usuario Firmante
         if (memo.getUsuarioFirmante() != null) {
             domain.setIdUsuarioFirmante(memo.getUsuarioFirmante().getId());
         }
