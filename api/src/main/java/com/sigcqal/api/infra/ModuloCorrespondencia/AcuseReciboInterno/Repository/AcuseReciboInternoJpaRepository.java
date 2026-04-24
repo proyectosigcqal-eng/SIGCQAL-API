@@ -12,4 +12,6 @@ public interface AcuseReciboInternoJpaRepository
     List<AcuseReciboInternoEntity> findByUsuarioRevisor_Id(Long idUsuario);
 
         boolean existsByMemorandum_Id(Long idMemorandum);
-}
+
+List<AcuseReciboInternoEntity> findByEsDelAreaTrueAndMemorandum_Area_Id(Long id);
+    }

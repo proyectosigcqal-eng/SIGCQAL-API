@@ -47,4 +47,12 @@ public AcuseReciboInterno save(AcuseReciboInterno acuse) {
 public boolean existePorMemorandum(Long idMemorandum) {
     return repository.existsByMemorandum_Id(idMemorandum);
 }
+
+@Override
+public List<AcuseReciboInterno> findByArea(Long idArea) {
+    return repository.findByEsDelAreaTrueAndMemorandum_Area_Id(idArea)
+            .stream()
+            .map(mapper::toDomain)
+            .collect(Collectors.toList());
+}
 }

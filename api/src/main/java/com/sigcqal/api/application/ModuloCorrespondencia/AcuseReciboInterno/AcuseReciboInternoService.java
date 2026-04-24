@@ -63,6 +63,13 @@ public class AcuseReciboInternoService {
     repository.save(acuse);
 }
 
+public List<AcuseReciboInternoResponseDTO> listarPorArea(Long idArea) {
+    return repository.findByArea(idArea)
+            .stream()
+            .map(mapper::toResponse)
+            .collect(Collectors.toList());
+}
+
 
 @Transactional
     public AcuseReciboInternoResponseDTO crearAcuseAutomatico(AcuseReciboInternoRequestDTO request) {
