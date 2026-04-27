@@ -11,7 +11,6 @@ public class AcuseReciboInternoRequestDTO {
     private String horaAceptacion;
     private Long idUsuarioRevisor;
 
-    // 🔹 Memorandum
     private Long idMemorandum;
     private Long idCorrespondencia;
     private String numMemo;
