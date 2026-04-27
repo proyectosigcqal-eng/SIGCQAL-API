@@ -36,7 +36,7 @@ public class SeguimientoMemorandumAdapter implements ISeguimientoMemorandumPort 
 
     @Override
     public List<SeguimientoMemorandum> listarPorMemorandumId(Long idMemo) {
-        return repository.findByMemorandumId(idMemo)
+        return repository.findByMemorandum_Id(idMemo)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
