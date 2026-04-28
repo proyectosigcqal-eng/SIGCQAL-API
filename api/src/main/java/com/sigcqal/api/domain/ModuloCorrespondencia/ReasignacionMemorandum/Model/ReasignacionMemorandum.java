@@ -1,9 +1,9 @@
-package com.sigcqal.api.web.ModuloCorrespondencia.ReasignacionCorrespondencia.Dto;
+package com.sigcqal.api.domain.ModuloCorrespondencia.ReasignacionMemorandum.Model;
 
 import lombok.Data;
 
 @Data
-public class ReasignacionCorrespondenciaResponseDTO {
+public class ReasignacionMemorandum {
 
     private Long idAcuse;
     private Boolean esDelArea;

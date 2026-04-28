@@ -1,18 +1,18 @@
-package com.sigcqal.api.infra.ModuloCorrespondencia.ReasignacionCorrespondencia.Mapper;
+package com.sigcqal.api.infra.ModuloCorrespondencia.ReasignacionMemorandum.Mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.sigcqal.api.domain.ModuloCorrespondencia.ReasignacionCorrespondencia.Model.ReasignacionCorrespondencia;
+import com.sigcqal.api.domain.ModuloCorrespondencia.ReasignacionMemorandum.Model.ReasignacionMemorandum;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Entity.AcuseReciboInternoEntity;
-import com.sigcqal.api.web.ModuloCorrespondencia.ReasignacionCorrespondencia.Dto.ReasignacionCorrespondenciaResponseDTO;
+import com.sigcqal.api.web.ModuloCorrespondencia.ReasignacionMemorandum.Dto.ReasignacionMemorandumResponseDTO;
 
 @Component
-public class ReasignacionCorrespondenciaMapper {
+public class ReasignacionMemorandumMapper {
 
-    public ReasignacionCorrespondencia toDomain(AcuseReciboInternoEntity entity) {
+    public ReasignacionMemorandum toDomain(AcuseReciboInternoEntity entity) {
         if (entity == null) return null;
 
-        ReasignacionCorrespondencia domain = new ReasignacionCorrespondencia();
+        ReasignacionMemorandum domain = new ReasignacionMemorandum();
 
         domain.setIdAcuse(entity.getIdAcuse());
         domain.setEsDelArea(entity.getEsDelArea());
@@ -57,8 +57,8 @@ public class ReasignacionCorrespondenciaMapper {
         return domain;
     }
 
-    public ReasignacionCorrespondenciaResponseDTO toResponse(ReasignacionCorrespondencia d) {
-        ReasignacionCorrespondenciaResponseDTO dto = new ReasignacionCorrespondenciaResponseDTO();
+    public ReasignacionMemorandumResponseDTO toResponse(ReasignacionMemorandum d) {
+        ReasignacionMemorandumResponseDTO dto = new ReasignacionMemorandumResponseDTO();
 
         dto.setIdAcuse(d.getIdAcuse());
         dto.setEsDelArea(d.getEsDelArea());
