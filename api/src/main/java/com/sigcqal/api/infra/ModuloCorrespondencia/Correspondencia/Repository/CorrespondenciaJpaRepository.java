@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,4 +13,6 @@ public interface CorrespondenciaJpaRepository extends JpaRepository<Corresponden
     boolean existsByNumeroOficio(String numeroOficio);
 
     Optional<CorrespondenciaEntity> findTopByFolioUnicoEndingWithOrderByIdDesc(String suffix);
+
+    List<CorrespondenciaEntity> findByArea_Id(Long idArea);
 }

@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
@@ -59,4 +61,12 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
 
         return Optional.of(consecutivo);
     }
+
+    @Override
+    public List<Correspondencia> findByIdArea(Long idArea) {
+    return jpaRepository.findByArea_Id(idArea)
+            .stream()
+            .map(mapper::toDomain)
+            .toList();
+}
 }

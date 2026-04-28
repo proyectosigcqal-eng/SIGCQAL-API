@@ -2,6 +2,7 @@ package com.sigcqal.api.application.ModuloCorrespondencia.Correspondencia;
 
 import java.time.LocalDate;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -145,4 +146,21 @@ public class RegistrarCorrespondenciaService {
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
+
+    public List<RegistrarCorrespondenciaResponseDTO> obtenerPorArea(Long idArea) {
+
+    if (idArea == null || idArea <= 0) {
+        throw new InvalidRequestException("El id del área debe ser mayor a 0");
+    }
+
+    List<Correspondencia> lista = repositoryPort.findByIdArea(idArea);
+
+    if (lista.isEmpty()) {
+    throw new ResourceNotFoundException("No se encontraron correspondencias para el area", idArea);
+    }
+
+    return lista.stream()
+            .map(mapper::toResponse)
+            .toList();
+}
 }

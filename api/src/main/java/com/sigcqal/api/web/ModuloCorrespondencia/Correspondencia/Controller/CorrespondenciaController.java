@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+
 import com.sigcqal.api.application.ModuloCorrespondencia.Correspondencia.RegistrarCorrespondenciaService;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
@@ -31,4 +34,9 @@ public class CorrespondenciaController {
     public ResponseEntity<RegistrarCorrespondenciaResponseDTO> obtenerEntrada(@PathVariable Long id) {
         return ResponseEntity.ok(service.obtenerPorId(id));
     }
+
+    @GetMapping("/entrada/area/{idArea}")
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> obtenerPorArea(@PathVariable Long idArea) {
+    return ResponseEntity.ok(service.obtenerPorArea(idArea));
+}
 }
