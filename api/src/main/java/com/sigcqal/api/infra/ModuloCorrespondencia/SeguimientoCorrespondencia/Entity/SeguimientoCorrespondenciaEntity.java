@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,45 +34,42 @@ public class SeguimientoCorrespondenciaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_seguimiento_correspondencia")
-    private Long id;
-    
-    @Column(name = "id_folio")
-    private Integer idFolio;
+    private Integer idSeguimientoCorrespondencia;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_folio", insertable = false, updatable = false)
+    @JoinColumn(name = "id_correspondencia")
     private CorrespondenciaEntity correspondencia;
 
-    @Column(name = "folio_respuesta", length = 50, nullable = false)
+    @Column(name = "folio_respuesta", length = 100)
     private String folioRespuesta;
 
     @Column(name = "respuesta_seguimiento_correspondencia", columnDefinition = "TEXT")
     private String respuesta;
 
-    @Column(name = "fecha_resolucion", nullable = false)
+    @Column(name = "fecha_resolucion")
     private LocalDate fechaResolucion;
 
-    @Column(name = "hora_resolucion", nullable = false)
+    @Column(name = "hora_resolucion")
     private LocalTime horaResolucion;
 
     @Column(name = "archivo_adjunto", length = 255)
     private String archivoAdjunto;
 
-    @Column(name = "id_usuario", nullable = false)
-    private Integer idUsuario;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", insertable = false, updatable = false)
+    @JoinColumn(name = "id_usuario")
     private UsuarioEntity usuario;
 
-    @Column(name = "id_estatus", nullable = false)
-    private Integer idEstatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_estatus", insertable = false, updatable = false)
+    @JoinColumn(name = "id_estatus")
     private EstatusEntity estatus;
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
 
+    @PrePersist
+    protected void onCreate() {
+        if (this.fechaRegistro == null) {
+            this.fechaRegistro = LocalDateTime.now();
+        }
+    }
 }
