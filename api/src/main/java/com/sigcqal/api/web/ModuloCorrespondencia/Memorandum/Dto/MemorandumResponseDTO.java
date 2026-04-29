@@ -1,5 +1,7 @@
 package com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 @Data
@@ -8,6 +10,7 @@ public class MemorandumResponseDTO {
     private String folioUnico; 
     private String instruccionSeguimiento; 
     private String observaciones;
+    private LocalDateTime fechaEmision;
     private Long idCorrespondencia;
     private Long idUsuarioEmisor;
     private Long idUsuarioFirmante;
