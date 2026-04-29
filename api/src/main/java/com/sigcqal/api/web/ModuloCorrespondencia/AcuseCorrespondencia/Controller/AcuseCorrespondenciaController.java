@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/acuse-correspondencia")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*") 
 public class AcuseCorrespondenciaController {
 
     private final AcuseCorrespondenciaService service;
