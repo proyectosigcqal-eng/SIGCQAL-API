@@ -46,12 +46,11 @@ public class MemorandumAdapter implements MemorandumRepositoryPort {
 
 @Override
 public List<Memorandum> findByArea(Long idArea) {
-    List<MemorandumEntity> entities = jpaRepository.findByAreaId(idArea);
+    List<MemorandumEntity> entities = jpaRepository.findByAreaSinAcuse(idArea);
     return entities.stream()
                    .map(mapper::toDomain)
                    .collect(Collectors.toList());
 }
-
 @Override
 public Optional<Memorandum> buscarPorId(Long id) {
     return jpaRepository.findById(id)
