@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "cat_estatus")
+@Table(name = "cat_estatus" , schema = "catalogos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
