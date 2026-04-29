@@ -71,6 +71,7 @@ public class MemorandumMapper {
         domain.setInstruccionSeguimiento(entity.getInstruccionSeguimiento());
         domain.setObservaciones(entity.getObservaciones());
         domain.setUrlSolicitudMemorandum(entity.getUrlMemorandumGenerado());
+        domain.setFechaEmision(entity.getFechaEmision());
 
      
         if (entity.getCorrespondencia() != null) {
@@ -111,6 +112,7 @@ public class MemorandumMapper {
         dto.setFolioUnico(domain.getFolioUnico());
         dto.setInstruccionSeguimiento(domain.getInstruccionSeguimiento());
         dto.setObservaciones(domain.getObservaciones());
+        dto.setFechaEmision(domain.getFechaEmision());
         dto.setIdArea(domain.getIdArea());
 
         dto.setIdCorrespondencia(domain.getIdCorrespondencia());
