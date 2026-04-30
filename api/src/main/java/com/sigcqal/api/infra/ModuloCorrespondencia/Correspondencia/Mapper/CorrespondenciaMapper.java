@@ -6,9 +6,6 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
-import com.sigcqal.api.infra.Catalogo.Area.Entity.AreaEntity;
-import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
-import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CatEstatusEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
 
@@ -22,6 +19,7 @@ public class CorrespondenciaMapper {
         Correspondencia dom = new Correspondencia();
         dom.setId(entity.getId());
         dom.setFolioUnico(entity.getFolioUnico());
+        dom.setConsecutivo(parseConsecutivo(entity.getFolioUnico()));
         dom.setNumeroOficio(entity.getNumeroOficio());
         dom.setFechaExpedicion(entity.getFechaExpedicion());
         dom.setDependenciaRemitente(entity.getDependenciaRemitente());
@@ -29,6 +27,9 @@ public class CorrespondenciaMapper {
         dom.setAsunto(entity.getAsunto());
         dom.setFechaRecibido(entity.getFechaRecibido());
         dom.setObservaciones(entity.getObservaciones());
+        dom.setIdEstatus(entity.getIdEstatus());
+        dom.setIdUsuarioCaptura(entity.getIdUsuarioCaptura());
+        dom.setIdArea(entity.getIdArea());
 
         if (entity.getUsuarioCaptura() != null) {
             dom.setIdUsuarioCaptura(entity.getUsuarioCaptura().getId());
@@ -46,6 +47,15 @@ public class CorrespondenciaMapper {
         return dom;
     }
 
+    private Long parseConsecutivo(String folioUnico) {
+        if (folioUnico == null) return null;
+
+        Matcher matcher = FOLIO_PATTERN.matcher(folioUnico);
+        if (!matcher.matches()) return null;
+
+        return Long.valueOf(matcher.group(1));
+    }
+
     public CorrespondenciaEntity toEntity(Correspondencia domain) {
         if (domain == null) return null;
 
@@ -59,25 +69,9 @@ public class CorrespondenciaMapper {
         entity.setAsunto(domain.getAsunto());
         entity.setFechaRecibido(domain.getFechaRecibido());
         entity.setObservaciones(domain.getObservaciones());
-
-        if (domain.getIdUsuarioCaptura() != null) {
-            UsuarioEntity usuarioCaptura = new UsuarioEntity();
-            usuarioCaptura.setId(domain.getIdUsuarioCaptura());
-            entity.setUsuarioCaptura(usuarioCaptura);
-        }
-
-        if (domain.getIdArea() != null) {
-            AreaEntity area = new AreaEntity();
-            area.setId(domain.getIdArea());
-            entity.setArea(area);
-            
-        }
-
-        if (domain.getIdEstatus() != null) {
-            CatEstatusEntity estatus = new CatEstatusEntity();
-            estatus.setId(domain.getIdEstatus());
-            entity.setEstatus(estatus);
-        }
+        entity.setIdUsuarioCaptura(domain.getIdUsuarioCaptura());
+        entity.setIdArea(domain.getIdArea());
+        entity.setIdEstatus(domain.getIdEstatus());
 
         return entity;
     }

@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.sigcqal.api.application.ModuloCorrespondencia.BandejaEntradaArea.BandejaEntradaAreaService;
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
 import com.sigcqal.api.domain.ModuloCorrespondencia.BitacoraHistorica.Port.BitacoraHistoricaRepositoryPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
-import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.AuditoriaPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.CorrespondenciaRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.CorrespondenciaMapper;
+import com.sigcqal.api.web.ModuloCorrespondencia.BandejaEntradaArea.Dto.BandejaEntradaAreaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
 
@@ -32,6 +33,9 @@ public class RegistrarCorrespondenciaService {
     @Autowired
     private CorrespondenciaMapper mapper;
 
+    @Autowired
+    private BandejaEntradaAreaService bandejaService;
+
     @Transactional
     public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaRequestDTO request) {
         validarRequest(request);
@@ -40,22 +44,17 @@ public class RegistrarCorrespondenciaService {
             throw new InvalidRequestException("El número de oficio ya existe en el sistema");
         }
 
-        Correspondencia correspondencia = new Correspondencia();        
-        correspondencia.setConsecutivo(request.getConsecutivo());
-        correspondencia.setFolioUnico(request.getFolioUnico());
-        correspondencia.setId(request.getId());
-        correspondencia.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
-        correspondencia.setIdArea(request.getIdArea());
-        correspondencia.setNombreArea(request.getNombreArea());
-        correspondencia.setObservaciones(request.getObservaciones());
-        correspondencia.setIdEstatus(request.getIdEstatus());
-        correspondencia.setNumeroOficio(request.getNumeroOficio());
-        correspondencia.setFechaExpedicion(request.getFechaExpedicion());
-        correspondencia.setDependenciaRemitente(request.getDependenciaRemitente());
-        correspondencia.setTitularDependencia(request.getTitularDependencia());
-        correspondencia.setAsunto(request.getAsunto());
-        correspondencia.setFechaRecibido(request.getFechaRecibido());
-        Correspondencia saved = repositoryPort.save(correspondencia);
+        Correspondencia saved = guardarConFolioUnico(request);
+
+        if (request.getIdArea() != null) {
+            BandejaEntradaAreaRequestDTO bandejaRequest = new BandejaEntradaAreaRequestDTO();
+            bandejaRequest.setIdCorrespondencia(saved.getId());
+            bandejaRequest.setIdArea(request.getIdArea());
+            bandejaRequest.setIdUsuarioAsignado(request.getIdUsuarioCaptura());
+            bandejaRequest.setObservaciones(request.getObservaciones());
+            bandejaService.crearEntrada(bandejaRequest);
+        }
+
         return mapper.toResponse(saved);
     }
 
@@ -63,8 +62,6 @@ public class RegistrarCorrespondenciaService {
         if (id == null || id <= 0) {
             throw new InvalidRequestException("El id debe ser mayor a 0");
         }
-
-        Correspondencia dom = repositoryPort.findById(id).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
 
         return repositoryPort.findById(id).map(mapper::toResponse).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
     }
@@ -90,6 +87,8 @@ public class RegistrarCorrespondenciaService {
             dom.setFechaRecibido(request.getFechaRecibido());
             dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
             dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
+            dom.setIdArea(request.getIdArea());
+            dom.setObservaciones(request.getObservaciones());
 
             try {
                 return repositoryPort.save(dom);
@@ -163,4 +162,8 @@ public class RegistrarCorrespondenciaService {
             .map(mapper::toResponse)
             .toList();
 }
+
+    public List<RegistrarCorrespondenciaResponseDTO> listarTodas() {
+        return repositoryPort.findAll().stream().map(mapper::toResponse).toList();
+    }
 }

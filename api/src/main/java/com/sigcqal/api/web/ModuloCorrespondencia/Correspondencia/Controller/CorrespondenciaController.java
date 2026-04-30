@@ -37,6 +37,11 @@ public class CorrespondenciaController {
         return ResponseEntity.ok(service.obtenerPorId(id));
     }
 
+    @GetMapping("/entrada")
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarEntradas() {
+        return ResponseEntity.ok(service.listarTodas());
+    }
+
     @GetMapping("/entrada/area/{idArea}")
     public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> obtenerPorArea(@PathVariable Long idArea) {
     return ResponseEntity.ok(service.obtenerPorArea(idArea));

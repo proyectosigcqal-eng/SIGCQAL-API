@@ -68,6 +68,9 @@ public class CorrespondenciaEntity {
     @Column(name = "observaciones_validacion")
     private String observaciones;
 
+    @Column(name = "id_area")
+    private Long idArea;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_area", insertable = false, updatable = false)
     private AreaEntity area;
