@@ -1,5 +1,6 @@
 package com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Memorandum.MemorandumService;
 import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumRequestDTO;
@@ -60,4 +63,13 @@ public ResponseEntity<List<MemorandumResponseDTO>> listarPorArea(@PathVariable L
 public ResponseEntity<MemorandumResponseDTO> obtenerPorId(@PathVariable Long id) {
     return ResponseEntity.ok(service.buscarPorId(id));
 }
+
+@PostMapping("/{id}/finalizar")
+    public ResponseEntity<?> finalizar(
+        @PathVariable Long id,
+        @RequestParam("archivo") MultipartFile archivo
+    ) throws IOException {
+        memorandumService.finalizarAsignacion(id, archivo.getBytes());
+        return ResponseEntity.ok().build();
+    }
 }
