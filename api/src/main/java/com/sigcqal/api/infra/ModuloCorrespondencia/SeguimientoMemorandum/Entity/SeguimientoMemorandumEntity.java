@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "seguimiento_memorandum")
+@Table(name = "seguimiento_memorandum" , schema = "correspondencia")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

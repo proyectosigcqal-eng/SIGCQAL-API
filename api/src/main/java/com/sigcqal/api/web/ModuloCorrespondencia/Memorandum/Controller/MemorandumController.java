@@ -48,7 +48,7 @@ public ResponseEntity<List<MemorandumResponseDTO>> listar() {
     }
 }
 
-@GetMapping("/area/{idArea}")
+@GetMapping("pendientesacuse/area/{idArea}")
 public ResponseEntity<List<MemorandumResponseDTO>> listarPorArea(@PathVariable Long idArea) {
     try {
         List<MemorandumResponseDTO> lista = service.listarPorArea(idArea);

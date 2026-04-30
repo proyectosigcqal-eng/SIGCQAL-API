@@ -20,7 +20,11 @@ public class AcuseReciboInternoMapper {
     domain.setIdAcuse(entity.getIdAcuse());
     domain.setEsDelArea(entity.getEsDelArea());
     domain.setFechaAceptacion(entity.getFechaAceptacion());
-    domain.setHoraAceptacion(entity.getHoraAceptacion()); // Asegúrate de mapear también la hora
+    domain.setHoraAceptacion(entity.getHoraAceptacion()); 
+
+    if (entity.getUsuarioRevisor() != null) {
+        domain.setIdUsuarioRevisor(entity.getUsuarioRevisor().getId());
+    }
 
     // 1. EXTRAER EL MEMO Y SUS RELACIONES
     if (entity.getMemorandum() != null) {
@@ -96,6 +100,9 @@ public class AcuseReciboInternoMapper {
         dto.setHoraAceptacion(
             d.getHoraAceptacion() != null ? d.getHoraAceptacion().toString() : null
         );
+
+        // Mapear idUsuarioRevisor
+        dto.setIdUsuarioRevisor(d.getIdUsuarioRevisor());
 
         dto.setIdMemorandum(d.getIdMemorandum());
         dto.setIdCorrespondencia(d.getIdCorrespondencia());

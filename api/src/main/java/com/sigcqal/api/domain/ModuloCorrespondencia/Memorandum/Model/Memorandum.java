@@ -1,6 +1,8 @@
 package com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Model;
 
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +25,7 @@ private Long id;
     private String instruccionSeguimiento; 
     private String observaciones;
     private String urlSolicitudMemorandum;
+    private LocalDateTime fechaEmision;
     private String nombreArea;
 
     private String asunto;          
@@ -35,6 +38,9 @@ private Long id;
     private String nombreUsuarioFirmante;
     private String areaUsuarioFirmante;
 
-
-
+    // Campos de Correspondencia
+    private String dependenciaRemitente;
+    private String nombreRemitente;
+    private String folioUnicoCorrespondencia;
+    private String asuntoCorrespondenciaCompleto;
 }

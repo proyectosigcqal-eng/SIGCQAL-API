@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/acuse-interno")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*") 
 public class AcuseReciboInternoController {
 
     private final AcuseReciboInternoService service;

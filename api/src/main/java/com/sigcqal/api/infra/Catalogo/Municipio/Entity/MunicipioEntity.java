@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name = "cat_municipios") 
+@Table(name = "cat_municipios" , schema = "catalogos") 
 @Data
 public class MunicipioEntity {
    @Id
