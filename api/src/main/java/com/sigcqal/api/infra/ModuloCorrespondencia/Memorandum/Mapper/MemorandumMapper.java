@@ -78,6 +78,11 @@ public class MemorandumMapper {
             domain.setIdCorrespondencia(entity.getCorrespondencia().getId());
             domain.setAsunto(entity.getCorrespondencia().getAsunto());  
             domain.setNumeroOficio(entity.getCorrespondencia().getNumeroOficio());
+            // Nuevos campos de Correspondencia
+            domain.setDependenciaRemitente(entity.getCorrespondencia().getDependenciaRemitente());
+            domain.setNombreRemitente(entity.getCorrespondencia().getTitularDependencia());
+            domain.setFolioUnicoCorrespondencia(entity.getCorrespondencia().getFolioUnico());
+            domain.setAsuntoCorrespondenciaCompleto(entity.getCorrespondencia().getAsunto());
         }
 
         if (entity.getPlantilla() != null) {
@@ -124,6 +129,12 @@ public class MemorandumMapper {
         dto.setNombreUsuarioEmisor(domain.getNombreUsuarioEmisor());
         dto.setNombreUsuarioFirmante(domain.getNombreUsuarioFirmante());
         dto.setNombrePlantilla(domain.getNombrePlantilla());
+        
+        // Campos de Correspondencia
+        dto.setDependenciaRemitente(domain.getDependenciaRemitente());
+        dto.setNombreRemitente(domain.getNombreRemitente());
+        dto.setFolioUnicoCorrespondencia(domain.getFolioUnicoCorrespondencia());
+        dto.setAsuntoCorrespondenciaCompleto(domain.getAsuntoCorrespondenciaCompleto());
 
         return dto;
     }

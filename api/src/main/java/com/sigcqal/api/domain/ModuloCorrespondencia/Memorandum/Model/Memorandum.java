@@ -38,6 +38,9 @@ private Long id;
     private String nombreUsuarioFirmante;
     private String areaUsuarioFirmante;
 
-
-
+    // Campos de Correspondencia
+    private String dependenciaRemitente;
+    private String nombreRemitente;
+    private String folioUnicoCorrespondencia;
+    private String asuntoCorrespondenciaCompleto;
 }

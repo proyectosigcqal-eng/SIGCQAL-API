@@ -19,5 +19,11 @@ public class MemorandumResponseDTO {
     private String asuntoCorrespondencia;        
     private String nombreUsuarioEmisor;   
     private String nombreUsuarioFirmante; 
-    private String nombrePlantilla;       
+    private String nombrePlantilla;
+    
+    // Campos de Correspondencia
+    private String dependenciaRemitente;
+    private String nombreRemitente;
+    private String folioUnicoCorrespondencia;
+    private String asuntoCorrespondenciaCompleto;
 }

@@ -33,7 +33,7 @@ public class MemorandumEntity {
     @Column(name = "id_memo") 
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_correspondencia") 
     private CorrespondenciaEntity correspondencia;
 

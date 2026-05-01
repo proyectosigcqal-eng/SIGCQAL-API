@@ -15,7 +15,7 @@ public interface MemorandumJpaRepository extends JpaRepository<MemorandumEntity,
     Optional<MemorandumEntity> findByFolioUnico(String folioUnico);
     List<MemorandumEntity> findByAreaId(Long idArea);
 
-            @Query("""
+    @Query("""
             SELECT m 
             FROM MemorandumEntity m
             WHERE m.area.id = :idArea
