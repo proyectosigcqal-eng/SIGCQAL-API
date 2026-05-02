@@ -41,14 +41,14 @@ public class RegistrarCorrespondenciaService {
         }
 
         Correspondencia correspondencia = new Correspondencia();        
-        correspondencia.setConsecutivo(request.getConsecutivo());
-        correspondencia.setFolioUnico(request.getFolioUnico());
+        // correspondencia.setConsecutivo(request.getConsecutivo());
+        // correspondencia.setFolioUnico(request.getFolioUnico());
         correspondencia.setId(request.getId());
-        correspondencia.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
-        correspondencia.setIdArea(request.getIdArea());
-        correspondencia.setNombreArea(request.getNombreArea());
+        // correspondencia.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
+        // correspondencia.setIdArea(request.getIdArea());
+        // correspondencia.setNombreArea(request.getNombreArea());
         correspondencia.setObservaciones(request.getObservaciones());
-        correspondencia.setIdEstatus(request.getIdEstatus());
+        // correspondencia.setIdEstatus(request.getIdEstatus());
         correspondencia.setNumeroOficio(request.getNumeroOficio());
         correspondencia.setFechaExpedicion(request.getFechaExpedicion());
         correspondencia.setDependenciaRemitente(request.getDependenciaRemitente());
@@ -89,7 +89,7 @@ public class RegistrarCorrespondenciaService {
             dom.setAsunto(request.getAsunto());
             dom.setFechaRecibido(request.getFechaRecibido());
             dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
-            dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
+            // dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
 
             try {
                 return repositoryPort.save(dom);
@@ -132,9 +132,9 @@ public class RegistrarCorrespondenciaService {
             throw new InvalidRequestException("La fecha de recibido es obligatoria");
         }
 
-        if (request.getIdUsuarioCaptura() == null || request.getIdUsuarioCaptura() <= 0) {
-            throw new InvalidRequestException("El usuario de captura es obligatorio");
-        }
+        // if (request.getIdUsuarioCaptura() == null || request.getIdUsuarioCaptura() <= 0) {
+        //     throw new InvalidRequestException("El usuario de captura es obligatorio");
+        // }
 
         LocalDate expedicion = request.getFechaExpedicion();
         LocalDate recibido = request.getFechaRecibido();
