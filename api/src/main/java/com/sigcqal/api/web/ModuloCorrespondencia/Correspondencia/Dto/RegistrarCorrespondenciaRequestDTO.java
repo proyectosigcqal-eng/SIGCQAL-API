@@ -8,7 +8,7 @@ import lombok.Data;
 public class RegistrarCorrespondenciaRequestDTO {
     private Long id;
     //private Long consecutivo;
-    //private String folioUnico;
+    private String folioUnico;
     private String numeroOficio;
     private LocalDate fechaExpedicion;
     private String dependenciaRemitente;

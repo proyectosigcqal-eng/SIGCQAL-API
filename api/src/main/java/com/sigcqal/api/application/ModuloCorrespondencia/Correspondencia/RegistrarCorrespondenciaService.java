@@ -32,32 +32,19 @@ public class RegistrarCorrespondenciaService {
     @Autowired
     private CorrespondenciaMapper mapper;
 
-    @Transactional
-    public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaRequestDTO request) {
-        validarRequest(request);
+   @Transactional
+public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaRequestDTO request) {
+    validarRequest(request);
 
-        if (repositoryPort.existsByNumeroOficio(request.getNumeroOficio())) {
-            throw new InvalidRequestException("El número de oficio ya existe en el sistema");
-        }
-
-        Correspondencia correspondencia = new Correspondencia();        
-        // correspondencia.setConsecutivo(request.getConsecutivo());
-        // correspondencia.setFolioUnico(request.getFolioUnico());
-        correspondencia.setId(request.getId());
-        // correspondencia.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
-        // correspondencia.setIdArea(request.getIdArea());
-        // correspondencia.setNombreArea(request.getNombreArea());
-        correspondencia.setObservaciones(request.getObservaciones());
-        // correspondencia.setIdEstatus(request.getIdEstatus());
-        correspondencia.setNumeroOficio(request.getNumeroOficio());
-        correspondencia.setFechaExpedicion(request.getFechaExpedicion());
-        correspondencia.setDependenciaRemitente(request.getDependenciaRemitente());
-        correspondencia.setTitularDependencia(request.getTitularDependencia());
-        correspondencia.setAsunto(request.getAsunto());
-        correspondencia.setFechaRecibido(request.getFechaRecibido());
-        Correspondencia saved = repositoryPort.save(correspondencia);
-        return mapper.toResponse(saved);
+    if (repositoryPort.existsByNumeroOficio(request.getNumeroOficio())) {
+        throw new InvalidRequestException("El número de oficio ya existe en el sistema");
     }
+
+    // REEMPLAZA TODA LA CREACIÓN MANUAL POR LA LLAMADA AL MÉTODO QUE GENERA EL FOLIO
+    Correspondencia saved = guardarConFolioUnico(request);
+    
+    return mapper.toResponse(saved);
+}
 
     public RegistrarCorrespondenciaResponseDTO obtenerPorId(Long id) {
         if (id == null || id <= 0) {
@@ -69,40 +56,41 @@ public class RegistrarCorrespondenciaService {
         return repositoryPort.findById(id).map(mapper::toResponse).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
     }
 
-    private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {
-        Integer anio = request.getFechaRecibido().getYear();
-        int intentos = 0;
-        while (intentos < 3) {
-            intentos++;
+private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {
+    Integer anio = request.getFechaRecibido().getYear();
+    int intentos = 0;
+    
+    while (intentos < 3) {
+        intentos++;
 
-            Long last = repositoryPort.findLastConsecutivoByAnio(anio).orElse(0L);
-            Long consecutivo = last + 1;
-            String folio = "CEDECON-CORR-" + consecutivo + "/" + anio;
+        Long last = repositoryPort.findLastConsecutivoByAnio(anio).orElse(0L);
+        Long consecutivo = last + 1;
+        String folio = "CEDECON-CORR-" + consecutivo + "/" + anio;
 
-            Correspondencia dom = new Correspondencia();
-            dom.setConsecutivo(consecutivo);
-            dom.setFolioUnico(folio);
-            dom.setNumeroOficio(request.getNumeroOficio());
-            dom.setFechaExpedicion(request.getFechaExpedicion());
-            dom.setDependenciaRemitente(request.getDependenciaRemitente());
-            dom.setTitularDependencia(request.getTitularDependencia());
-            dom.setAsunto(request.getAsunto());
-            dom.setFechaRecibido(request.getFechaRecibido());
-            dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
-            // dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura());
+        Correspondencia dom = new Correspondencia();
+        dom.setConsecutivo(consecutivo);
+        dom.setFolioUnico(folio);
+        dom.setNumeroOficio(request.getNumeroOficio());
+        dom.setFechaExpedicion(request.getFechaExpedicion());
+        dom.setDependenciaRemitente(request.getDependenciaRemitente());
+        dom.setTitularDependencia(request.getTitularDependencia());
+        dom.setAsunto(request.getAsunto());
+        dom.setFechaRecibido(request.getFechaRecibido());
+        dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
+        dom.setObservaciones(request.getObservaciones()); 
+        // dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura()); // Descomenta si ya tienes el ID del usuario
 
-            try {
-                return repositoryPort.save(dom);
-            } catch (DataIntegrityViolationException ex) {
-                if (intentos >= 3) {
-                    throw new InvalidRequestException("No fue posible generar un folio único. Reintenta");
-                }
+        try {
+            return repositoryPort.save(dom); 
+        } catch (DataIntegrityViolationException ex) {
+            if (intentos >= 3) {
+                throw new InvalidRequestException("No fue posible generar un folio único tras 3 intentos. Por favor, intente de nuevo.");
             }
         }
-
-        throw new InvalidRequestException("No fue posible generar un folio único. Reintenta");
     }
+    throw new InvalidRequestException("Error inesperado al generar el folio.");
 
+}
     private void validarRequest(RegistrarCorrespondenciaRequestDTO request) {
         if (request == null) {
             throw new InvalidRequestException("La solicitud no puede ser nula");
