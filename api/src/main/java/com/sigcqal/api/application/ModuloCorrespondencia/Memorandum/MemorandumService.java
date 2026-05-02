@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Model.Memorandum;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Port.MemorandumRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Memorandum.Mapper.MemorandumMapper;
 import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumResponseDTO;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -24,6 +26,10 @@ public class MemorandumService {
    @Autowired
     private MemorandumMapper mapper; 
 
+    @Autowired
+    private  FileUploadPort fileUploadPort;
+
+  
     @Transactional
     public MemorandumResponseDTO guardarMemorandum(MemorandumRequestDTO request) {
 
@@ -83,5 +89,19 @@ public MemorandumResponseDTO buscarPorId(Long id) {
         } while (repositoryPort.existeFolio(nuevoFolio)); 
         return nuevoFolio;
     }
+
+      @Transactional
+    public void finalizarAsignacion(Long idMemo, byte[] archivoPdf) {
+        Memorandum memorandum = repositoryPort.buscarPorId(idMemo)
+            .orElseThrow(() -> new EntityNotFoundException("Memorándum no encontrado"));
+
+        String nombreArchivo = "MEMO_" + idMemo + "_FIRMADO.pdf";
+        String urlArchivo = fileUploadPort.guardarArchivo(archivoPdf, nombreArchivo);
+
+        memorandum.setUrlSolicitudMemorandum(urlArchivo);
+        
+        repositoryPort.save(memorandum);
+    }
+
 
 }
