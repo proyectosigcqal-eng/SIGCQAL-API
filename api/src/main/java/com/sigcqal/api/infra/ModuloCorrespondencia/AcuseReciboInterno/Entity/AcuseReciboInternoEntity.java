@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "acuserecibointerno" , schema = "correspondencia")
+@Table(name = "acuse_memorandum" , schema = "correspondencia")
 @Data
 public class AcuseReciboInternoEntity {
 
