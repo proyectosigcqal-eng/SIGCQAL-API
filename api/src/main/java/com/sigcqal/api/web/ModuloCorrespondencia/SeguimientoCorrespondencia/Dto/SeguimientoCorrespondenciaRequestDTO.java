@@ -1,6 +1,7 @@
 package com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoCorrespondencia.Dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class SeguimientoCorrespondenciaRequestDTO {
@@ -10,7 +11,9 @@ public class SeguimientoCorrespondenciaRequestDTO {
     private String respuestaSeguimientoCorrespondencia;
     private String fechaResolucion;
     private String horaResolucion;
-    private String archivoAdjunto;
+    
+    private MultipartFile archivoAdjunto; 
+    
     private Integer idUsuario;
     private Integer idEstatus;
-}
+}   
