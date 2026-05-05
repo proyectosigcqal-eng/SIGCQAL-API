@@ -11,6 +11,8 @@ public interface CorrespondenciaRepositoryPort {
 
     Optional<Correspondencia> findById(Long id);
 
+    List<Correspondencia> findAll();
+
     boolean existsByNumeroOficio(String numeroOficio);
 
     Optional<Long> findLastConsecutivoByAnio(Integer anio);

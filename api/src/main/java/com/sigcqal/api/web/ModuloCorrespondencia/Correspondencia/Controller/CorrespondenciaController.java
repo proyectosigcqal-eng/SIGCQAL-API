@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import java.util.List;
 
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Correspondencia.RegistrarCorrespondenciaService;
+import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.AsignarAreaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
 
@@ -32,9 +34,19 @@ public class CorrespondenciaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.registrar(request));
     }
 
+    @GetMapping("/entrada")
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarEntradas() {
+        return ResponseEntity.ok(service.listarTodas());
+    }
+
     @GetMapping("/entrada/{id}")
     public ResponseEntity<RegistrarCorrespondenciaResponseDTO> obtenerEntrada(@PathVariable Long id) {
         return ResponseEntity.ok(service.obtenerPorId(id));
+    }
+
+    @PatchMapping("/entrada/{id}")
+    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> asignarArea(@PathVariable Long id, @Valid @RequestBody AsignarAreaRequestDTO request) {
+        return ResponseEntity.ok(service.asignarArea(id, request.getIdArea()));
     }
 
     @GetMapping("/entrada/area/{idArea}")

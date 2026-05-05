@@ -29,13 +29,13 @@ public class CorrespondenciaMapper {
         dom.setAsunto(entity.getAsunto());
         dom.setFechaRecibido(entity.getFechaRecibido());
         dom.setObservaciones(entity.getObservaciones());
+        dom.setIdArea(entity.getIdArea());
 
         if (entity.getUsuarioCaptura() != null) {
             dom.setIdUsuarioCaptura(entity.getUsuarioCaptura().getId());
         }
 
          if (entity.getArea() != null) {
-            dom.setIdArea(entity.getArea().getId());
             dom.setNombreArea(entity.getArea().getNombre());
         }
 
@@ -59,6 +59,7 @@ public class CorrespondenciaMapper {
         entity.setAsunto(domain.getAsunto());
         entity.setFechaRecibido(domain.getFechaRecibido());
         entity.setObservaciones(domain.getObservaciones());
+        entity.setIdArea(domain.getIdArea());
 
         if (domain.getIdUsuarioCaptura() != null) {
             UsuarioEntity usuarioCaptura = new UsuarioEntity();
