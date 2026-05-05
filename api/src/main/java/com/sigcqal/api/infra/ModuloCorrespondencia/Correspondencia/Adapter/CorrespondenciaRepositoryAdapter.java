@@ -36,6 +36,11 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
     }
 
     @Override
+    public List<Correspondencia> findAll() {
+        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
     public boolean existsByNumeroOficio(String numeroOficio) {
         return jpaRepository.existsByNumeroOficio(numeroOficio);
     }

@@ -56,6 +56,26 @@ public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaReq
         return repositoryPort.findById(id).map(mapper::toResponse).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
     }
 
+    public List<RegistrarCorrespondenciaResponseDTO> listarTodas() {
+        return repositoryPort.findAll().stream().map(mapper::toResponse).toList();
+    }
+
+    @Transactional
+    public RegistrarCorrespondenciaResponseDTO asignarArea(Long id, Long idArea) {
+        if (id == null || id <= 0) {
+            throw new InvalidRequestException("El id debe ser mayor a 0");
+        }
+        if (idArea == null || idArea <= 0) {
+            throw new InvalidRequestException("El id del área debe ser mayor a 0");
+        }
+
+        Correspondencia dom = repositoryPort.findById(id).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
+        dom.setIdArea(idArea);
+
+        Correspondencia saved = repositoryPort.save(dom);
+        return mapper.toResponse(saved);
+    }
+
 private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {
     Integer anio = request.getFechaRecibido().getYear();
     int intentos = 0;
