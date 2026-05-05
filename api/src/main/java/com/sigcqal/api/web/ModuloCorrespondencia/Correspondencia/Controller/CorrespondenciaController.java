@@ -49,7 +49,7 @@ public class CorrespondenciaController {
         return ResponseEntity.ok(service.asignarArea(id, request.getIdArea()));
     }
 
-    @GetMapping("/entrada/area/{idArea}")
+    @GetMapping("/entrada/pendienteacuse/area/{idArea}")
     public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> obtenerPorArea(@PathVariable Long idArea) {
     return ResponseEntity.ok(service.obtenerPorArea(idArea));
 }

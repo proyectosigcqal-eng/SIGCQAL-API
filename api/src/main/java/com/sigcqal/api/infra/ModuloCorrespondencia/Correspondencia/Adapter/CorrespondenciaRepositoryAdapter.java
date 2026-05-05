@@ -74,4 +74,12 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
             .map(mapper::toDomain)
             .toList();
 }
+
+    @Override
+    public List<Correspondencia> findByIdAreaWithoutAcuse(Long idArea) {
+        return jpaRepository.findByArea_IdAndWithoutAcuse(idArea)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

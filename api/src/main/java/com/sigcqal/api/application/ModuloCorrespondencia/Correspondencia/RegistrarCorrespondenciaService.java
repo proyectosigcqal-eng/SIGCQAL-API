@@ -161,7 +161,7 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
         throw new InvalidRequestException("El id del área debe ser mayor a 0");
     }
 
-    List<Correspondencia> lista = repositoryPort.findByIdArea(idArea);
+    List<Correspondencia> lista = repositoryPort.findByIdAreaWithoutAcuse(idArea);
 
     if (lista.isEmpty()) {
     throw new ResourceNotFoundException("No se encontraron correspondencias para el area", idArea);
