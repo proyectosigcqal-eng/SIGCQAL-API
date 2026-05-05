@@ -67,9 +67,10 @@ public ResponseEntity<MemorandumResponseDTO> obtenerPorId(@PathVariable Long id)
 @PostMapping("/{id}/finalizar")
     public ResponseEntity<?> finalizar(
         @PathVariable Long id,
-        @RequestParam("archivo") MultipartFile archivo
+        @RequestParam("archivo") MultipartFile archivo,
+        @RequestParam("idArea") Long idArea  
     ) throws IOException {
-        memorandumService.finalizarAsignacion(id, archivo.getBytes());
+        memorandumService.finalizarAsignacion(id, archivo.getBytes(), idArea);
         return ResponseEntity.ok().build();
     }
 }

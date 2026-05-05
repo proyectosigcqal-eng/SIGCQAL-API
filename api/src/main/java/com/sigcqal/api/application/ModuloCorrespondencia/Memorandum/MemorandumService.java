@@ -91,7 +91,7 @@ public MemorandumResponseDTO buscarPorId(Long id) {
     }
 
       @Transactional
-    public void finalizarAsignacion(Long idMemo, byte[] archivoPdf) {
+    public void finalizarAsignacion(Long idMemo, byte[] archivoPdf, Long idArea) {
         Memorandum memorandum = repositoryPort.buscarPorId(idMemo)
             .orElseThrow(() -> new EntityNotFoundException("Memorándum no encontrado"));
 
@@ -99,6 +99,7 @@ public MemorandumResponseDTO buscarPorId(Long id) {
         String urlArchivo = fileUploadPort.guardarArchivo(archivoPdf, nombreArchivo);
 
         memorandum.setUrlSolicitudMemorandum(urlArchivo);
+        memorandum.setIdArea(idArea);
         
         repositoryPort.save(memorandum);
     }

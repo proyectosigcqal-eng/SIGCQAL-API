@@ -129,6 +129,7 @@ public class MemorandumMapper {
         dto.setNombreUsuarioEmisor(domain.getNombreUsuarioEmisor());
         dto.setNombreUsuarioFirmante(domain.getNombreUsuarioFirmante());
         dto.setNombrePlantilla(domain.getNombrePlantilla());
+        dto.setUrlMemorandumGenerado(domain.getUrlSolicitudMemorandum());
         
         // Campos de Correspondencia
         dto.setDependenciaRemitente(domain.getDependenciaRemitente());

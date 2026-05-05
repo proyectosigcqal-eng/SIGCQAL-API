@@ -20,6 +20,7 @@ public class MemorandumResponseDTO {
     private String nombreUsuarioEmisor;   
     private String nombreUsuarioFirmante; 
     private String nombrePlantilla;
+    private String urlMemorandumGenerado; 
     
     // Campos de Correspondencia
     private String dependenciaRemitente;
