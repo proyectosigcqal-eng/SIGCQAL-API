@@ -42,4 +42,10 @@ public class AcuseReciboInternoController {
     public ResponseEntity<List<AcuseReciboInternoResponseDTO>> listarPorArea(@PathVariable Long idArea) {
     return ResponseEntity.ok(service.listarPorArea(idArea));
     }
+    
+    @GetMapping("/memorandum/{idMemorandum}")
+public ResponseEntity<List<AcuseReciboInternoResponseDTO>> listarPorMemorandum(
+        @PathVariable Long idMemorandum) {
+    return ResponseEntity.ok(service.listarPorMemorandum(idMemorandum));
+}
 }

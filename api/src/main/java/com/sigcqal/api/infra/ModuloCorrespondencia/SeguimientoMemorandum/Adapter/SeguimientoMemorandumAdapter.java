@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.SeguimientoMemorandum.Adapter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -40,6 +41,18 @@ public class SeguimientoMemorandumAdapter implements ISeguimientoMemorandumPort 
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public Optional<SeguimientoMemorandum> buscarPorId(Long idSeguimiento) {
+        return repository.findById(idSeguimiento)
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public SeguimientoMemorandum actualizar(SeguimientoMemorandum seguimiento) {
+        var entity = mapper.toEntity(seguimiento);
+        var saved  = repository.save(entity); // save en JPA hace update si el ID existe
+        return mapper.toDomain(saved);
     }
 }
 

@@ -63,5 +63,22 @@ public class SeguimientoMemorandumService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    public void concluir(Long idSeguimiento, SeguimientoMemorandumRequestDTO request) {
+    SeguimientoMemorandum seguimiento = port.buscarPorId(idSeguimiento)
+        .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));
+
+    seguimiento.setIdEstatus(6L);
+    seguimiento.setFechaResolucion(LocalDate.now());   // ← LocalDate, no String
+    seguimiento.setHoraResolucion(LocalTime.now());    // ← LocalTime, no String
+
+    if (request.getRespuestaSeguimientoMemorandum() != null) {
+        seguimiento.setRespuestaSeguimientoMemorandum(
+            request.getRespuestaSeguimientoMemorandum()
+        );
+    }
+
+    port.actualizar(seguimiento);
+}
 }
 

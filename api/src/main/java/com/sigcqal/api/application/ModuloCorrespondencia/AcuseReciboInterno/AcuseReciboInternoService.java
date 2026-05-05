@@ -106,5 +106,11 @@ public boolean existePorMemorandum(Long idMemorandum) {
     return repository.existePorMemorandum(idMemorandum);
 }
 
+public List<AcuseReciboInternoResponseDTO> listarPorMemorandum(Long idMemorandum) {
+    return repository.findByIdMemorandum(idMemorandum)
+        .stream()
+        .map(mapper::toResponse) 
+        .collect(Collectors.toList());
+}
 
 }

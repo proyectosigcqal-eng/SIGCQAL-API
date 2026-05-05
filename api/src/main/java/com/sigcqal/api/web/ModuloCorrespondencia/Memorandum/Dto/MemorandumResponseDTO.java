@@ -16,6 +16,7 @@ public class MemorandumResponseDTO {
     private Long idUsuarioFirmante;
     private Long idPlantilla;
     private Long idArea;
+    private String nombreArea;
     private String asuntoCorrespondencia;        
     private String nombreUsuarioEmisor;   
     private String nombreUsuarioFirmante; 

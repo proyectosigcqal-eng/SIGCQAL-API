@@ -124,6 +124,7 @@ public class MemorandumMapper {
         dto.setIdUsuarioEmisor(domain.getIdUsuarioEmisor());
         dto.setIdUsuarioFirmante(domain.getIdUsuarioFirmante());
         dto.setIdPlantilla(domain.getIdPlantilla());
+        dto.setNombreArea(domain.getNombreArea()); 
         
         dto.setAsuntoCorrespondencia(domain.getAsunto()); 
         dto.setNombreUsuarioEmisor(domain.getNombreUsuarioEmisor());

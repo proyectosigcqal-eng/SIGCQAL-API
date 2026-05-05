@@ -3,7 +3,6 @@ package com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Repositor
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Entity.AcuseReciboInternoEntity;
 
 public interface AcuseReciboInternoJpaRepository 
@@ -16,4 +15,6 @@ public interface AcuseReciboInternoJpaRepository
 List<AcuseReciboInternoEntity> findByEsDelAreaTrueAndMemorandum_Area_Id(Long id);
 
     List<AcuseReciboInternoEntity> findByEsDelAreaFalse();
+    List<AcuseReciboInternoEntity> findByMemorandum_Id(Long idMemorandum);
+   
     }
