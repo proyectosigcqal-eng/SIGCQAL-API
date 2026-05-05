@@ -3,6 +3,8 @@ package com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Port;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.repository.query.Param;
+
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Model.AcuseReciboInterno;
 
 public interface AcuseReciboInternoRepositoryPort {
@@ -14,6 +16,8 @@ public interface AcuseReciboInternoRepositoryPort {
     AcuseReciboInterno save(AcuseReciboInterno acuse);
 
     boolean existePorMemorandum(Long idMemorandum);
+    
+     List<AcuseReciboInterno> findByIdMemorandum(@Param("idMemorandum") Long idMemorandum);
 
 List<AcuseReciboInterno> findByArea(Long idArea);
 }

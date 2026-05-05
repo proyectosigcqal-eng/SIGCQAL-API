@@ -53,7 +53,8 @@ public List<Memorandum> findByArea(Long idArea) {
 }
 @Override
 public Optional<Memorandum> buscarPorId(Long id) {
-    return jpaRepository.findById(id)
+    return jpaRepository.findByIdWithRelations(id)
                         .map(mapper::toDomain);
 }
+
 }
