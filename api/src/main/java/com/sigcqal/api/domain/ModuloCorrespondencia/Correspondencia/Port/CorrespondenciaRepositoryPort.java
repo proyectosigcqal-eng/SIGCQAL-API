@@ -18,4 +18,6 @@ public interface CorrespondenciaRepositoryPort {
     Optional<Long> findLastConsecutivoByAnio(Integer anio);
 
     List<Correspondencia> findByIdArea(Long idArea);
+
+    List<Correspondencia> findByIdAreaWithoutAcuse(Long idArea);
 }
