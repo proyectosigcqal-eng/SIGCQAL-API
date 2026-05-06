@@ -14,4 +14,5 @@ public class SeguimientoMemorandumResponseDTO {
     private Long idUsuario;
     private Long idEstatus;
     private String fechaRegistro;
+    private String folioFormateado; 
 }
