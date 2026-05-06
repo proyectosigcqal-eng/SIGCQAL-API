@@ -26,6 +26,7 @@ public class SeguimientoMemorandum {
     private LocalDate fechaResolucion;
     private LocalTime horaResolucion;
     private String archivoAdjunto;
+    private String folioFormateado;
 
     private Long idUsuario;
     private Long idEstatus;

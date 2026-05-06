@@ -16,10 +16,21 @@ public class SeguimientoMemorandumMapper {
         if (entity == null) {
             return null;
         }
+
+         String folioFormateado = null;
+    if (entity.getFolioRespuesta() != null) {
+        folioFormateado = String.format("CM-%06d-%d",
+            entity.getFolioRespuesta(),
+            entity.getFechaRegistro() != null
+                ? entity.getFechaRegistro().getYear()
+                : java.time.Year.now().getValue()
+        );
+    }
         return SeguimientoMemorandum.builder()
                 .idSeguimientoMemorandum(entity.getId())
                 .idMemo(entity.getMemorandum() != null ? entity.getMemorandum().getId() : null)
                 .folioRespuesta(entity.getFolioRespuesta())
+                .folioFormateado(folioFormateado)   
                 .respuestaSeguimientoMemorandum(entity.getRespuestaSeguimientoMemorandum())
                 .fechaResolucion(entity.getFechaResolucion())
                 .horaResolucion(entity.getHoraResolucion())
@@ -69,16 +80,17 @@ public class SeguimientoMemorandumMapper {
         dto.setIdSeguimientoMemorandum(domain.getIdSeguimientoMemorandum());
         dto.setIdMemo(domain.getIdMemo());
         dto.setFolioRespuesta(domain.getFolioRespuesta());
+        dto.setFolioFormateado(domain.getFolioFormateado());
         dto.setRespuestaSeguimientoMemorandum(domain.getRespuestaSeguimientoMemorandum());
         dto.setFechaResolucion(
-                domain.getFechaResolucion() != null ? domain.getFechaResolucion().toString() : null);
+        domain.getFechaResolucion() != null ? domain.getFechaResolucion().toString() : null);
         dto.setHoraResolucion(
-                domain.getHoraResolucion() != null ? domain.getHoraResolucion().toString() : null);
+        domain.getHoraResolucion() != null ? domain.getHoraResolucion().toString() : null);
         dto.setArchivoAdjunto(domain.getArchivoAdjunto());
         dto.setIdUsuario(domain.getIdUsuario());
         dto.setIdEstatus(domain.getIdEstatus());
         dto.setFechaRegistro(
-                domain.getFechaRegistro() != null ? domain.getFechaRegistro().toString() : null);
+        domain.getFechaRegistro() != null ? domain.getFechaRegistro().toString() : null);
         return dto;
     }
 }
