@@ -98,6 +98,11 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
         dom.setFechaRecibido(request.getFechaRecibido());
         dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
         dom.setObservaciones(request.getObservaciones()); 
+        if (request.getIdTipoCorrespondencia() == null) {
+            dom.setIdTipoCorrespondencia(1);
+        } else {
+            dom.setIdTipoCorrespondencia(request.getIdTipoCorrespondencia());
+        }
         // dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura()); // Descomenta si ya tienes el ID del usuario
 
         try {
@@ -171,4 +176,8 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
             .map(mapper::toResponse)
             .toList();
 }
+
+    public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String idNatural) {
+        return repositoryPort.findByTipo(idNatural).stream().map(mapper::toResponse).toList();
+    }
 }

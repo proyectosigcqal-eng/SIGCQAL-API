@@ -20,4 +20,6 @@ public interface CorrespondenciaRepositoryPort {
     List<Correspondencia> findByIdArea(Long idArea);
 
     List<Correspondencia> findByIdAreaWithoutAcuse(Long idArea);
+
+    List<Correspondencia> findByTipo(String idNatural);
 }

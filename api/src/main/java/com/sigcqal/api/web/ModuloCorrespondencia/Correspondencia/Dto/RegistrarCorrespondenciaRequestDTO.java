@@ -15,6 +15,7 @@ public class RegistrarCorrespondenciaRequestDTO {
     private String titularDependencia;
     private String asunto;
     private LocalDate fechaRecibido;
+    private Integer idTipoCorrespondencia;
     //private Long idEstatus;
     //private Long idUsuarioCaptura;
     //private Long idArea;

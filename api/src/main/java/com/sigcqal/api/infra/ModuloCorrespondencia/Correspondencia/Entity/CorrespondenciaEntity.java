@@ -3,6 +3,7 @@ package com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity;
 import java.time.LocalDate;
 
 import com.sigcqal.api.infra.Catalogo.Area.Entity.AreaEntity;
+import com.sigcqal.api.infra.Catalogo.TipoCorrespondencia.Entity.TipoCorrespondenciaEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 
 import jakarta.persistence.Column;
@@ -74,4 +75,11 @@ public class CorrespondenciaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_area", insertable = false, updatable = false)
     private AreaEntity area;
+
+    @Column(name = "id_tipo_correspondencia")
+    private Integer idTipoCorrespondencia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_correspondencia", insertable = false, updatable = false)
+    private TipoCorrespondenciaEntity tipoCorrespondencia;
 }

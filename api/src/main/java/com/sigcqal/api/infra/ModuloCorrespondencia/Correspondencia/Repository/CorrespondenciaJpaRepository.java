@@ -29,4 +29,6 @@ public interface CorrespondenciaJpaRepository extends JpaRepository<Corresponden
     )
 """)
 List<CorrespondenciaEntity> findByArea_IdAndWithoutAcuse(@Param("idArea") Long idArea);
+
+    List<CorrespondenciaEntity> findByTipoCorrespondencia_IdNatural(String idNatural);
 }

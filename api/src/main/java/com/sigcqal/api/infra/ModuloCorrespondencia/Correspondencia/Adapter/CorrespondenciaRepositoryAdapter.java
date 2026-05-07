@@ -82,4 +82,9 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
                 .map(mapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<Correspondencia> findByTipo(String idNatural) {
+        return jpaRepository.findByTipoCorrespondencia_IdNatural(idNatural).stream().map(mapper::toDomain).toList();
+    }
 }
