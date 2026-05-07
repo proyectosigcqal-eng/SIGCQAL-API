@@ -1,12 +1,14 @@
 package com.sigcqal.api.application.ModuloCorrespondencia.Memorandum;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Model.Memorandum;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Memorandum.Port.MemorandumRepositoryPort;
@@ -29,6 +31,9 @@ public class MemorandumService {
     @Autowired
     private  FileUploadPort fileUploadPort;
 
+    @Autowired
+    private GeneradorDocumentoService generadorDocumentoService;
+
   
     @Transactional
     public MemorandumResponseDTO guardarMemorandum(MemorandumRequestDTO request) {
@@ -45,10 +50,33 @@ public class MemorandumService {
         memo.setIdArea(request.getIdArea());
         
 
-     
-        Memorandum saved = repositoryPort.save(memo);
-        return mapper.toResponse(saved);
+       try {
+        Map<String, String> variables = Map.of(
+            "{{FOLIO}}",              memo.getFolioUnico(),
+            "{{ASUNTO}}",             nvl(request.getObservaciones(), "El que se indica."),
+            "{{FECHA}}",              generadorDocumentoService.fechaActual(),
+            "{{AREA_DESTINATARIO}}",  nvl(request.getAreaDestinatario(), ""),
+            "{{NOMBRE_EMISOR}}",      nvl(request.getNombreEmisor(), null),
+            "{{INSTRUCCION}}",        nvl(request.getInstruccionSeguimiento(), ""),
+            "{{NOMBRE_FIRMANTE}}",    nvl(request.getNombreFirmante(), ""),
+            "{{AREA_FIRMANTE}}",      nvl(request.getAreaFirmante(), "")
+        );
+
+        byte[] bytes = generadorDocumentoService
+            .generarDesPlantilla("plantilla_memorandum.docx", variables);
+        String url = fileUploadPort.guardarArchivo(bytes, memo.getFolioUnico() + ".docx");
+        memo.setUrlSolicitudMemorandum(url);
+
+    } catch (Exception e) {
+        System.err.println("Error generando DOCX memorándum: " + e.getMessage());
     }
+
+    return mapper.toResponse(repositoryPort.save(memo));
+}
+
+        private String nvl(String value, String fallback) {
+            return (value != null && !value.isBlank()) ? value : fallback;
+        }
 
     public List<MemorandumResponseDTO> listarMemorandum() {
         List<Memorandum> memorandums = repositoryPort.findAll();
