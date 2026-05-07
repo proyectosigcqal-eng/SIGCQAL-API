@@ -63,15 +63,15 @@ public class OficioService {
             .collect(Collectors.toList());
     }
 
-public List<OficioResponseDTO> listarPorArea(Long idArea) {
-    List<Oficio> oficios = repositoryPort.findByArea(idArea);
+public List<OficioResponseDTO> listarPendientesAcuse(Long idArea) {
+    // Usamos el nuevo método del repositorio que filtra los que no tienen acuse
+    List<Oficio> oficios = repositoryPort.findSinAcuseByArea(idArea);
     
     if (oficios == null) {
         return List.of();
     }
 
     return oficios.stream()
-        .filter(ofi -> ofi != null)
         .map(mapper::toResponse)
         .collect(Collectors.toList());
 }

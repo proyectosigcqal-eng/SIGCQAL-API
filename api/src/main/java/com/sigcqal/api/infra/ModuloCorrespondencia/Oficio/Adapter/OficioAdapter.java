@@ -55,5 +55,11 @@ public Optional<Oficio> buscarPorId(Long id) {
     return jpaRepository.findByIdWithRelations(id)
                         .map(mapper::toDomain);
 }
-
+@Override
+public List<Oficio> findSinAcuseByArea(Long idArea) {
+    List<OficioEntity> entities = jpaRepository.findOficiosSinAcusePorArea(idArea);
+    return entities.stream()
+                   .map(mapper::toDomain)
+                   .collect(Collectors.toList());
+}
 }

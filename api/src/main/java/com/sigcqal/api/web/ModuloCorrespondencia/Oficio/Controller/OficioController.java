@@ -49,15 +49,15 @@ public class OficioController {
     }
 
     @GetMapping("pendientesacuse/area/{idArea}")
-    public ResponseEntity<List<OficioResponseDTO>> listarPorArea(@PathVariable Long idArea) {
-        try {
-            List<OficioResponseDTO> lista = service.listarPorArea(idArea);
-            return ResponseEntity.ok(lista);
-        } catch (Exception e) {
-            e.printStackTrace(); 
-            throw e; 
-        }
+public ResponseEntity<List<OficioResponseDTO>> listarPorArea(@PathVariable Long idArea) {
+    try {
+        // Llamada al nuevo método filtrado
+        List<OficioResponseDTO> lista = service.listarPendientesAcuse(idArea);
+        return ResponseEntity.ok(lista);
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().build();
     }
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<OficioResponseDTO> obtenerPorId(@PathVariable Long id) {
