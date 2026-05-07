@@ -18,4 +18,9 @@ public interface OficioJpaRepository extends JpaRepository<OficioEntity, Long> {
     @Query("SELECT o FROM OficioEntity o LEFT JOIN FETCH o.area LEFT JOIN FETCH o.usuarioEmisor LEFT JOIN FETCH o.usuarioFirmante WHERE o.id = :id")
     Optional<OficioEntity> findByIdWithRelations(@Param("id") Long id);
 
+    @Query("SELECT o FROM OficioEntity o " +
+           "JOIN FETCH o.area " + // <--- Esto asegura que se traiga el nombre_area
+           "WHERE NOT EXISTS (SELECT a FROM AcuseOficioEntity a WHERE a.oficio.id = o.id) " +
+           "AND o.area.id = :idArea")
+    List<OficioEntity> findOficiosSinAcusePorArea(@Param("idArea") Long idArea);
 }
