@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "oficios" , schema = "correspondencia") 
+@Table(name = "oficio" , schema = "correspondencia") 
 @Data 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -65,7 +65,7 @@ public class OficioEntity {
     @Column(name = "observaciones", columnDefinition = "TEXT")
     private String observaciones;
 
-    @Column(name = "url_oficio_generado")
+    @Column(name = "url_memorandum_generado") 
     private String urlMemorandumGenerado;
 
     @Column(name = "folio_unico")
