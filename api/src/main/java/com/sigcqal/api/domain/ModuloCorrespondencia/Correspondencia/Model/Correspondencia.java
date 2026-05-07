@@ -27,5 +27,8 @@ public class Correspondencia {
     private Long idArea;
     private String nombreArea;
     private String observaciones;
+    private Integer idTipoCorrespondencia;
+    private String idNaturalTipo;
+    private String descripcionTipo;
 
 }

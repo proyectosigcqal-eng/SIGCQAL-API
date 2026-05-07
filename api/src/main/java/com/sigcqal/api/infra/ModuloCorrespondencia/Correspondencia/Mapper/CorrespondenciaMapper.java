@@ -30,6 +30,12 @@ public class CorrespondenciaMapper {
         dom.setFechaRecibido(entity.getFechaRecibido());
         dom.setObservaciones(entity.getObservaciones());
         dom.setIdArea(entity.getIdArea());
+        dom.setIdTipoCorrespondencia(entity.getIdTipoCorrespondencia());
+
+        if (entity.getTipoCorrespondencia() != null) {
+            dom.setIdNaturalTipo(entity.getTipoCorrespondencia().getIdNatural());
+            dom.setDescripcionTipo(entity.getTipoCorrespondencia().getDescripcion());
+        }
 
         if (entity.getUsuarioCaptura() != null) {
             dom.setIdUsuarioCaptura(entity.getUsuarioCaptura().getId());
@@ -60,6 +66,7 @@ public class CorrespondenciaMapper {
         entity.setFechaRecibido(domain.getFechaRecibido());
         entity.setObservaciones(domain.getObservaciones());
         entity.setIdArea(domain.getIdArea());
+        entity.setIdTipoCorrespondencia(domain.getIdTipoCorrespondencia());
 
         if (domain.getIdUsuarioCaptura() != null) {
             UsuarioEntity usuarioCaptura = new UsuarioEntity();
@@ -101,6 +108,9 @@ public class CorrespondenciaMapper {
         dto.setIdUsuarioCaptura(domain.getIdUsuarioCaptura());
         dto.setIdArea(domain.getIdArea());
         dto.setNombreArea(domain.getNombreArea());
+        dto.setIdTipoCorrespondencia(domain.getIdTipoCorrespondencia());
+        dto.setIdNaturalTipo(domain.getIdNaturalTipo());
+        dto.setDescripcionTipo(domain.getDescripcionTipo());
         return dto;
     }
 }
