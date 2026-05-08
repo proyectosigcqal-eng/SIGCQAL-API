@@ -21,5 +21,5 @@ public interface CorrespondenciaRepositoryPort {
 
     List<Correspondencia> findByIdAreaWithoutAcuse(Long idArea);
 
-    List<Correspondencia> findByTipo(String idNatural);
+    List<Correspondencia> findByTipo(String descripcion);
 }

@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.sigcqal.api.application.ModuloCorrespondencia.AcuseOficio.AcuseOficioService;
 import com.sigcqal.api.web.ModuloCorrespondencia.AcuseOficio.Dto.*;
+import com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoOficio.Dto.SeguimientoOficioRequestDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,6 +29,12 @@ public class AcuseOficioController {
     @GetMapping("/{id}")
 public ResponseEntity<AcuseOficioResponseDTO> obtenerPorId(@PathVariable Long id) {
     return ResponseEntity.ok(service.obtenerPorId(id));
+}
+
+@GetMapping("/oficio/{idOficio}")
+public ResponseEntity<List<AcuseOficioResponseDTO>> listarPorOficio(
+        @PathVariable Long idOficio) {
+    return ResponseEntity.ok(service.listarPorOficio(idOficio));
 }
 
     

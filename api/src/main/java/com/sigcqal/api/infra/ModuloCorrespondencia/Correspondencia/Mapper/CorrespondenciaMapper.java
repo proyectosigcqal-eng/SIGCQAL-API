@@ -1,12 +1,12 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
 import com.sigcqal.api.infra.Catalogo.Area.Entity.AreaEntity;
+import com.sigcqal.api.infra.Catalogo.TipoCorrespondencia.Entity.TipoCorrespondenciaEntity;
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CatEstatusEntity;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Entity.CorrespondenciaEntity;
@@ -30,10 +30,8 @@ public class CorrespondenciaMapper {
         dom.setFechaRecibido(entity.getFechaRecibido());
         dom.setObservaciones(entity.getObservaciones());
         dom.setIdArea(entity.getIdArea());
-        dom.setIdTipoCorrespondencia(entity.getIdTipoCorrespondencia());
 
         if (entity.getTipoCorrespondencia() != null) {
-            dom.setIdNaturalTipo(entity.getTipoCorrespondencia().getIdNatural());
             dom.setDescripcionTipo(entity.getTipoCorrespondencia().getDescripcion());
         }
 
@@ -47,6 +45,10 @@ public class CorrespondenciaMapper {
 
         if (entity.getEstatus() != null) {
             dom.setIdEstatus(entity.getEstatus().getId());
+        }
+
+        if(entity.getTipoCorrespondencia() != null) {
+            dom.setIdTipoCorrespondencia(entity.getTipoCorrespondencia().getIdTipo());
         }
         
         return dom;
@@ -66,7 +68,6 @@ public class CorrespondenciaMapper {
         entity.setFechaRecibido(domain.getFechaRecibido());
         entity.setObservaciones(domain.getObservaciones());
         entity.setIdArea(domain.getIdArea());
-        entity.setIdTipoCorrespondencia(domain.getIdTipoCorrespondencia());
 
         if (domain.getIdUsuarioCaptura() != null) {
             UsuarioEntity usuarioCaptura = new UsuarioEntity();
@@ -85,6 +86,12 @@ public class CorrespondenciaMapper {
             CatEstatusEntity estatus = new CatEstatusEntity();
             estatus.setId(domain.getIdEstatus());
             entity.setEstatus(estatus);
+        }
+
+        if(domain.getIdTipoCorrespondencia() != null) {
+            TipoCorrespondenciaEntity tipoCorrespondencia = new TipoCorrespondenciaEntity();
+            tipoCorrespondencia.setIdTipo(domain.getIdTipoCorrespondencia());
+          
         }
 
         return entity;
@@ -109,7 +116,6 @@ public class CorrespondenciaMapper {
         dto.setIdArea(domain.getIdArea());
         dto.setNombreArea(domain.getNombreArea());
         dto.setIdTipoCorrespondencia(domain.getIdTipoCorrespondencia());
-        dto.setIdNaturalTipo(domain.getIdNaturalTipo());
         dto.setDescripcionTipo(domain.getDescripcionTipo());
         return dto;
     }

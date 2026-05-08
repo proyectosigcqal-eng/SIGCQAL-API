@@ -54,5 +54,7 @@ public class SeguimientoMemorandumAdapter implements ISeguimientoMemorandumPort 
         var saved  = repository.save(entity); // save en JPA hace update si el ID existe
         return mapper.toDomain(saved);
     }
+
+    
 }
 

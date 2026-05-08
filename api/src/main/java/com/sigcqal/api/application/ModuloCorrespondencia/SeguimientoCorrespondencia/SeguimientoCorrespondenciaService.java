@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoCorrespondencia.Model.SeguimientoCorrespondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoCorrespondencia.Port.ISeguimientoCorrespondenciaPort;
@@ -76,4 +75,21 @@ public class SeguimientoCorrespondenciaService  {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    public void concluir(Long idSeguimiento, SeguimientoCorrespondenciaRequestDTO request) {
+    SeguimientoCorrespondencia seguimiento = port.buscarPorId(idSeguimiento)
+        .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));
+
+    seguimiento.setIdEstatus(6);
+    seguimiento.setFechaResolucion(LocalDate.now());
+    seguimiento.setHoraResolucion(LocalTime.now());
+
+    if (request.getRespuestaSeguimientoCorrespondencia() != null) {
+        seguimiento.setRespuestaSeguimientoCorrespondencia(
+            request.getRespuestaSeguimientoCorrespondencia()
+        );
+    }
+
+    port.actualizar(seguimiento);
+}
 }

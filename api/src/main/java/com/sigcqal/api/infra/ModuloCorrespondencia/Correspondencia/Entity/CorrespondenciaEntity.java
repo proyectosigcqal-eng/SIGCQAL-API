@@ -76,10 +76,7 @@ public class CorrespondenciaEntity {
     @JoinColumn(name = "id_area", insertable = false, updatable = false)
     private AreaEntity area;
 
-    @Column(name = "id_tipo_correspondencia")
-    private Integer idTipoCorrespondencia;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_correspondencia", insertable = false, updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_correspondencia",insertable = false, updatable = false)
     private TipoCorrespondenciaEntity tipoCorrespondencia;
 }

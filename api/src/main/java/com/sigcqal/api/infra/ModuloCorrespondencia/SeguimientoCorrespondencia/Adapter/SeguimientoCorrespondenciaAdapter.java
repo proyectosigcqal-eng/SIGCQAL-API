@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.SeguimientoCorrespondencia.Adapter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -41,4 +42,16 @@ public class SeguimientoCorrespondenciaAdapter implements ISeguimientoCorrespond
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+@Override
+public Optional<SeguimientoCorrespondencia> buscarPorId(Long idSeguimiento) {
+    return repository.findById(idSeguimiento.intValue()) // ← convertir Long a Integer
+            .map(mapper::toDomain);
+}
+@Override
+public SeguimientoCorrespondencia actualizar(SeguimientoCorrespondencia seguimiento) {
+    var entity = mapper.toEntity(seguimiento);
+    var saved  = repository.save(entity);
+    return mapper.toDomain(saved);
+}
 }

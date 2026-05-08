@@ -9,4 +9,5 @@ public interface AcuseOficioJpaRepository extends JpaRepository<AcuseOficioEntit
     List<AcuseOficioEntity> findByEsDelAreaTrueAndOficio_Area_Id(Long idArea);
 
     boolean existsByOficio_Id(Long idOficio);
+    List<AcuseOficioEntity> findByOficio_Id(Long idOficio);
 }
