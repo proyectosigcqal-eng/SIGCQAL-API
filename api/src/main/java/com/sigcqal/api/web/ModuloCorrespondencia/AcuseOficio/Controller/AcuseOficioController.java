@@ -24,4 +24,10 @@ public class AcuseOficioController {
     public ResponseEntity<List<AcuseOficioResponseDTO>> listarPorArea(@PathVariable Long idArea) {
         return ResponseEntity.ok(service.listarPorArea(idArea));
     }
+    @GetMapping("/{id}")
+public ResponseEntity<AcuseOficioResponseDTO> obtenerPorId(@PathVariable Long id) {
+    return ResponseEntity.ok(service.obtenerPorId(id));
+}
+
+    
 }

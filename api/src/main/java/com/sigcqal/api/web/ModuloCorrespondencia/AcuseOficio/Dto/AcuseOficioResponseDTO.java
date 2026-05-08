@@ -21,7 +21,7 @@ public class AcuseOficioResponseDTO {
     private Long idUsuarioEmisor;
     private String folioUnico;
     private String observaciones;
-    private String urlMemorandumGenerado;
+    private String urlOficioGenerado;
     private Long idPlantilla;
     private Long idArea;
     private String nombreArea;

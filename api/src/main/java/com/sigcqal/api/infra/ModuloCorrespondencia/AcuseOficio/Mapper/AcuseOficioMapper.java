@@ -85,7 +85,7 @@ public class AcuseOficioMapper {
         dto.setIdUsuarioEmisor(d.getIdUsuarioEmisor());
         dto.setFolioUnico(d.getFolioUnico());
         dto.setObservaciones(d.getObservaciones());
-        dto.setUrlMemorandumGenerado(d.getUrlMemorandumGenerado());
+        dto.setUrlOficioGenerado(d.getUrlMemorandumGenerado());
         dto.setIdPlantilla(d.getIdPlantilla());
         dto.setIdArea(d.getIdArea());
         dto.setNombreArea(d.getNombreArea());
