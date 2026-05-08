@@ -41,4 +41,11 @@ public class AcuseOficioAdapter implements AcuseOficioRepositoryPort {
     public boolean existePorOficio(Long idOficio) {
         return repository.existsByOficio_Id(idOficio);
     }
+    @Override
+public List<AcuseOficio> findByIdOficio(Long idOficio) {
+    return repository.findByOficio_Id(idOficio)
+            .stream()
+            .map(mapper::toDomain)
+            .collect(Collectors.toList());
+}
 }

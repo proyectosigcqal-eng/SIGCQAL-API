@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Port.AcuseOficioRepositoryPort;
+import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoOficio.Model.SeguimientoOficio;
 import com.sigcqal.api.web.ModuloCorrespondencia.AcuseOficio.Dto.*;
+import com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoOficio.Dto.SeguimientoOficioRequestDTO;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseOficio.Mapper.AcuseOficioMapper;
 import lombok.RequiredArgsConstructor;
@@ -74,4 +76,12 @@ public class AcuseOficioService {
         .map(mapper::toResponse)
         .orElseThrow(() -> new RuntimeException("Acuse de oficio no encontrado: " + id));
 }
+
+public List<AcuseOficioResponseDTO> listarPorOficio(Long idOficio) {
+    return repository.findByIdOficio(idOficio)
+            .stream()
+            .map(mapper::toResponse)
+            .collect(Collectors.toList());
+}
+
 }

@@ -13,4 +13,5 @@ public interface AcuseOficioRepositoryPort {
     List<AcuseOficio> findByAreaAndEsDelAreaTrue(Long idArea);
 
     boolean existePorOficio(Long idOficio);
+    List<AcuseOficio> findByIdOficio(Long idOficio);
 }

@@ -16,4 +16,5 @@ public class SeguimientoCorrespondenciaRequestDTO {
     
     private Integer idUsuario;
     private Integer idEstatus;
+    
 }   

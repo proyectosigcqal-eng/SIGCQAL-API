@@ -29,7 +29,7 @@ public class SeguimientoOficioEntity {
     @JoinColumn(name = "id_oficio")
     private OficioEntity oficio;
 
-    @Column(name = "folio_respuesta", length = 100)
+    @Column(name = "folio_respuesta", insertable = false, updatable = false)
     private Integer folioRespuesta;
 
     @Column(name = "respuesta_seguimiento_oficio", columnDefinition = "TEXT")

@@ -20,16 +20,11 @@ public class TipoCorrespondenciaAdapter implements TipoCorrespondenciaRepository
 
     @Override
     public List<TipoCorrespondencia> findAll() {
-        return jpaRepository.findByActivoTrue().stream().map(mapper::toDomain).toList();
+        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public Optional<TipoCorrespondencia> findById(Integer id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
-    }
-
-    @Override
-    public Optional<TipoCorrespondencia> findByIdNatural(String idNatural) {
-        return jpaRepository.findByIdNatural(idNatural).map(mapper::toDomain);
     }
 }

@@ -10,5 +10,4 @@ public interface TipoCorrespondenciaRepositoryPort {
 
     Optional<TipoCorrespondencia> findById(Integer id);
 
-    Optional<TipoCorrespondencia> findByIdNatural(String idNatural);
 }

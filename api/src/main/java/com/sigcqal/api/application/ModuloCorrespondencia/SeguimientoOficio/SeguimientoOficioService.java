@@ -32,7 +32,6 @@ public class SeguimientoOficioService {
 
         seguimientoOficio.setIdSeguimientoOficio(request.getIdSeguimientoOficio());
         seguimientoOficio.setIdOficio(request.getIdOficio());
-        seguimientoOficio.setFolioRespuesta(request.getFolioRespuesta());
         seguimientoOficio.setRespuestasSeguimientoOficio(request.getRespuestasSeguimientoOficio());
         seguimientoOficio.setIdUsuario(request.getIdUsuario());
         seguimientoOficio.setIdEstatus(request.getIdEstatus());
@@ -68,4 +67,20 @@ public class SeguimientoOficioService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    public void concluir(Integer idSeguimiento, SeguimientoOficioRequestDTO request) {
+    SeguimientoOficio seguimiento = port.buscarPorId(idSeguimiento)
+        .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));
+
+    seguimiento.setIdEstatus(6);
+    seguimiento.setFechaResolucion(LocalDate.now());
+    seguimiento.setHoraResolucion(LocalTime.now());
+
+    if (request.getRespuestasSeguimientoOficio() != null) {
+        seguimiento.setRespuestasSeguimientoOficio(
+            request.getRespuestasSeguimientoOficio()
+        );
+    }
+    port.guardar(seguimiento);
+}
 }

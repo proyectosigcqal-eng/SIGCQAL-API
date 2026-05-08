@@ -9,20 +9,14 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "cat_tipo_correspondencia", schema = "catalogos")
+@Table(name = "tipo_correspondencia", schema = "catalogos")
 @Data
 public class TipoCorrespondenciaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_tipo")
+    @Column(name = "id_tipo_correspondencia")
     private Integer idTipo;
-
-    @Column(name = "id_natural", unique = true)
-    private String idNatural;
 
     @Column(name = "descripcion")
     private String descripcion;
-
-    @Column(name = "activo")
-    private Boolean activo;
 }

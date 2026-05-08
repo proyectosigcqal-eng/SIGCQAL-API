@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.SeguimientoOficio.Adapter;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -40,4 +41,10 @@ public class SeguimientoOficioAdapter implements SeguimientoOficioPort {
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+public Optional<SeguimientoOficio> buscarPorId(Integer idSeguimiento) {
+    return repository.findById(idSeguimiento)
+            .map(mapper::toDomain);
+}
 }

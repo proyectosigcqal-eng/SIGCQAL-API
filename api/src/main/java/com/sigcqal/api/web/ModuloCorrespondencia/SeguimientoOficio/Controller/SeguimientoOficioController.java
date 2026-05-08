@@ -35,4 +35,12 @@ public class SeguimientoOficioController {
             @PathVariable Integer id) {
         return ResponseEntity.ok(service.listarPorOficioId(id));
     }
+    
+    @PutMapping("/concluir/{idSeguimiento}")
+public ResponseEntity<Void> concluir(
+        @PathVariable Integer idSeguimiento,
+        @RequestBody SeguimientoOficioRequestDTO request) {
+    service.concluir(idSeguimiento, request);
+    return ResponseEntity.ok().build();
+}
 }
