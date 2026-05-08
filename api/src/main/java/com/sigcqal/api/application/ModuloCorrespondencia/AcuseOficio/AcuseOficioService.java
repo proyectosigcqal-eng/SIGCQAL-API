@@ -68,4 +68,10 @@ public class AcuseOficioService {
             throw new RuntimeException("Error al obtener la lista de acuses.");
         }
     }
+
+    public AcuseOficioResponseDTO obtenerPorId(Long id) {
+    return repository.findById(id)
+        .map(mapper::toResponse)
+        .orElseThrow(() -> new RuntimeException("Acuse de oficio no encontrado: " + id));
+}
 }
