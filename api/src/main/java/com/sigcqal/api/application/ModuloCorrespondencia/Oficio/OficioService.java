@@ -1,5 +1,6 @@
 package com.sigcqal.api.application.ModuloCorrespondencia.Oficio;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,6 +49,7 @@ private GeneradorDocumentoService generadorDocumentoService;
         oficio.setFolioUnico(generarFolioSeguro());
         oficio.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
         oficio.setIdArea(request.getIdArea());
+        oficio.setFechaEmision(LocalDateTime.now());
         
 try {
     Map<String, String> variables = Map.of(
