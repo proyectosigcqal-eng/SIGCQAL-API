@@ -30,6 +30,7 @@ public class CorrespondenciaMapper {
         dom.setFechaRecibido(entity.getFechaRecibido());
         dom.setObservaciones(entity.getObservaciones());
         dom.setIdArea(entity.getIdArea());
+        dom.setIdTipoCorrespondencia(entity.getIdTipoCorrespondencia());
 
         if (entity.getTipoCorrespondencia() != null) {
             dom.setDescripcionTipo(entity.getTipoCorrespondencia().getDescripcion());
@@ -47,10 +48,6 @@ public class CorrespondenciaMapper {
             dom.setIdEstatus(entity.getEstatus().getId());
         }
 
-        if(entity.getTipoCorrespondencia() != null) {
-            dom.setIdTipoCorrespondencia(entity.getTipoCorrespondencia().getIdTipo());
-        }
-        
         return dom;
     }
 
@@ -66,33 +63,11 @@ public class CorrespondenciaMapper {
         entity.setTitularDependencia(domain.getTitularDependencia());
         entity.setAsunto(domain.getAsunto());
         entity.setFechaRecibido(domain.getFechaRecibido());
+        entity.setIdEstatus(domain.getIdEstatus());
+        entity.setIdUsuarioCaptura(domain.getIdUsuarioCaptura());
         entity.setObservaciones(domain.getObservaciones());
         entity.setIdArea(domain.getIdArea());
-
-        if (domain.getIdUsuarioCaptura() != null) {
-            UsuarioEntity usuarioCaptura = new UsuarioEntity();
-            usuarioCaptura.setId(domain.getIdUsuarioCaptura());
-            entity.setUsuarioCaptura(usuarioCaptura);
-        }
-
-        if (domain.getIdArea() != null) {
-            AreaEntity area = new AreaEntity();
-            area.setId(domain.getIdArea());
-            entity.setArea(area);
-            
-        }
-
-        if (domain.getIdEstatus() != null) {
-            CatEstatusEntity estatus = new CatEstatusEntity();
-            estatus.setId(domain.getIdEstatus());
-            entity.setEstatus(estatus);
-        }
-
-        if(domain.getIdTipoCorrespondencia() != null) {
-            TipoCorrespondenciaEntity tipoCorrespondencia = new TipoCorrespondenciaEntity();
-            tipoCorrespondencia.setIdTipo(domain.getIdTipoCorrespondencia());
-          
-        }
+        entity.setIdTipoCorrespondencia(domain.getIdTipoCorrespondencia());
 
         return entity;
     }

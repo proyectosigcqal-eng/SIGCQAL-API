@@ -12,6 +12,7 @@ public class TipoCorrespondenciaMapper {
 
         TipoCorrespondencia dom = new TipoCorrespondencia();
         dom.setIdTipo(entity.getIdTipo());
+        dom.setIdNatural(entity.getIdNatural());
         dom.setDescripcion(entity.getDescripcion());
 
         return dom;
@@ -22,6 +23,7 @@ public class TipoCorrespondenciaMapper {
 
         TipoCorrespondenciaEntity entity = new TipoCorrespondenciaEntity();
         entity.setIdTipo(domain.getIdTipo());
+        entity.setIdNatural(domain.getIdNatural());
         entity.setDescripcion(domain.getDescripcion());
 
         return entity;
