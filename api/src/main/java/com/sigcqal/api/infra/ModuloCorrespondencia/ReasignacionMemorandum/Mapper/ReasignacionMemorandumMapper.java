@@ -33,10 +33,6 @@ public class ReasignacionMemorandumMapper {
                 domain.setFechaEmision(memo.getFechaEmision().toString());
             }
 
-            if (memo.getPlantilla() != null) {
-                domain.setIdPlantilla(memo.getPlantilla().getId());
-            }
-
             if (memo.getUsuarioEmisor() != null) {
                 domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());
             }

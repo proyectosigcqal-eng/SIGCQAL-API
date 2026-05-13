@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class SeguimientoMemorandum {
     private Long idSeguimientoMemorandum;
     private Long idMemo;
+    private Long idCorrespondencia;
 
     /**
      * Generado por la base de datos (serial4). No debe enviarse desde el cliente.

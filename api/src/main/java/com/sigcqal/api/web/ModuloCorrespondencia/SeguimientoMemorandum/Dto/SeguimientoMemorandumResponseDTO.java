@@ -6,6 +6,7 @@ import lombok.Data;
 public class SeguimientoMemorandumResponseDTO {
     private Long idSeguimientoMemorandum;
     private Long idMemo;
+    private Long idCorrespondencia;
     private Integer folioRespuesta;
     private String respuestaSeguimientoMemorandum;
     private String fechaResolucion;

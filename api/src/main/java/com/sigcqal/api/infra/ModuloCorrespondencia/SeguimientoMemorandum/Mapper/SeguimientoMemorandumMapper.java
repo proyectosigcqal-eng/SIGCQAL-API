@@ -26,10 +26,17 @@ public class SeguimientoMemorandumMapper {
                 : java.time.Year.now().getValue()
         );
     }
+    
         return SeguimientoMemorandum.builder()
                 .idSeguimientoMemorandum(entity.getId())
                 .idMemo(entity.getMemorandum() != null ? entity.getMemorandum().getId() : null)
                 .folioRespuesta(entity.getFolioRespuesta())
+                .idCorrespondencia(
+                        entity.getMemorandum() != null &&
+                        entity.getMemorandum().getCorrespondencia() != null
+                            ? entity.getMemorandum().getCorrespondencia().getId()
+                            : null
+                    )
                 .folioFormateado(folioFormateado)   
                 .respuestaSeguimientoMemorandum(entity.getRespuestaSeguimientoMemorandum())
                 .fechaResolucion(entity.getFechaResolucion())
@@ -68,6 +75,11 @@ public class SeguimientoMemorandumMapper {
             estatus.setIdEstatus(domain.getIdEstatus().intValue());
             entity.setEstatus(estatus);
         }
+
+        
+        if (entity.getMemorandum() != null && entity.getMemorandum().getCorrespondencia() != null) {
+            domain.setIdCorrespondencia(entity.getMemorandum().getCorrespondencia().getId());
+        }
         entity.setFechaRegistro(domain.getFechaRegistro());
         return entity;
     }
@@ -80,6 +92,7 @@ public class SeguimientoMemorandumMapper {
         dto.setIdSeguimientoMemorandum(domain.getIdSeguimientoMemorandum());
         dto.setIdMemo(domain.getIdMemo());
         dto.setFolioRespuesta(domain.getFolioRespuesta());
+        dto.setIdCorrespondencia(domain.getIdCorrespondencia());
         dto.setFolioFormateado(domain.getFolioFormateado());
         dto.setRespuestaSeguimientoMemorandum(domain.getRespuestaSeguimientoMemorandum());
         dto.setFechaResolucion(

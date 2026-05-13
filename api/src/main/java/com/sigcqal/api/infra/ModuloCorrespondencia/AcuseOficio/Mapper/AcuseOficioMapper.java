@@ -30,7 +30,7 @@ public class AcuseOficioMapper {
             
             if (oficio.getFechaEmision() != null) domain.setFechaEmision(oficio.getFechaEmision().toString());
             if (oficio.getCorrespondencia() != null) domain.setIdCorrespondencia(oficio.getCorrespondencia().getId());
-            if (oficio.getPlantilla() != null) domain.setIdPlantilla(oficio.getPlantilla().getId());
+            //if (oficio.getPlantilla() != null) domain.setIdPlantilla(oficio.getPlantilla().getId());
             if (oficio.getUsuarioEmisor() != null) domain.setIdUsuarioEmisor(oficio.getUsuarioEmisor().getId());
             if (oficio.getUsuarioFirmante() != null) domain.setIdUsuarioFirmante(oficio.getUsuarioFirmante().getId());
             
