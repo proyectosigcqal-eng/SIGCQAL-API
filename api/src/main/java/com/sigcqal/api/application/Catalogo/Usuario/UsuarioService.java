@@ -36,7 +36,7 @@ public class UsuarioService {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setId(dom.getId());
         dto.setIdPersona(dom.getIdPersona());
-        dto.setIdRol(dom.getIdRol());
+        dto.setIdRoles(dom.getIdRoles());
         dto.setIdArea(dom.getIdArea());
         dto.setNombreArea(dom.getNombreArea());
         dto.setUsuarioLogin(dom.getUsuarioLogin());
