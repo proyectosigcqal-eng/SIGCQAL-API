@@ -33,11 +33,7 @@ public class OficioMapper {
             entity.setCorrespondencia(correspondencia);
         }
 
-        if (domain.getIdPlantilla() != null) {
-            PlantillaMemorandumEntity plantilla = new PlantillaMemorandumEntity();
-            plantilla.setId(domain.getIdPlantilla());
-            entity.setPlantilla(plantilla);
-        }
+        entity.setIdPlantilla(domain.getIdPlantilla());
 
         if (domain.getIdUsuarioFirmante() != null) {
             UsuarioEntity firmante = new UsuarioEntity();
@@ -85,10 +81,8 @@ public class OficioMapper {
             domain.setAsuntoCorrespondenciaCompleto(entity.getCorrespondencia().getAsunto());
         }
 
-        if (entity.getPlantilla() != null) {
-            domain.setIdPlantilla(entity.getPlantilla().getId());
-            domain.setNombrePlantilla(entity.getPlantilla().getNombrePlantilla());
-        }
+      domain.setIdPlantilla(entity.getIdPlantilla());
+domain.setNombrePlantilla(null);
 
       
         if (entity.getUsuarioEmisor() != null) {

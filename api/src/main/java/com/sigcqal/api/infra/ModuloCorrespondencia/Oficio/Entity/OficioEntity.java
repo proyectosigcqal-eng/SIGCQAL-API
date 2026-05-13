@@ -45,9 +45,8 @@ public class OficioEntity {
     @JoinColumn(name = "id_usuario_firmante")
     private UsuarioEntity usuarioFirmante;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_plantilla")
-    private PlantillaMemorandumEntity plantilla;
+   @Column(name = "id_plantilla")
+private Long idPlantilla;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_area") 
