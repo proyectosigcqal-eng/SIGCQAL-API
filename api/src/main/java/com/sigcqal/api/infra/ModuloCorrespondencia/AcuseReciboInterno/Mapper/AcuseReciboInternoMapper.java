@@ -39,9 +39,9 @@ public class AcuseReciboInternoMapper {
             domain.setFechaEmision(memo.getFechaEmision().toString());
         }
 
-        if (memo.getPlantilla() != null) {
-            domain.setIdPlantilla(memo.getPlantilla().getId());
-        }
+        // if (memo.getPlantilla() != null) {
+        //     domain.setIdPlantilla(memo.getPlantilla().getId());
+        // }
 
         if (memo.getUsuarioEmisor() != null) {
             domain.setIdUsuarioEmisor(memo.getUsuarioEmisor().getId());

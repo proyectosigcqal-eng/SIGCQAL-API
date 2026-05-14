@@ -1,5 +1,7 @@
 package com.sigcqal.api.domain.Catalogo.Usuario.Model;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,11 +13,11 @@ public class Usuario {
     
     private Long id;
     private Long idPersona;
-    private Long idRol;
+    private List<Long> idRoles;
     private Long idArea;
     private String nombreArea;
     private String usuarioLogin;
     private String correoElectronico;
-    private String Password;
+    private String password;
 
 }
