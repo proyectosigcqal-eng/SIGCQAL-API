@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ public class UsuarioEntity {
     @Column(name = "id_persona")
     private Long idPersona;
 
-    @Column(name = "id_rol")
+    @Transient
     private Long idRol;
 
     @ManyToOne(fetch = FetchType.LAZY) 

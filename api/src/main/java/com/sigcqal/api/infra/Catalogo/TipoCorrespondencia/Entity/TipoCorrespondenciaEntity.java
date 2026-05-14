@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Entity
@@ -18,15 +17,6 @@ public class TipoCorrespondenciaEntity {
     @Column(name = "id_tipo_correspondencia")
     private Integer idTipo;
 
-    @Transient
-    private String idNatural;
-
     @Column(name = "descripcion")
     private String descripcion;
-
-    public String getIdNatural() {
-        if (idNatural != null) return idNatural;
-        if (descripcion == null) return null;
-        return descripcion.toUpperCase();
-    }
 }

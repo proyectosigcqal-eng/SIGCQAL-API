@@ -37,7 +37,6 @@ public class TipoCorrespondenciaService {
     private TipoCorrespondenciaDTO mapToResponse(TipoCorrespondencia dom) {
         TipoCorrespondenciaDTO dto = new TipoCorrespondenciaDTO();
         dto.setIdTipo(dom.getIdTipo());
-        dto.setIdNatural(dom.getIdNatural());
         dto.setDescripcion(dom.getDescripcion());
         return dto;
     }

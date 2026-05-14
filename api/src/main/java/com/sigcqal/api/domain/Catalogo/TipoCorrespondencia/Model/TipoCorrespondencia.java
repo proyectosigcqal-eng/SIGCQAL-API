@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TipoCorrespondencia {
     private Integer idTipo;
-    private String idNatural;
     private String descripcion;
     private Boolean activo;
 }

@@ -177,7 +177,7 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
             .toList();
 }
 
-    public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String idNatural) {
-        return repositoryPort.findByTipo(idNatural).stream().map(mapper::toResponse).toList();
+    public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String descripcion) {
+        return repositoryPort.findByTipo(descripcion).stream().map(mapper::toResponse).toList();
     }
 }

@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TipoCorrespondenciaDTO {
     private Integer idTipo;
-    private String idNatural;
     private String descripcion;
 }
