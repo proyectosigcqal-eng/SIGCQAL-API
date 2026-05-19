@@ -177,7 +177,11 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
             .toList();
 }
 
-    public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String idNatural) {
-        return repositoryPort.findByTipo(idNatural).stream().map(mapper::toResponse).toList();
+    public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String tipo) {
+        if (isBlank(tipo)) {
+            throw new InvalidRequestException("El tipo de correspondencia es obligatorio");
+        }
+
+        return repositoryPort.findByTipo(tipo.trim()).stream().map(mapper::toResponse).toList();
     }
 }

@@ -39,9 +39,9 @@ public class CorrespondenciaController {
         return ResponseEntity.ok(service.listarTodas());
     }
 
-    @GetMapping("/entrada/tipo/{idNatural}")
-    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarPorTipo(@PathVariable String idNatural) {
-        return ResponseEntity.ok(service.listarPorTipo(idNatural));
+    @GetMapping("/entrada/tipo/{tipo}")
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarPorTipo(@PathVariable String tipo) {
+        return ResponseEntity.ok(service.listarPorTipo(tipo));
     }
 
     @GetMapping("/entrada/{id}")

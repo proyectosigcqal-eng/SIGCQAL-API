@@ -2,14 +2,30 @@ package com.sigcqal.api.web.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ProblemDetail handleUnreadableBody(HttpMessageNotReadableException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "El body JSON es requerido y debe ser válido");
+        pd.setTitle("Solicitud inválida");
+        return pd;
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ProblemDetail handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Parámetro inválido: " + ex.getName());
+        pd.setTitle("Solicitud inválida");
+        return pd;
+    }
+
     @ExceptionHandler(InvalidRequestException.class)
     public ProblemDetail handleInvalidRequest(InvalidRequestException ex) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());

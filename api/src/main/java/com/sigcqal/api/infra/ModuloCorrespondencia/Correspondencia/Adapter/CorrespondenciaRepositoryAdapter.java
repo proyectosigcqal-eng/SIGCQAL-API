@@ -85,7 +85,7 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
 
         @Override
     public List<Correspondencia> findByTipo(String descripcion) {
-        return jpaRepository.findByTipoCorrespondencia_DescripcionIgnoreCase(descripcion)
+        return jpaRepository.findByTipoDescripcion(descripcion)
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
