@@ -14,6 +14,7 @@ import com.sigcqal.api.infra.exception.FileStorageException;
 public class FileUploadAdapter implements FileUploadPort {
     
     private final String carpetaDestino = "uploads/memorandums/";
+    private final String carpetaDestinoOficios = "uploads/oficios/";
 
    @Override
 public String guardarArchivo(byte[] contenido, String nombreArchivo) {
@@ -31,6 +32,26 @@ public String guardarArchivo(byte[] contenido, String nombreArchivo) {
         return "/api/files/memorandums/" + nombreArchivo;
     } catch (IOException e) {
         e.printStackTrace(); 
+        throw new FileStorageException("Error de E/S al guardar el PDF: " + e.getMessage(), e);
+    }
+}
+
+@Override
+public String guardarArchivoOficio(byte[] contenido, String nombreArchivo) {
+    try {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        Path directorioDestino = root.resolve(carpetaDestinoOficios);
+        if (!Files.exists(directorioDestino)) {
+            Files.createDirectories(directorioDestino);
+        }
+
+        Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+        Files.write(ficheroFinal, contenido);
+        System.out.println("Archivo guardado en: " + ficheroFinal.toAbsolutePath());
+
+        return "/api/files/oficios/" + nombreArchivo;
+    } catch (IOException e) {
+        e.printStackTrace();
         throw new FileStorageException("Error de E/S al guardar el PDF: " + e.getMessage(), e);
     }
 }
