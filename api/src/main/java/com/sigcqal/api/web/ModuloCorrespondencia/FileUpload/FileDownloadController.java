@@ -55,4 +55,44 @@ public class FileDownloadController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/oficios/{nombre}")
+    public ResponseEntity<Resource> descargarOficio(@PathVariable String nombre) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path archivo = root.resolve("uploads/oficios/" + nombre);
+
+            System.out.println(">>> Directorio de trabajo: " + root);
+            System.out.println(">>> Buscando archivo en: " + archivo);
+
+            Resource resource = new UrlResource(archivo.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                System.out.println(">>> Archivo NO encontrado: " + archivo);
+                return ResponseEntity.notFound().build();
+            }
+
+            MediaType contentType;
+            if (nombre.endsWith(".pdf")) {
+                contentType = MediaType.APPLICATION_PDF;
+            } else if (nombre.endsWith(".docx")) {
+                contentType = MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                );
+            } else {
+                contentType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+
+            String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
+
+            return ResponseEntity.ok()
+                .contentType(contentType)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                    disposition + "; filename=\"" + nombre + "\"")
+                .body(resource);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

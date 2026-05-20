@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
+import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.OficioContestacionExterna.Model.OficioContestacionExterna;
 import com.sigcqal.api.domain.ModuloCorrespondencia.OficioContestacionExterna.Port.OficioContestacionExternaRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.OficioContestacionExterna.Mapper.OficioContestacionExternaMapper;
@@ -19,6 +20,9 @@ public class OficioContestacionExternaService {
 
     @Autowired
     private OficioContestacionExternaMapper mapper;
+
+    @Autowired
+    private FileUploadPort fileUploadPort;
 
     public OficioContestacionExternaDTOs.Response guardar(OficioContestacionExternaDTOs.Request request) {
         validarRequest(request);
@@ -35,6 +39,25 @@ public class OficioContestacionExternaService {
                 .ifPresent(existente -> dom.setIdOficioContestacion(existente.getIdOficioContestacion()));
 
         OficioContestacionExterna saved = repositoryPort.guardar(dom);
+        return mapper.toResponse(saved);
+    }
+
+    public OficioContestacionExternaDTOs.Response guardarPdfFinal(Long idCorrespondencia, byte[] pdfBytes) {
+        if (idCorrespondencia == null || idCorrespondencia <= 0) {
+            throw new InvalidRequestException("El idCorrespondencia debe ser mayor a 0");
+        }
+        if (pdfBytes == null || pdfBytes.length == 0) {
+            throw new InvalidRequestException("El archivo PDF es obligatorio");
+        }
+
+        OficioContestacionExterna existente = repositoryPort.buscarPorCorrespondencia(idCorrespondencia)
+                .orElseThrow(() -> new InvalidRequestException("No existe OficioContestacionExterna para la correspondencia: " + idCorrespondencia));
+
+        String nombreArchivo = "OFICIO_CONTESTACION_" + idCorrespondencia + "_FIRMADO.pdf";
+        String url = fileUploadPort.guardarArchivoOficio(pdfBytes, nombreArchivo);
+        existente.setUrlPdfFinal(url);
+
+        OficioContestacionExterna saved = repositoryPort.guardar(existente);
         return mapper.toResponse(saved);
     }
 
