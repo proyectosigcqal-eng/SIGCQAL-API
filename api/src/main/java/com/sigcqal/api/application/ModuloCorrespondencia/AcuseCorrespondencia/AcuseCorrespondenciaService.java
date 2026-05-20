@@ -42,4 +42,11 @@ public class AcuseCorrespondenciaService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    public List<AcuseCorrespondenciaResponseDTO> listarPorCorrespondencia(Long idCorrespondencia) {
+    return repository.findByCorrespondencia(idCorrespondencia)
+        .stream()
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+    }
 }

@@ -11,4 +11,6 @@ public interface AcuseCorrespondenciaJpaRepository
 
     List<AcuseCorrespondenciaEntity> 
         findByEsDelAreaTrueAndCorrespondencia_Area_Id(Long idArea);
+
+    List<AcuseCorrespondenciaEntity> findByCorrespondencia_Id(Long idCorrespondencia);
 }

@@ -39,4 +39,12 @@ public class AcuseCorrespondenciaAdapter implements AcuseCorrespondenciaReposito
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<AcuseCorrespondencia> findByCorrespondencia(Long idCorrespondencia) {
+        return repository.findByCorrespondencia_Id(idCorrespondencia)
+            .stream()
+            .map(mapper::toDomain)
+            .collect(Collectors.toList());
+    }
 }
