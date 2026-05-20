@@ -29,4 +29,10 @@ public class AcuseCorrespondenciaController {
     public ResponseEntity<List<AcuseCorrespondenciaResponseDTO>> listarPorArea(@PathVariable Long idArea) {
         return ResponseEntity.ok(service.listarPorArea(idArea));
     }
+
+    @GetMapping("/correspondencia/{idCorrespondencia}")
+    public ResponseEntity<List<AcuseCorrespondenciaResponseDTO>> listarPorCorrespondencia(
+        @PathVariable Long idCorrespondencia) {
+        return ResponseEntity.ok(service.listarPorCorrespondencia(idCorrespondencia));
+}
 }

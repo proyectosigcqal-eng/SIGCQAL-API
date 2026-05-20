@@ -12,4 +12,6 @@ public interface AcuseCorrespondenciaRepositoryPort {
     Optional<AcuseCorrespondencia> findById(Long id);
 
     List<AcuseCorrespondencia> findByArea(Long idArea);
+
+    List<AcuseCorrespondencia> findByCorrespondencia(Long idCorrespondencia);
 }
