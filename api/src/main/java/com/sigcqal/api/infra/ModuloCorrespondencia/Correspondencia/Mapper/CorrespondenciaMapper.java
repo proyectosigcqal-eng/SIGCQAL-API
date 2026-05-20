@@ -34,6 +34,7 @@ public class CorrespondenciaMapper {
 
         if (entity.getTipoCorrespondencia() != null) {
             dom.setDescripcionTipo(entity.getTipoCorrespondencia().getDescripcion());
+            dom.setIdNaturalTipo(entity.getTipoCorrespondencia().getIdNatural());
         }
 
         if (entity.getUsuarioCaptura() != null) {
@@ -91,6 +92,7 @@ public class CorrespondenciaMapper {
         dto.setIdArea(domain.getIdArea());
         dto.setNombreArea(domain.getNombreArea());
         dto.setIdTipoCorrespondencia(domain.getIdTipoCorrespondencia());
+        dto.setIdNaturalTipo(domain.getIdNaturalTipo());
         dto.setDescripcionTipo(domain.getDescripcionTipo());
         return dto;
     }

@@ -29,6 +29,12 @@ public interface CorrespondenciaJpaRepository extends JpaRepository<Corresponden
     )
 """)
 List<CorrespondenciaEntity> findByArea_IdAndWithoutAcuse(@Param("idArea") Long idArea);
-List<CorrespondenciaEntity> findByTipoCorrespondencia_DescripcionIgnoreCase(String descripcion);
+
+    @Query("""
+        SELECT c FROM CorrespondenciaEntity c
+        JOIN c.tipoCorrespondencia t
+        WHERE UPPER(t.descripcion) = UPPER(:descripcion)
+    """)
+    List<CorrespondenciaEntity> findByTipoDescripcion(@Param("descripcion") String descripcion);
 
 }
