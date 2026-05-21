@@ -65,12 +65,12 @@ public ResponseEntity<List<OficioResponseDTO>> listarPorArea(@PathVariable Long 
     }
 
     @PostMapping("/{id}/finalizar")
-    public ResponseEntity<?> finalizar(
-        @PathVariable Long id,
-        @RequestParam("archivo") MultipartFile archivo,
-        @RequestParam("idArea") Long idArea  
-    ) throws IOException {
-        oficioService.finalizarAsignacion(id, archivo.getBytes(), idArea);
-        return ResponseEntity.ok().build();
-    }
+public ResponseEntity<?> finalizar(
+    @PathVariable Long id,
+    @RequestParam("archivo") MultipartFile archivo,
+    @RequestParam(value = "idArea", required = false) Long idArea  // ← required = false
+) throws IOException {
+    oficioService.finalizarAsignacion(id, archivo.getBytes(), idArea);
+    return ResponseEntity.ok().build();
+}
 }
