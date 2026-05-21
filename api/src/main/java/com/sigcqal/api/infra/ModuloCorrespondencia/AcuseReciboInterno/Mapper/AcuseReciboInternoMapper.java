@@ -39,6 +39,13 @@ public class AcuseReciboInternoMapper {
             domain.setFechaEmision(memo.getFechaEmision().toString());
         }
 
+        if (memo.getCorrespondencia() != null) {
+    domain.setIdCorrespondencia(memo.getCorrespondencia().getId());
+    // ✅ AGREGAR ESTAS DOS LÍNEAS
+    domain.setFolioUnicoCorrespondencia(memo.getCorrespondencia().getFolioUnico());
+    domain.setAsuntoCorrespondencia(memo.getCorrespondencia().getAsunto());
+}
+
         // if (memo.getPlantilla() != null) {
         //     domain.setIdPlantilla(memo.getPlantilla().getId());
         // }
@@ -115,6 +122,8 @@ public class AcuseReciboInternoMapper {
         dto.setIdPlantilla(d.getIdPlantilla());
         dto.setIdArea(d.getIdArea());
         dto.setIdUsuarioFirmante(d.getIdUsuarioFirmante());
+        dto.setFolioUnicoCorrespondencia(d.getFolioUnicoCorrespondencia());
+dto.setAsuntoCorrespondencia(d.getAsuntoCorrespondencia());
 
         return dto;
     }

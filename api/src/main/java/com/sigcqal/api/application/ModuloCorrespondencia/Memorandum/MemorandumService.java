@@ -1,5 +1,6 @@
 package com.sigcqal.api.application.ModuloCorrespondencia.Memorandum;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,6 +49,7 @@ public class MemorandumService {
         memo.setFolioUnico(generarFolioSeguro());
         memo.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
         memo.setIdArea(request.getIdArea());
+        memo.setFechaEmision(LocalDateTime.now());
         
 
        try {

@@ -26,6 +26,8 @@ public class AcuseReciboInternoResponseDTO {
     private Long idPlantilla;
     private Long idArea;
     private Long idUsuarioFirmante;
+    private String folioUnicoCorrespondencia;
+    private String asuntoCorrespondencia;
 
     
 }
