@@ -1,6 +1,7 @@
 package com.sigcqal.api.application.ModuloCorrespondencia.OficioContestacionExterna;
 
 import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class OficioContestacionExternaService {
         dom.setAsuntoContestacion(request.getAsuntoContestacion());
         dom.setCuerpoOficioTexto(request.getCuerpoOficioTexto());
         dom.setUrlPdfFinal(request.getUrlPdfFinal());
+        
 
         repositoryPort.buscarPorCorrespondencia(request.getIdCorrespondencia())
                 .ifPresent(existente -> dom.setIdOficioContestacion(existente.getIdOficioContestacion()));
