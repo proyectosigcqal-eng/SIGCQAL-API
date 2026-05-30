@@ -6,8 +6,8 @@ import lombok.Data;
 public class AsesorDTO {
     private Long idAsesor;
     private Long idPersona;
-    private String nombre;
     private String especialidad;
     private Integer cargaActual;
     private String ultimaAsignacionAt;
+private String nombre;
 }
