@@ -12,7 +12,6 @@ import com.sigcqal.api.infra.ClasificacionJuridica.Mapper.ClasificacionJuridicaM
 import com.sigcqal.api.infra.ClasificacionJuridica.Repository.ClasifiacionJuridicaJPARepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.var;
 
 @Component
 @RequiredArgsConstructor
@@ -21,8 +20,8 @@ public class ClasificacionJuridicaAdapter implements ClasificacionJuridicaReposi
     private final ClasificacionJuridicaMapper mapper;
     @Override
     public ClasificacionJuridica saveClasification(ClasificacionJuridica clasificacion) {
-        var entity = mapper.toEntity(clasificacion);
-        var saveEntity = repository.save(entity);
+        ClasificacionJuridicaEntity entity = mapper.toEntity(clasificacion);
+        ClasificacionJuridicaEntity saveEntity = repository.save(entity);
         return mapper.toDomain(saveEntity);
     }
     @Override

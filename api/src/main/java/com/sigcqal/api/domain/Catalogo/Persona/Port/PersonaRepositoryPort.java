@@ -8,4 +8,5 @@ import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 public interface PersonaRepositoryPort {
     Optional<Persona> findById(Long id);
     List<Persona> findAll();
+    Persona save(Persona persona);
 }
