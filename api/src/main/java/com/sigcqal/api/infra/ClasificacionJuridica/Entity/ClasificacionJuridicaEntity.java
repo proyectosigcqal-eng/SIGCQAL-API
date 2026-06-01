@@ -17,13 +17,13 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "detalle_asesoría", schema = "sustantiva")
+@Table(name = "detalle_asesoria", schema = "sustantiva")
 @Data
 
 public class ClasificacionJuridicaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_detalle_asesoría")
+    @Column(name = "id_detalle_asesoria")
     private Integer id;
     //@ManyToOne
     //@JoinColumn(name = "id_expediente")
@@ -40,7 +40,7 @@ public class ClasificacionJuridicaEntity {
     @ManyToOne
     @JoinColumn(name = "id_tipo_entrada")
     private TipoEntradaEntity tipoEntrada;
-    @Column(name = "calificación_acto")
+    @Column(name = "calificacion_acto")
     private String calificacionActo;
     @Column(name = "problematica")
     private String problematica;
@@ -48,6 +48,6 @@ public class ClasificacionJuridicaEntity {
     private String seguimientoAsesoria;
     @Column(name = "monto")
     private Integer monto;
-    @Column(name = "fecha_notificación")
+    @Column(name = "fecha_notificacion")
     private Date fechaNotificacion;
 }

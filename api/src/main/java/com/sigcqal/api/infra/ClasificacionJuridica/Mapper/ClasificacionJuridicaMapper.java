@@ -19,25 +19,31 @@ public class ClasificacionJuridicaMapper {
     if (cj.getTipoActo() != null) {
         TipoActoEmitidoEntity tipoActoEmitido = new TipoActoEmitidoEntity();
         tipoActoEmitido.setId(cj.getTipoActo().longValue());
+        tipoActoEmitido.setNombre(cj.getNombreTipoActo());
         c.setTipoActoEmitido(tipoActoEmitido);
     }
     if (cj.getIdAutoridad() != null) {
         AutoridadEntity autoridad = new AutoridadEntity();
         autoridad.setId(cj.getIdAutoridad().longValue());
+        autoridad.setNombre(cj.getNombreAutoridad());
         c.setAutoridad(autoridad);
     }
     if (cj.getIdEstatusDetalleExpediente() != null) {
         EstatusDetalleExpedienteEntity estatusDetalleExpediente = new EstatusDetalleExpedienteEntity();
         estatusDetalleExpediente.setId(cj.getIdEstatusDetalleExpediente().longValue());
+        estatusDetalleExpediente.setNombre(cj.getNombreEstatusDetalle());
         c.setEstatusDetalleExpediente(estatusDetalleExpediente);
     }
     if (cj.getIdTipoEntrada() != null) {
         TipoEntradaEntity tipoEntrada = new TipoEntradaEntity();
+        tipoEntrada.setId(cj.getIdTipoEntrada().longValue());
+        tipoEntrada.setNombre(cj.getNombreTipoEntrada());
         c.setTipoEntrada(tipoEntrada);
     }
     /*if (cj.getIdExpediente() != null) {
         ExpedienteEntity expediente = new ExpedienteEntity();
         expediente.setId(cj.getIdExpediente().longValue());
+        expediente.setNombre(cj.getNombreExpediente());
         c.setExpediente(expediente);
     }*/
     c.setCalificacionActo(cj.getCalificacionActo());
