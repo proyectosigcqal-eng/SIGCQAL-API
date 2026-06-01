@@ -29,4 +29,9 @@ public class PersonaRepositoryAdapter implements PersonaRepositoryPort {
     public List<Persona> findAll() {
         return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
     }
+
+    @Override
+    public Persona save(Persona persona) {
+        return mapper.toDomain(jpaRepository.save(mapper.toEntity(persona)));
+    }
 }
