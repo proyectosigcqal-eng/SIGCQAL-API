@@ -2,35 +2,45 @@ package com.sigcqal.api.web.Catalogo.Persona.Controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.jaxb.SpringDataJaxb.PageRequestDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sigcqal.api.application.Catalogo.Persona.PersonaService;
 import com.sigcqal.api.web.Catalogo.Persona.Dto.PersonaDTO;
+import com.sigcqal.api.web.Catalogo.Persona.Dto.PersonaRequestDTO;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/catalogos/personas")
+@RequestMapping("/api/catalogo/personas")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class PersonaController {
-    private final PersonaService personaService;
 
-    @GetMapping
-    @Operation(summary = "Listar personas")
-    public ResponseEntity<List<PersonaDTO>> listarPersonas() {
-        return ResponseEntity.ok(personaService.obtenerPersonas());
+    private final PersonaService service;
+
+    @PostMapping
+    public ResponseEntity<PersonaDTO> guardar(@RequestBody PersonaRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(request));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener persona por id")
-    public ResponseEntity<PersonaDTO> obtenerPersona(@PathVariable Long id) {
-        return ResponseEntity.ok(personaService.obtenerPersona(id));
+    public ResponseEntity<PersonaDTO> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.obtenerPorId(id));
     }
+
+    @GetMapping
+    public ResponseEntity<List<PersonaDTO>> obtenerTodas() {
+        return ResponseEntity.ok(service.obtenerTodas());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PersonaDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody PersonaRequestDTO request) {
+        return ResponseEntity.ok(service.actualizar(id, request));
+    }
+
 }
