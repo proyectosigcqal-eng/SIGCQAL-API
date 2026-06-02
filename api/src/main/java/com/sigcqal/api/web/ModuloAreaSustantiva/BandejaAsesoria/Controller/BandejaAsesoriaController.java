@@ -7,6 +7,8 @@ import com.sigcqal.api.application.ModuloAreaSustantiva.BandejaAsesoria.BandejaA
 import com.sigcqal.api.web.ModuloAreaSustantiva.BandejaAsesoria.Dto.BandejaAsesoriaResponseDto;
 import com.sigcqal.api.web.ModuloAreaSustantiva.BandejaAsesoria.Dto.UltimaModificacionDto;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BandejaAsesoria.Model.TramiteBandeja;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.BandejaAsesoria.Mapper.BandejaAsesoriaMapper;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class BandejaAsesoriaController {
 
     private final BandejaAsesoriaService service;
+    private final BandejaAsesoriaMapper mapper;
 
     @GetMapping("/bandeja")
     public ResponseEntity<List<BandejaAsesoriaResponseDto>> obtenerBandeja(
@@ -30,29 +33,9 @@ public class BandejaAsesoriaController {
             tipoTramite.isEmpty() ? null : tipoTramite
         );
 
-        List<BandejaAsesoriaResponseDto> response = bandeja.stream()
-            .map(this::toDto)
-            .collect(Collectors.toList());
-
-        return ResponseEntity.ok(response);
-    }
-
-    private BandejaAsesoriaResponseDto toDto(TramiteBandeja tramite) {
-        UltimaModificacionDto ultimaModificacion = UltimaModificacionDto.builder()
-            .descripcion(tramite.getUltimaModificacionDescripcion())
-            .timestamp(tramite.getUltimaModificacionTimestamp())
-            .build();
-
-        return BandejaAsesoriaResponseDto.builder()
-            .folio(tramite.getFolio())
-            .municipioProcedencia(tramite.getMunicipioProcedencia())
-            .contribuyente(tramite.getContribuyente())
-            .tipoActo(tramite.getTipoActo())
-            .estatusPrincipal(tramite.getEstatusPrincipal())
-            .estatusSecundario(tramite.getEstatusSecundario())
-            .ultimaModificacion(ultimaModificacion)
-            .tieneBitacora(tramite.getTieneBitacora())
-            .tieneFicha(tramite.getTieneFicha())
-            .build();
-    }
+      List<BandejaAsesoriaResponseDto> response = bandeja.stream()
+    .map(mapper::toDto)   
+    .collect(Collectors.toList());
+    return ResponseEntity.ok(response); 
+}
 }
