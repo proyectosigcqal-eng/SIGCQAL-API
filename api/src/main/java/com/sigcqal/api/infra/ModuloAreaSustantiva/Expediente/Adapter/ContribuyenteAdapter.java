@@ -1,6 +1,8 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Adapter;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -22,17 +24,27 @@ public class ContribuyenteAdapter implements ContribuyenteRepositoryPort {
     @Override
     public Contribuyente save(Contribuyente contribuyente) {
         ContribuyenteEntity entity = mapper.toEntity(contribuyente);
-        ContribuyenteEntity savedEntity = repository.save(entity);
-        return mapper.toDomain(savedEntity);
-    }
-
-    @Override
-    public Optional<Contribuyente> findByRfc(String rfc) {
-        return repository.findByPersonaRfc(rfc).map(mapper::toDomain);
+        return mapper.toDomain(repository.save(entity));
     }
 
     @Override
     public Optional<Contribuyente> findById(Long id) {
         return repository.findById(id).map(mapper::toDomain);
     }
+
+    @Override
+    public Optional<Contribuyente> findByIdPersona(Long idPersona) {
+        return repository.findByIdPersona(idPersona).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Contribuyente> findAll() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+
+
 }

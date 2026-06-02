@@ -1,16 +1,14 @@
-package com.sigcqal.api.domain.Catalogo.Direccion.Model;
+package com.sigcqal.api.web.Catalogo.Direccion.Dto;
+
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Direccion {
-    private Long id;
+@AllArgsConstructor
+public class DireccionRequestDto {
     private String calle;
     private String numExt;
     private String numInt;
@@ -18,6 +16,4 @@ public class Direccion {
     private String cp;
     private Integer idMunicipio;
     private Integer idEstado;
-
-    
 }

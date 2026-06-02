@@ -6,7 +6,9 @@ import java.util.Optional;
 import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 
 public interface PersonaRepositoryPort {
-    Optional<Persona> findById(Long id);
-    List<Persona> findAll();
     Persona save(Persona persona);
+    Optional<Persona> findById(Long id);
+    Optional<Persona> findByRfc(String rfc);
+    List<Persona> findAll();
+
 }

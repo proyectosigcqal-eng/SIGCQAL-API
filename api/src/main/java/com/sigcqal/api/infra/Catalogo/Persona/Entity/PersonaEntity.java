@@ -50,7 +50,7 @@ public class PersonaEntity {
     @Column(name = "rec")
     private String rec;
 
-    @Column(name = "Identificacion_oficial")
+    @Column(name = "identificacion_oficial")
     private String identificacionOficial;
 
     @Column(name = "telefono_fijo")

@@ -15,8 +15,6 @@ public class PersonaMapper {
         if (entity == null) return null;
 
         Persona domain = new Persona();
-
-        domain.setId(entity.getId());
         domain.setNombre(entity.getNombre());
         domain.setApellidoPaterno(entity.getApellidoPaterno());
         domain.setApellidoMaterno(entity.getApellidoMaterno());
@@ -50,10 +48,6 @@ public class PersonaMapper {
 
         PersonaEntity entity = new PersonaEntity();
 
-        if (domain.getId() != null) {
-            entity.setId(domain.getId());
-        }
-
         entity.setNombre(domain.getNombre());
         entity.setApellidoPaterno(domain.getApellidoPaterno());
         entity.setApellidoMaterno(domain.getApellidoMaterno());
@@ -80,6 +74,7 @@ public class PersonaMapper {
             // Reemplaza "TipoPersonaEntity" con el nombre real de tu clase Entity
             TipoPersonaEntity tipoPersona = new TipoPersonaEntity();
             tipoPersona.setId(domain.getIdTipoPersona());
+            tipoPersona.setNombre(domain.getNomreTipoPersona()); 
             entity.setTipoPersona(tipoPersona);
         }
 
@@ -91,7 +86,7 @@ public class PersonaMapper {
 
         PersonaDTO dto = new PersonaDTO();
         
-        dto.setId(domain.getId());
+       
         dto.setIdDireccion(domain.getIdDireccion());
         dto.setNombre(domain.getNombre());
         dto.setApellidoPaterno(domain.getApellidoPaterno());

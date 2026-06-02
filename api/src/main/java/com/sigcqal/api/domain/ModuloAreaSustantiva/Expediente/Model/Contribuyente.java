@@ -1,6 +1,7 @@
 package com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Contribuyente {
     private Long id;
     private Integer idPersona;
-    private Date fechaRegistroSistema;
+    private LocalDateTime fechaRegistroSistema;
     private String observacionesInternas;
     
 }

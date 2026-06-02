@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
 
@@ -28,7 +29,7 @@ public class ContribuyenteEntity {
     private PersonaEntity persona;
 
     @Column(name = "fecha_registro_sistema")
-    private Date fechaRegistroSistema;
+    private LocalDateTime fechaRegistroSistema;
 
     @Column(name = "observaciones_internas")
     private String observacionesInternas;

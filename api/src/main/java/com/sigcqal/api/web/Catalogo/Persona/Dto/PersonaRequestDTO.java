@@ -1,17 +1,10 @@
-package com.sigcqal.api.domain.Catalogo.Persona.Model;
+package com.sigcqal.api.web.Catalogo.Persona.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Persona {
-    private Long id;
-    private Long idDireccion;
+public class PersonaRequestDTO {
+    private Integer idDireccion;
     private String nombre;
     private String apellidoPaterno;
     private String apellidoMaterno;
@@ -24,6 +17,5 @@ public class Persona {
     private String telefonoFijo;
     private String numeroIdFolio;
     private String correo;
-    private Long idTipoPersona;
-    private String nomreTipoPersona; 
+    private Integer idTipoPersona;
 }
