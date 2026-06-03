@@ -8,7 +8,6 @@ import com.sigcqal.api.infra.Catalogo.EstatusDetalleExpediente.Entity.EstatusDet
 import com.sigcqal.api.infra.Catalogo.TipoActoEmitido.Entity.TipoActoEmitidoEntity;
 import com.sigcqal.api.infra.Catalogo.TipoEntrada.Entity.TipoEntradaEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ClasificacionJuridica.Entity.ClasificacionJuridicaEntity;
-import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ClasificacionJuridica.DTO.ClasificacionJuridicaResponseDTO;
 
 @Component
@@ -41,11 +40,7 @@ public class ClasificacionJuridicaMapper {
         tipoEntrada.setNombre(cj.getNombreTipoEntrada());
         c.setTipoEntrada(tipoEntrada);
     }
-    if (cj.getIdExpediente() != null) {
-        ExpedienteEntity expediente = new ExpedienteEntity();
-        expediente.setId(cj.getIdExpediente());
-        c.setExpediente(expediente);
-    }
+    c.setIdExpediente(cj.getIdExpediente());
     c.setCalificacionActo(cj.getCalificacionActo());
     c.setProblematica(cj.getProblematica());
     c.setSeguimientoAsesoria(cj.getSeguimientoAsesoria());
@@ -73,10 +68,7 @@ public ClasificacionJuridica toDomain(ClasificacionJuridicaEntity cj) {
         c.setIdTipoEntrada(cj.getTipoEntrada().getId().intValue());
         c.setNombreTipoEntrada(cj.getTipoEntrada().getNombre());
     }
-    if (cj.getExpediente() != null) {
-       c.setIdExpediente(cj.getExpediente().getId().intValue());
-       c.setFolioGobierno(cj.getExpediente().getFolioGobierno());
-    }
+    c.setIdExpediente(cj.getIdExpediente());
     c.setCalificacionActo(cj.getCalificacionActo());
     c.setProblematica(cj.getProblematica());
     c.setSeguimientoAsesoria(cj.getSeguimientoAsesoria());

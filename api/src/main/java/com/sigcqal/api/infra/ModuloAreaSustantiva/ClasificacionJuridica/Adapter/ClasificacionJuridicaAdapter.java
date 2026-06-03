@@ -21,6 +21,15 @@ public class ClasificacionJuridicaAdapter implements ClasificacionJuridicaReposi
     @Override
     public ClasificacionJuridica saveClasification(ClasificacionJuridica clasificacion) {
         ClasificacionJuridicaEntity entity = mapper.toEntity(clasificacion);
+
+        Integer idExpediente = entity.getIdExpediente();
+        if (idExpediente != null) {
+            List<ClasificacionJuridicaEntity> existentes = repository.findAllByIdExpediente(idExpediente);
+            if (!existentes.isEmpty()) {
+                entity.setId(existentes.get(0).getId());
+            }
+        }
+
         ClasificacionJuridicaEntity saveEntity = repository.save(entity);
         return mapper.toDomain(saveEntity);
     }

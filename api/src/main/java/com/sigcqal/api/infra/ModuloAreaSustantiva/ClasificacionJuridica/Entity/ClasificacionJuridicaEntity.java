@@ -5,7 +5,6 @@ import com.sigcqal.api.infra.Catalogo.Autoridad.Entity.AutoridadEntity;
 import com.sigcqal.api.infra.Catalogo.EstatusDetalleExpediente.Entity.EstatusDetalleExpedienteEntity;
 import com.sigcqal.api.infra.Catalogo.TipoActoEmitido.Entity.TipoActoEmitidoEntity;
 import com.sigcqal.api.infra.Catalogo.TipoEntrada.Entity.TipoEntradaEntity;
-import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,9 +25,8 @@ public class ClasificacionJuridicaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle_asesoria")
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name = "id_expediente")
-    private ExpedienteEntity expediente;
+    @Column(name = "id_expediente")
+    private Integer idExpediente;
     @ManyToOne
     @JoinColumn(name = "id_tipo_acto_emitido")
     private TipoActoEmitidoEntity tipoActoEmitido;
