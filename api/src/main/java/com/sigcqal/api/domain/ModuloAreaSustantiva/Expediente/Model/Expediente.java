@@ -19,6 +19,7 @@ public class Expediente {
     private Long idAsesor;
     private Long idContribuyente;
     private Long idSolicitante;
+    private Long idRepresentanteLegal;
     private Long idTipoTramite;
     private Long idEstatusExpediente;
     private String documentoAcreditaPersonalidad;

@@ -50,6 +50,10 @@ public class ExpedienteEntity {
     private PersonaEntity solicitante;
 
     @ManyToOne
+    @JoinColumn(name = "id_representante_legal")
+    private PersonaEntity representanteLegal;
+
+    @ManyToOne
     @JoinColumn(name = "id_tipo_tramite")
     private TipoTramiteEntity tipoTramite;
 

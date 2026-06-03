@@ -43,6 +43,11 @@ public class ExpedienteMapper {
             solicitante.setId(expediente.getIdSolicitante());
             entity.setSolicitante(solicitante);
         }
+        if (expediente.getIdRepresentanteLegal() != null) {
+            PersonaEntity representanteLegal = new PersonaEntity();
+            representanteLegal.setId(expediente.getIdRepresentanteLegal());
+            entity.setRepresentanteLegal(representanteLegal);
+        }
         if (expediente.getIdTipoTramite() != null) {
             TipoTramiteEntity tipoTramite = new TipoTramiteEntity();
             tipoTramite.setId(expediente.getIdTipoTramite());
@@ -76,6 +81,9 @@ public class ExpedienteMapper {
         if (entity.getSolicitante() != null) {
             expediente.setIdSolicitante(entity.getSolicitante().getId());
         }
+        if (entity.getRepresentanteLegal() != null) {
+            expediente.setIdRepresentanteLegal(entity.getRepresentanteLegal().getId());
+        }
         if (entity.getTipoTramite() != null) {
             expediente.setIdTipoTramite(entity.getTipoTramite().getId());
         }
@@ -96,6 +104,7 @@ public class ExpedienteMapper {
         dto.setIdAsesor(domain.getIdAsesor());
         dto.setIdContribuyente(domain.getIdContribuyente());
         dto.setIdSolicitante(domain.getIdSolicitante());
+        dto.setIdRepresentanteLegal(domain.getIdRepresentanteLegal());
         dto.setIdTipoTramite(domain.getIdTipoTramite());
         dto.setIdEstatusExpediente(domain.getIdEstatusExpediente());
         dto.setDocumentoAcreditaPersonalidad(domain.getDocumentoAcreditaPersonalidad());

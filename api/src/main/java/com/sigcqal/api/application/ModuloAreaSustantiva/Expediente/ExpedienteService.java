@@ -31,6 +31,7 @@ public class ExpedienteService {
                 .idAsesor(request.getIdAsesor())
                 .idContribuyente(request.getIdContribuyente())
                 .idSolicitante(request.getIdSolicitante())
+                .idRepresentanteLegal(request.getIdRepresentanteLegal())
                 .idTipoTramite(request.getIdTipoTramite())
                 .idEstatusExpediente(request.getIdEstatusExpediente())
                 .documentoAcreditaPersonalidad(request.getDocumentoAcreditaPersonalidad())

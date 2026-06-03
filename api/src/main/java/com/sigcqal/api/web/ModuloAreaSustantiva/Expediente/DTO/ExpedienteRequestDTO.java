@@ -21,6 +21,7 @@ public class ExpedienteRequestDTO {
     private String archivoDocumentoAcreditaPersonalidad;
     private Long idContribuyente;
     private Long idSolicitante;
+    private Long idRepresentanteLegal;
     
     private ContribuyenteDatosDTO contribuyenteDatos;
     private SolicitanteDatosDTO solicitanteDatos;
