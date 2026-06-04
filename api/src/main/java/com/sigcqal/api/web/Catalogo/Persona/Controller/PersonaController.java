@@ -14,7 +14,7 @@ import com.sigcqal.api.web.Catalogo.Persona.Dto.PersonaRequestDTO;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/catalogo/personas")
+@RequestMapping("/catalogos/personas")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class PersonaController {

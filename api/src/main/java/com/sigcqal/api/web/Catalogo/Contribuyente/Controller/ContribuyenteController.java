@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/sustantiva/contribuyentes")
+@RequestMapping("catalogos/contribuyentes")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor 
 public class ContribuyenteController {

@@ -25,6 +25,7 @@ private final EstadoRepositoryPort repositoryPort;
 
     private EstadoDTO mapToResponse(Estado dom) {
         EstadoDTO res = new EstadoDTO();
+        res.setId(dom.getIdEstado());
         res.setNombreEstado(dom.getNombreEstado());
         return res;
     }
