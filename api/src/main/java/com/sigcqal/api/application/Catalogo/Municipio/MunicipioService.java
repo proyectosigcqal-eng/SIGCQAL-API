@@ -25,6 +25,7 @@ private final MunicipioRepositoryPort repositoryPort;
 
     private MunicipioDTO mapToResponse(Municipio dom) {
         MunicipioDTO res = new MunicipioDTO();
+        res.setId(dom.getId());
         res.setNombreMunicipio(dom.getNombreMunicipio());
         res.setNombreEstado(dom.getEstado().getNombreEstado());
         return res;

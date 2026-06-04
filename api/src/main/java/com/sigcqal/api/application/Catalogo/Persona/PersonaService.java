@@ -24,8 +24,12 @@ public class PersonaService {
 
     @Transactional
     public PersonaDTO guardar(PersonaRequestDTO request) {
+       
+     Long direccionId = request.getIdDireccion() != null ? request.getIdDireccion().longValue() : null;
+        Long tipoPersonaId = request.getIdTipoPersona() != null ? request.getIdTipoPersona().longValue() : null;
+        
         Persona persona = Persona.builder()
-                .idDireccion(request.getIdDireccion().longValue())
+                .idDireccion(direccionId)
                 .nombre(request.getNombre())
                 .apellidoPaterno(request.getApellidoPaterno())
                 .apellidoMaterno(request.getApellidoMaterno())
@@ -38,7 +42,7 @@ public class PersonaService {
                 .telefonoFijo(request.getTelefonoFijo())
                 .numeroIdFolio(request.getNumeroIdFolio())
                 .correo(request.getCorreo())
-                .idTipoPersona(request.getIdTipoPersona().longValue())
+                .idTipoPersona(tipoPersonaId)
                 .build();
 
         return mapper.toResponse(port.save(persona));
@@ -64,7 +68,9 @@ public class PersonaService {
                 .orElseThrow(() -> new InvalidRequestException(
                         "Persona no encontrada con id: " + id));
 
-        existente.setIdDireccion(request.getIdDireccion().longValue());
+        Long direccionId = request.getIdDireccion() != null ? request.getIdDireccion().longValue() : null;
+        Long tipoPersonaId = request.getIdTipoPersona() != null ? request.getIdTipoPersona().longValue() : null;
+        existente.setIdDireccion(direccionId);
         existente.setNombre(request.getNombre());
         existente.setApellidoPaterno(request.getApellidoPaterno());
         existente.setApellidoMaterno(request.getApellidoMaterno());
@@ -77,7 +83,7 @@ public class PersonaService {
         existente.setTelefonoFijo(request.getTelefonoFijo());
         existente.setNumeroIdFolio(request.getNumeroIdFolio());
         existente.setCorreo(request.getCorreo());
-        existente.setIdTipoPersona(request.getIdTipoPersona().longValue());
+        existente.setIdTipoPersona(tipoPersonaId);
 
         return mapper.toResponse(port.save(existente));
     }

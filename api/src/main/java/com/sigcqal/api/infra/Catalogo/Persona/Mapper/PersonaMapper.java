@@ -15,6 +15,8 @@ public class PersonaMapper {
         if (entity == null) return null;
 
         Persona domain = new Persona();
+        // Mapear el id desde la entidad
+        domain.setId(entity.getId());
         domain.setNombre(entity.getNombre());
         domain.setApellidoPaterno(entity.getApellidoPaterno());
         domain.setApellidoMaterno(entity.getApellidoMaterno());
@@ -47,6 +49,8 @@ public class PersonaMapper {
         if (domain == null) return null;
 
         PersonaEntity entity = new PersonaEntity();
+        // Mantener el id para actualizaciones
+        entity.setId(domain.getId());
 
         entity.setNombre(domain.getNombre());
         entity.setApellidoPaterno(domain.getApellidoPaterno());
@@ -85,6 +89,8 @@ public class PersonaMapper {
         if (domain == null) return null;
 
         PersonaDTO dto = new PersonaDTO();
+        // Mapear id a la respuesta
+        dto.setId(domain.getId());
         
        
         dto.setIdDireccion(domain.getIdDireccion());
