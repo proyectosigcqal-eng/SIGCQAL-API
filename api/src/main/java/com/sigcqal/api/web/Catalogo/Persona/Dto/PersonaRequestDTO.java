@@ -18,4 +18,5 @@ public class PersonaRequestDTO {
     private String numeroIdFolio;
     private String correo;
     private Integer idTipoPersona;
+    private String tipoIdentificacion;
 }
