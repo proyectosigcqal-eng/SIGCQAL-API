@@ -97,28 +97,64 @@ public class FileDownloadController {
     }
 
     @GetMapping("/expedientes/{nombre}")
-public ResponseEntity<Resource> descargarExpediente(@PathVariable String nombre) {
-    try {
-        Path root    = Paths.get(".").toAbsolutePath().normalize();
-        Path archivo = root.resolve("uploads/expedientes/" + nombre);
-        Resource resource = new UrlResource(archivo.toUri());
+    public ResponseEntity<Resource> descargarExpediente(@PathVariable String nombre) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path archivo = root.resolve("uploads/expedientes/" + nombre);
 
-        if (!resource.exists() || !resource.isReadable()) {
-            return ResponseEntity.notFound().build();
+            Resource resource = new UrlResource(archivo.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            MediaType contentType;
+            if (nombre.endsWith(".pdf")) {
+                contentType = MediaType.APPLICATION_PDF;
+            } else {
+                contentType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+
+            String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
+
+            return ResponseEntity.ok()
+                .contentType(contentType)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                    disposition + "; filename=\"" + nombre + "\"")
+                .body(resource);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
         }
-
-        MediaType contentType = nombre.endsWith(".pdf")
-            ? MediaType.APPLICATION_PDF
-            : MediaType.APPLICATION_OCTET_STREAM;
-
-        String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
-
-        return ResponseEntity.ok()
-            .contentType(contentType)
-            .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"" + nombre + "\"")
-            .body(resource);
-    } catch (MalformedURLException e) {
-        return ResponseEntity.badRequest().build();
     }
-}
+
+    @GetMapping("/constancias/{nombre}")
+    public ResponseEntity<Resource> descargarConstancia(@PathVariable String nombre) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path archivo = root.resolve("uploads/constancias/" + nombre);
+
+            Resource resource = new UrlResource(archivo.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            MediaType contentType;
+            if (nombre.endsWith(".pdf")) {
+                contentType = MediaType.APPLICATION_PDF;
+            } else {
+                contentType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+
+            return ResponseEntity.ok()
+                .contentType(contentType)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                    "inline; filename=\"" + nombre + "\"")
+                .body(resource);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

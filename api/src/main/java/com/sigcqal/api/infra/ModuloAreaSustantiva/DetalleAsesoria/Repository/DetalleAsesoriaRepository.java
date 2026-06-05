@@ -14,6 +14,7 @@ public interface DetalleAsesoriaRepository
 
     @Query(value = """
         SELECT
+            e.id_expediente,
             e.folio_gobierno,
             e.fecha_solicitud,
             CONCAT(p.nombre,' ',p.apellido_paterno,' ',
@@ -24,6 +25,7 @@ public interface DetalleAsesoriaRepository
             a.nombre                                   AS nombre_autoridad,
             ede.nombre                                 AS estatus_detalle,
             da.calificacion_acto,
+            da.problematica,
             da.seguimiento,
             da.fecha_notificacion,
             p.rfc,

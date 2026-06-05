@@ -15,6 +15,15 @@ public class DetalleAsesoriaResponseDTO {
 
     private String contribuyente;
 
+    @JsonProperty("folio_asesoria")
+    private String folioAsesoria;
+
+    @JsonProperty("autoridad_responsable")
+    private String autoridadResponsable;
+
+    @JsonProperty("descripcion_sintetica")
+    private String descripcionSintetica;
+
     @JsonProperty("estatus_actual")
     private String estatusActual;
 

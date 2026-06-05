@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <style>
+    @page { size: A4; margin: 24mm 18mm 20mm 18mm; }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #111827; }
+    .header { text-align: center; margin-bottom: 18px; }
+    .header .inst { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; }
+    .header .sub { margin-top: 4px; font-size: 11px; color: #374151; }
+    .title { text-align: center; margin: 16px 0 10px; font-size: 14px; font-weight: 800; letter-spacing: 0.03em; }
+    .meta { width: 100%; border-collapse: collapse; margin: 12px 0 16px; }
+    .meta td { padding: 6px 8px; border: 1px solid #e5e7eb; vertical-align: top; }
+    .label { color: #6b7280; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+    .value { font-weight: 700; }
+    .section { margin-top: 12px; }
+    .section .h { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; color: #1f2937; margin-bottom: 6px; }
+    .box { border: 1px solid #e5e7eb; background: #f9fafb; padding: 10px 12px; border-radius: 8px; line-height: 1.55; }
+    .footer { margin-top: 18px; font-size: 11px; color: #111827; line-height: 1.55; }
+    .legal { margin-top: 10px; font-size: 10.5px; color: #374151; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="inst">CEDECON – DEFENSA DEL CONTRIBUYENTE</div>
+    <div class="sub">Constancia Interna de Remisión (Art. 41)</div>
+  </div>
+
+  <div class="title">CONSTANCIA INTERNA DE REMISIÓN</div>
+
+  <table class="meta">
+    <tr>
+      <td>
+        <div class="label">Número de constancia</div>
+        <div class="value">{{NUM_CONSTANCIA}}</div>
+      </td>
+      <td>
+        <div class="label">Fecha y hora de emisión</div>
+        <div class="value">{{FECHA_HORA}}</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="label">Folio de asesoría</div>
+        <div class="value">{{FOLIO_ASESORIA}}</div>
+      </td>
+      <td>
+        <div class="label">Calificación jurídica</div>
+        <div class="value">{{CALIFICACION_JURIDICA}}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div class="label">Quejoso / Contribuyente</div>
+        <div class="value">{{QUEJOSO}}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div class="label">Autoridad responsable</div>
+        <div class="value">{{AUTORIDAD_RESPONSABLE}}</div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="section">
+    <div class="h">Descripción sintética</div>
+    <div class="box">{{DESCRIPCION_SINTETICA}}</div>
+  </div>
+
+  <div class="footer">
+    <div class="legal">
+      Esta constancia formaliza la aceptación de la queja por parte de la CEDECON conforme al Artículo 41 de la Ley de Defensa del Contribuyente del Estado de Zacatecas.
+    </div>
+  </div>
+</body>
+</html>
+
