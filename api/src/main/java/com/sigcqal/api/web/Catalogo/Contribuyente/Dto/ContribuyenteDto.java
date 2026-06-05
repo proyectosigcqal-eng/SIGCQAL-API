@@ -1,6 +1,5 @@
 package com.sigcqal.api.web.Catalogo.Contribuyente.Dto;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;

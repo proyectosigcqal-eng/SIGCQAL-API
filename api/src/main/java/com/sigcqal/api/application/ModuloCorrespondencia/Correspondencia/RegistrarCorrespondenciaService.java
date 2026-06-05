@@ -11,7 +11,6 @@ import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
 import com.sigcqal.api.domain.ModuloCorrespondencia.BitacoraHistorica.Port.BitacoraHistoricaRepositoryPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
-import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.AuditoriaPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.CorrespondenciaRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.CorrespondenciaMapper;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;

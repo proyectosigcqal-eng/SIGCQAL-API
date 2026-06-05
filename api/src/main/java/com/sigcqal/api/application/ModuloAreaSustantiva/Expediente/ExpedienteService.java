@@ -1,10 +1,12 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.Expediente;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Model.Expediente;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Port.ExpedienteRepositoryPort;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Mapper.ExpedienteMapper;
@@ -20,6 +22,7 @@ public class ExpedienteService {
 
     private final ExpedienteRepositoryPort port;
     private final ExpedienteMapper mapper;
+    private final FileUploadPort fileUploadPort;
 
     @Transactional
     public ExpedienteResponseDTO guardar(ExpedienteRequestDTO request) {
@@ -43,21 +46,26 @@ public class ExpedienteService {
     }
 
 
-    public List<ExpedienteResponseDTO> buscarPorFolio(String folio) {
-        List<Expediente> resultado = port.findByFolio(folio);
+    public ExpedienteResponseDTO buscarPorFolio(String folio) {
+        // Obtenemos el expediente o lanzamos la excepción directamente
+        Expediente expediente = port.findByFolio(folio)
+                .orElseThrow(() -> new RuntimeException("Folio no encontrado: " + folio));
 
-        if(resultado.isEmpty()){
-            throw new RuntimeException("Folio no encontrado ");
-        }
-       return resultado.stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
+        // Lo mapeamos a DTO y lo retornamos como un objeto único
+        return mapper.toResponse(expediente);
     }
 
-    public java.util.List<ExpedienteResponseDTO> listarTodos() {
-        return port.findAll()
-                .stream()
-                .map(mapper::toResponse)
-                .collect(java.util.stream.Collectors.toList());
-    }
+    @Transactional
+public ExpedienteResponseDTO guardarDocumentoPersonalidad(String folio, byte[] archivo) {
+    Expediente expediente = port.findByFolio(folio)
+        .stream().findFirst()
+        .orElseThrow(() -> new RuntimeException("Expediente no encontrado: " + folio));
+
+    String nombreArchivo = "EXP_" + folio + "_DOC_PERSONALIDAD.pdf";
+    String url = fileUploadPort.guardarArchivoExpediente(archivo, nombreArchivo);
+    expediente.setArchivoDocumentoAcreditaPersonalidad(url);
+
+    Expediente guardado = port.save(expediente);
+    return mapper.toResponse(guardado);
+}
 }

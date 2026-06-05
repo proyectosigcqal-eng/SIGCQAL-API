@@ -9,12 +9,12 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "cat_tipo_tramite", schema = "catalogos")
+@Table(name = "tipo_tramite", schema = "catalogos")
 @Data
 public class TipoTramiteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cat_tipo_tramite")
+    @Column(name = "id_tipo_tramite")
     private Long id;
 
     @Column(name = "nombre")

@@ -15,6 +15,7 @@ public class FileUploadAdapter implements FileUploadPort {
     
     private final String carpetaDestino = "uploads/memorandums/";
     private final String carpetaDestinoOficios = "uploads/oficios/";
+    private final String carpetaDestinoExpedientes = "uploads/expedientes/";
 
    @Override
 public String guardarArchivo(byte[] contenido, String nombreArchivo) {
@@ -53,6 +54,23 @@ public String guardarArchivoOficio(byte[] contenido, String nombreArchivo) {
     } catch (IOException e) {
         e.printStackTrace();
         throw new FileStorageException("Error de E/S al guardar el PDF: " + e.getMessage(), e);
+    }
+}
+
+
+@Override
+public String guardarArchivoExpediente(byte[] contenido, String nombreArchivo) {
+    try {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        Path directorioDestino = root.resolve(carpetaDestinoExpedientes);
+        if (!Files.exists(directorioDestino)) {
+            Files.createDirectories(directorioDestino);
+        }
+        Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+        Files.write(ficheroFinal, contenido);
+        return "/api/files/expedientes/" + nombreArchivo;
+    } catch (IOException e) {
+        throw new FileStorageException("Error al guardar documento de expediente: " + e.getMessage(), e);
     }
 }
 }

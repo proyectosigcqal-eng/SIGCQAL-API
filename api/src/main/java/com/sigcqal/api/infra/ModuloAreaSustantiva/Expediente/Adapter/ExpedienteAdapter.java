@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Adapter;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -27,14 +28,21 @@ public class ExpedienteAdapter implements ExpedienteRepositoryPort {
     }
 
     @Override
-    public List<Expediente> findByFolio(String folio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByFolio'");
+    public Optional<Expediente> findByFolio(String folio) {
+        Optional<ExpedienteEntity> entityOptional = repository.findByFolioGobierno(folio);
+    
+    // 2. Si la encuentra, la mapeamos al modelo de dominio. Si no, devolvemos Optional vacío.
+    // Asumiendo que tienes un mapper o un método para convertir:
+    return entityOptional.map(entity -> mapper.toDomain(entity));
+
     }
+
 
     @Override
     public List<Expediente> findAll() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
+
+  
 }

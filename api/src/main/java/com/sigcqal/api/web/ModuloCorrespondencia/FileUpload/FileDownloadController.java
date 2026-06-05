@@ -95,4 +95,30 @@ public class FileDownloadController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/expedientes/{nombre}")
+public ResponseEntity<Resource> descargarExpediente(@PathVariable String nombre) {
+    try {
+        Path root    = Paths.get(".").toAbsolutePath().normalize();
+        Path archivo = root.resolve("uploads/expedientes/" + nombre);
+        Resource resource = new UrlResource(archivo.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        MediaType contentType = nombre.endsWith(".pdf")
+            ? MediaType.APPLICATION_PDF
+            : MediaType.APPLICATION_OCTET_STREAM;
+
+        String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
+
+        return ResponseEntity.ok()
+            .contentType(contentType)
+            .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"" + nombre + "\"")
+            .body(resource);
+    } catch (MalformedURLException e) {
+        return ResponseEntity.badRequest().build();
+    }
+}
 }
