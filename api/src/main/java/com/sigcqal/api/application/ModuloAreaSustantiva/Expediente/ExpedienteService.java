@@ -1,5 +1,6 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.Expediente;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,9 +27,10 @@ public class ExpedienteService {
 
     @Transactional
     public ExpedienteResponseDTO guardar(ExpedienteRequestDTO request) {
+        String folioGenerado = generarFolioAutomatico();
 
         Expediente expediente = Expediente.builder()
-                .folioGobierno(request.getFolioGobierno())
+            .folioGobierno(folioGenerado)
                 .fechaSolicitud(request.getFechaSolicitud())
                 .idMunicipio(request.getIdMunicipio())
                 .idAsesor(request.getIdAsesor())
@@ -43,6 +45,28 @@ public class ExpedienteService {
 
         Expediente guardado = port.save(expediente);
         return mapper.toResponse(guardado);
+    }
+
+    private String generarFolioAutomatico() {
+        LocalDate now = LocalDate.now();
+        String yy = String.valueOf(now.getYear()).substring(2);
+        String mm = String.format("%02d", now.getMonthValue());
+        String prefix = yy + mm;
+
+        int nextSeq = 1;
+        Optional<Expediente> last = port.findTopByFolioPrefix(prefix);
+        if (last.isPresent() && last.get().getFolioGobierno() != null && last.get().getFolioGobierno().length() > prefix.length()) {
+            String lastFolio = last.get().getFolioGobierno();
+            String seqStr = lastFolio.substring(prefix.length());
+            try {
+                nextSeq = Integer.parseInt(seqStr) + 1;
+            } catch (NumberFormatException e) {
+                nextSeq = 1;
+            }
+        }
+
+        String seqFormatted = String.format("%05d", nextSeq);
+        return prefix + seqFormatted;
     }
 
 

@@ -37,6 +37,12 @@ public class ExpedienteAdapter implements ExpedienteRepositoryPort {
 
     }
 
+    @Override
+    public Optional<Expediente> findTopByFolioPrefix(String prefix) {
+        Optional<ExpedienteEntity> entityOptional = repository.findTopByFolioGobiernoStartingWithOrderByFolioGobiernoDesc(prefix);
+        return entityOptional.map(entity -> mapper.toDomain(entity));
+    }
+
 
     @Override
     public List<Expediente> findAll() {
