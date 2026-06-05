@@ -29,6 +29,7 @@ public class PersonaMapper {
         domain.setTelefonoFijo(entity.getTelefonoFijo());
         domain.setNumeroIdFolio(entity.getNumeroIdFolio());
         domain.setCorreo(entity.getCorreo());
+        domain.setTipoIdentificacion(entity.getTipoIdentificacion());
 
 
         if (entity.getDireccion() != null) {
@@ -64,6 +65,7 @@ public class PersonaMapper {
         entity.setTelefonoFijo(domain.getTelefonoFijo());
         entity.setNumeroIdFolio(domain.getNumeroIdFolio());
         entity.setCorreo(domain.getCorreo());
+        entity.setTipoIdentificacion(domain.getTipoIdentificacion());
 
         // Instanciación y asignación del objeto DireccionEntity
         if (domain.getIdDireccion() != null) {
@@ -108,6 +110,7 @@ public class PersonaMapper {
         dto.setCorreo(domain.getCorreo());
         dto.setIdTipoPersona(domain.getIdTipoPersona());
         dto.setNomreTipoPersona(domain.getNomreTipoPersona());
+        dto.setTipoIdentificacion(domain.getTipoIdentificacion());
 
         return dto;
     }

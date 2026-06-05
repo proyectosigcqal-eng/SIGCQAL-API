@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.ModuloAreaSustantiva.Prevencion.Dto;
+package com.sigcqal.api.web.Catalogo.Prevencion.Dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

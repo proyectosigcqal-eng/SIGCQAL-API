@@ -62,6 +62,9 @@ public class PersonaEntity {
     @Column(name = "correo")
     private String correo;
 
+    @Column(name = "tipo_identificacion")
+    private String tipoIdentificacion;
+
     @ManyToOne
     @JoinColumn(name = "id_tipo_persona")
     private TipoPersonaEntity tipoPersona;

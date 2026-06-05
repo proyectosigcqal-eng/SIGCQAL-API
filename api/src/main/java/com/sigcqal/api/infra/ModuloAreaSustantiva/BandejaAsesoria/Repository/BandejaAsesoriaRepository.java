@@ -14,15 +14,15 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
     @Query(value = """
         SELECT 
             e.folio_gobierno,
-            m.nombre_municipio,
-            CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', COALESCE(p.apellido_materno, '')),
-            ta.nombre,
-            es.nombre,
-            ede.nombre,
-            da.seguimiento,
-            TO_CHAR(da.fecha_notificacion, 'YYYY-MM-DD HH24:MI'),
-            false,
-            true
+        m.nombre_municipio,
+        CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', COALESCE(p.apellido_materno, '')),
+        ta.nombre,
+        es.nombre,
+        ede.nombre,
+        da.seguimiento,
+        da.fecha_notificacion,
+        false,
+        true
         FROM sustantiva.expedientes e
         LEFT JOIN sustantiva.contribuyentes c ON c.id_contribuyentes = e.id_contribuyente
         LEFT JOIN catalogos.personas p ON p.id_persona = c.id_persona

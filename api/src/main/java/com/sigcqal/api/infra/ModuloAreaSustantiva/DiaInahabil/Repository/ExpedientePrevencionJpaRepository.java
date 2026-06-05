@@ -15,14 +15,13 @@ public interface ExpedientePrevencionJpaRepository
 
     // Busca la fecha en que el expediente entró a "En Prevención"
     // Ajusta el nombre/valor del estatus según tu catálogo
-    @Query(value = """
-        SELECT e.fecha_solicitud
-        FROM sustantiva.expedientes e
-        JOIN catalogos.estatus_expediente ee
-          ON ee.id_estatus_expediente = e.id_estatus_expediente
-        WHERE e.folio_gobierno = :folio
-          AND UPPER(ee.nombre) LIKE '%PREVENCI%'
-        LIMIT 1
-        """, nativeQuery = true)
-    Optional<LocalDateTime> findFechaPrevencionByFolio(@Param("folio") String folio);
-}
+   // En ExpedientePrevencionRepository, reemplaza el @Query por este:
+@Query(value = """
+    SELECT e.fecha_solicitud
+    FROM sustantiva.expedientes e
+    WHERE e.folio_gobierno = :folio
+    LIMIT 1
+    """, nativeQuery = true)
+Optional<LocalDateTime> findFechaPrevencionByFolio(@Param("folio") String folio);
+
+        }
