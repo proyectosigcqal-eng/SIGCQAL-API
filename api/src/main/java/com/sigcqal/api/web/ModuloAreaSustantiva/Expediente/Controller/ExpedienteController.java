@@ -44,9 +44,9 @@ public ResponseEntity<ExpedienteResponseDTO> subirDocumento(
 }
 
 @GetMapping("/{folio}")
-public ResponseEntity<ExpedienteResponseDTO> obtenerPorFolio(@PathVariable String folio) {
+public ResponseEntity<List<ExpedienteResponseDTO>> obtenerPorFolio(@PathVariable String folio) {
     // Asumiendo que tienes este método en tu service
-    ExpedienteResponseDTO response = service.buscarPorFolio(folio); 
+    List<ExpedienteResponseDTO> response = service.buscarPorFolio(folio); 
     return ResponseEntity.ok(response);
 }
 }

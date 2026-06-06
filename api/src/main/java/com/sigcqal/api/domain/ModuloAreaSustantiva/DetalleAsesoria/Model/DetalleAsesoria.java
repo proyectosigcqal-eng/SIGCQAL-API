@@ -1,6 +1,8 @@
 package com.sigcqal.api.domain.ModuloAreaSustantiva.DetalleAsesoria.Model;
 
+
 public interface DetalleAsesoria {
+    Long getIdExpediente();
     String getFolioGobierno();
     String getFechaSolicitud(); // O LocalDateTime si lo prefieres
     String getNombreCompleto();

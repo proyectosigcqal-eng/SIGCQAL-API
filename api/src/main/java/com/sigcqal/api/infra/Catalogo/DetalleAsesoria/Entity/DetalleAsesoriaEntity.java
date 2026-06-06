@@ -12,8 +12,8 @@ public class DetalleAsesoriaEntity {
     @Column(name = "id_detalle_asesoria")
     private Long id;
 
-    @Column(name = "id_expedientes")
-    private Long idExpedientes;
+    @Column(name = "id_expediente")
+    private Long idExpediente;
 
     @Column(name = "id_tipo_acto_emitido")
     private Long idTipoActoEmitido;

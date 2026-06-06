@@ -46,13 +46,22 @@ public class ExpedienteService {
     }
 
 
-    public ExpedienteResponseDTO buscarPorFolio(String folio) {
-        // Obtenemos el expediente o lanzamos la excepción directamente
-        Expediente expediente = port.findByFolio(folio)
-                .orElseThrow(() -> new RuntimeException("Folio no encontrado: " + folio));
+    public List<ExpedienteResponseDTO> buscarPorFolio(String folio) {
+        Optional<Expediente> resultado = port.findByFolio(folio);
 
-        // Lo mapeamos a DTO y lo retornamos como un objeto único
-        return mapper.toResponse(expediente);
+        if(resultado.isEmpty()){
+            throw new RuntimeException("Folio no encontrado ");
+        }
+       return resultado.stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public java.util.List<ExpedienteResponseDTO> listarTodos() {
+        return port.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Transactional
