@@ -97,6 +97,7 @@ public class DetalleAsesoriaService {
                 .folio(folio)
                 .fechaRegistro(projection.getFechaSolicitud() != null 
                     ? toFecha(projection.getFechaSolicitud().toString()) : "")
+                .idExpediente(projection.getIdExpediente() != null ? Long.valueOf(projection.getIdExpediente()) : null)
                 .contribuyente(nombreCompleto)
                 .estatusActual(estatusExp)
                 .progresoPorcentaje(progreso)
