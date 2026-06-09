@@ -20,7 +20,7 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
             es.nombre,
             ede.nombre,
             da.seguimiento,
-            TO_CHAR(da.fecha_notificacion, 'YYYY-MM-DD HH24:MI'),
+            TO_CHAR(NULLIF(da.fecha_notificacion, '')::timestamp, 'YYYY-MM-DD HH24:MI'),
             false,
             true
         FROM sustantiva.expedientes e
@@ -37,7 +37,7 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
         AND (:estatus IS NULL OR :estatus = '' OR es.nombre = :estatus)
         AND (:tipoTramite IS NULL OR :tipoTramite = '' 
              OR CAST(e.id_tipo_tramite AS VARCHAR) = :tipoTramite)
-        ORDER BY da.fecha_notificacion DESC NULLS LAST
+        ORDER BY NULLIF(da.fecha_notificacion, '')::timestamp DESC NULLS LAST
         """, nativeQuery = true)
     List<Object[]> obtenerBandejaRaw(
         @Param("search") String search,

@@ -109,6 +109,7 @@ public class DetalleAsesoriaService {
                 .build();
 
         return DetalleAsesoriaResponseDTO.builder()
+                .idExpediente(projection.getIdExpediente())
                 .folio(folio)
                 .fechaRegistro(projection.getFechaSolicitud() != null 
                     ? toFecha(projection.getFechaSolicitud().toString()) : "")
@@ -153,7 +154,7 @@ public class DetalleAsesoriaService {
 
     private String obtenerUrlConstanciaSiExiste(Integer idExpediente) {
         if (idExpediente == null) return null;
-        String consecutivo = String.format("%04d", idExpediente);
+        String consecutivo = String.format("%05d", idExpediente);
         Path root = Paths.get(".").toAbsolutePath().normalize();
         Path dir = root.resolve("uploads/constancias/");
         if (!Files.exists(dir)) return null;

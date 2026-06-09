@@ -8,6 +8,9 @@ import lombok.Data;
 @Builder
 public class DetalleAsesoriaResponseDTO {
 
+    @JsonProperty("id_expediente")
+    private Integer idExpediente;
+
     private String folio;
 
     @JsonProperty("fecha_registro")
