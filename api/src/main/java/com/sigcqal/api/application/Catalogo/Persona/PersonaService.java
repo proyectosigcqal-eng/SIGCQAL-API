@@ -43,6 +43,7 @@ public class PersonaService {
                 .numeroIdFolio(request.getNumeroIdFolio())
                 .correo(request.getCorreo())
                 .idTipoPersona(tipoPersonaId)
+                .tipoIdentificacion(request.getTipoIdentificacion())
                 .build();
 
         return mapper.toResponse(port.save(persona));

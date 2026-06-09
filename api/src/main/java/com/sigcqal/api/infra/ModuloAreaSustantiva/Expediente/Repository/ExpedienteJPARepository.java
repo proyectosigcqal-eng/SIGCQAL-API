@@ -9,5 +9,7 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEn
 
 public interface ExpedienteJPARepository extends JpaRepository<ExpedienteEntity, Integer> {
     Optional<ExpedienteEntity> findByFolioGobierno(String folioGobierno);
-    Optional<ExpedienteEntity> findFirstByFolioGobierno(String folioGobierno);
+
+    Optional<ExpedienteEntity> findTopByFolioGobiernoStartingWithOrderByFolioGobiernoDesc(String prefix);
+
 }

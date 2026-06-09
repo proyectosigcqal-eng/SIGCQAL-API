@@ -24,4 +24,5 @@ public class PersonaDTO {
     private String correo;
     private Long idTipoPersona;
     private String nomreTipoPersona; 
+    private String tipoIdentificacion;
 }

@@ -13,6 +13,8 @@ public class DetalleAsesoriaResponseDTO {
 
     private String folio;
 
+    private Long idExpediente;
+
     @JsonProperty("fecha_registro")
     private String fechaRegistro;
 
