@@ -1,7 +1,6 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.Controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,23 +29,23 @@ public class ExpedienteController {
     private final ExpedienteService service;
 
     @PostMapping
-    public ResponseEntity<ExpedienteResponseDTO> guardar(@RequestBody ExpedienteRequestDTO request) {
-        ExpedienteResponseDTO response = service.guardar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<ExpedienteResponseDTO> guardar(
+            @RequestBody ExpedienteRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(request));
     }
 
     @PostMapping("/{folio}/documento-personalidad")
-public ResponseEntity<ExpedienteResponseDTO> subirDocumento(
-    @PathVariable String folio,
-    @RequestParam("archivo") MultipartFile archivo
-) throws IOException {
-    return ResponseEntity.ok(service.guardarDocumentoPersonalidad(folio, archivo.getBytes()));
-}
+    public ResponseEntity<ExpedienteResponseDTO> subirDocumento(
+            @PathVariable String folio,
+            @RequestParam("archivo") MultipartFile archivo) throws IOException {
+        return ResponseEntity.ok(
+                service.guardarDocumentoPersonalidad(folio, archivo.getBytes()));
+    }
 
-@GetMapping("/{folio}")
-public ResponseEntity<List<ExpedienteResponseDTO>> obtenerPorFolio(@PathVariable String folio) {
-    // Asumiendo que tienes este método en tu service
-    List<ExpedienteResponseDTO> response = service.buscarPorFolio(folio); 
-    return ResponseEntity.ok(response);
-}
+    // ← Cambia List<> por objeto simple — buscarPorFolio ya devuelve uno solo
+    @GetMapping("/{folio}")
+    public ResponseEntity<ExpedienteResponseDTO> obtenerPorFolio(
+            @PathVariable String folio) {
+        return ResponseEntity.ok(service.buscarPorFolio(folio));
+    }
 }
