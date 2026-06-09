@@ -66,4 +66,10 @@ public class ExpedienteEntity {
 
     @Column(name = "archivo_documento_acredita_personalidad")
     private String archivoDocumentoAcreditaPersonalidad;
+
+        @Column(name = "bloqueado")
+    private Boolean bloqueado = false;
+
+    @Column(name = "fecha_cierre_automatico")
+    private java.time.LocalDateTime fechaCierreAutomatico;
 }
