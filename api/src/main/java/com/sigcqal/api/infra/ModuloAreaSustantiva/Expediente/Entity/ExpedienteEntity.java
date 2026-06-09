@@ -1,5 +1,6 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.sigcqal.api.infra.Catalogo.Asesor.Entity.AsesorEntity;
@@ -7,9 +8,12 @@ import com.sigcqal.api.infra.Catalogo.EstatusExpediente.Entity.EstatusExpediente
 import com.sigcqal.api.infra.Catalogo.Municipio.Entity.MunicipioEntity;
 import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
 import com.sigcqal.api.infra.Catalogo.TipoTramite.Entity.TipoTramiteEntity;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.InformeAutoridad.Model.EstadoAlertaPlazo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -66,4 +70,29 @@ public class ExpedienteEntity {
 
     @Column(name = "archivo_documento_acredita_personalidad")
     private String archivoDocumentoAcreditaPersonalidad;
+
+    @Column(name = "fecha_envio_oficio_autoridad")
+    private LocalDateTime fechaEnvioOficio;
+
+    @Column(name = "fecha_limite_informe")
+    private LocalDate fechaLimiteInforme;
+
+    @Column(name = "numero_oficio_respuesta", length = 50)
+    private String numeroOficioRespuesta;
+
+    @Column(name = "fojas_informe")
+    private Integer fojasInforme;
+
+    @Column(name = "fecha_recepcion_informe")
+    private LocalDateTime fechaRecepcionInforme;
+
+    @Column(name = "ruta_pdf_informe", length = 500)
+    private String rutaPdfInforme;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_alerta_5dias", length = 30)
+    private EstadoAlertaPlazo estadoAlertaPlazo;
+
+    @Column(name = "notificacion_vencimiento_enviada")
+    private Boolean notificacionVencimientoEnviada;
 }

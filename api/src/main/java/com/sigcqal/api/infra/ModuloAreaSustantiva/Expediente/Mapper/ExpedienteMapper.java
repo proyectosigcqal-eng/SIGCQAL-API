@@ -22,6 +22,14 @@ public class ExpedienteMapper {
         entity.setFechaSolicitud(expediente.getFechaSolicitud());
         entity.setDocumentoAcreditaPersonalidad(expediente.getDocumentoAcreditaPersonalidad());
         entity.setArchivoDocumentoAcreditaPersonalidad(expediente.getArchivoDocumentoAcreditaPersonalidad());
+        entity.setFechaEnvioOficio(expediente.getFechaEnvioOficio());
+        entity.setFechaLimiteInforme(expediente.getFechaLimiteInforme());
+        entity.setNumeroOficioRespuesta(expediente.getNumeroOficioRespuesta());
+        entity.setFojasInforme(expediente.getFojasInforme());
+        entity.setFechaRecepcionInforme(expediente.getFechaRecepcionInforme());
+        entity.setRutaPdfInforme(expediente.getRutaPdfInforme());
+        entity.setEstadoAlertaPlazo(expediente.getEstadoAlertaPlazo());
+        entity.setNotificacionVencimientoEnviada(expediente.getNotificacionVencimientoEnviada());
 
         if (expediente.getIdMunicipio() != null) {
             MunicipioEntity municipio = new MunicipioEntity();
@@ -68,6 +76,14 @@ public class ExpedienteMapper {
         expediente.setFechaSolicitud(entity.getFechaSolicitud());
         expediente.setDocumentoAcreditaPersonalidad(entity.getDocumentoAcreditaPersonalidad());
         expediente.setArchivoDocumentoAcreditaPersonalidad(entity.getArchivoDocumentoAcreditaPersonalidad());
+        expediente.setFechaEnvioOficio(entity.getFechaEnvioOficio());
+        expediente.setFechaLimiteInforme(entity.getFechaLimiteInforme());
+        expediente.setNumeroOficioRespuesta(entity.getNumeroOficioRespuesta());
+        expediente.setFojasInforme(entity.getFojasInforme());
+        expediente.setFechaRecepcionInforme(entity.getFechaRecepcionInforme());
+        expediente.setRutaPdfInforme(entity.getRutaPdfInforme());
+        expediente.setEstadoAlertaPlazo(entity.getEstadoAlertaPlazo());
+        expediente.setNotificacionVencimientoEnviada(entity.getNotificacionVencimientoEnviada());
 
         if (entity.getMunicipio() != null) {
             expediente.setIdMunicipio(entity.getMunicipio().getId());

@@ -11,4 +11,5 @@ public interface ExpedienteJPARepository extends JpaRepository<ExpedienteEntity,
 
     Optional<ExpedienteEntity> findByFolioGobierno(String folioGobierno);
     Optional<ExpedienteEntity> findTopByFolioGobiernoStartingWithOrderByFolioGobiernoDesc(String prefix);
+    java.util.List<ExpedienteEntity> findAllByFechaEnvioOficioIsNotNullAndFechaRecepcionInformeIsNull();
 }
