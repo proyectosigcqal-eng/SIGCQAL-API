@@ -42,7 +42,6 @@ public class ExpedienteController {
                 service.guardarDocumentoPersonalidad(folio, archivo.getBytes()));
     }
 
-    // ← Cambia List<> por objeto simple — buscarPorFolio ya devuelve uno solo
     @GetMapping("/{folio}")
     public ResponseEntity<ExpedienteResponseDTO> obtenerPorFolio(
             @PathVariable String folio) {
