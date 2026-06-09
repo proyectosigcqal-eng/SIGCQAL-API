@@ -9,6 +9,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
+import com.sigcqal.api.application.exception.DuplicateResourceException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,13 @@ public class ApiExceptionHandler {
     public ProblemDetail handleInvalidRequest(InvalidRequestException ex) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         pd.setTitle("Solicitud inválida");
+        return pd;
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ProblemDetail handleDuplicate(DuplicateResourceException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        pd.setTitle("Conflicto");
         return pd;
     }
 

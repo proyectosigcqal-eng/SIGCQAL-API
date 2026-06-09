@@ -13,7 +13,7 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
 
     @Query(value = """
         SELECT 
-            e.folio_gobierno,
+        e.folio_gobierno,
         m.nombre_municipio,
         CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', COALESCE(p.apellido_materno, '')),
         ta.nombre,
@@ -37,7 +37,7 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
         AND (:estatus IS NULL OR :estatus = '' OR es.nombre = :estatus)
         AND (:tipoTramite IS NULL OR :tipoTramite = '' 
              OR CAST(e.id_tipo_tramite AS VARCHAR) = :tipoTramite)
-        ORDER BY da.fecha_notificacion DESC NULLS LAST
+        ORDER BY NULLIF(da.fecha_notificacion, '')::timestamp DESC NULLS LAST
         """, nativeQuery = true)
     List<Object[]> obtenerBandejaRaw(
         @Param("search") String search,

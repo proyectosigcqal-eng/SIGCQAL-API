@@ -10,9 +10,15 @@ import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAseso
 import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAsesoriaResponseDTO.BitacoraDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAsesoriaResponseDTO.EventoBitacoraDTO;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,7 @@ public class DetalleAsesoriaService {
 
         String nombreCompleto = str(projection.getNombreCompleto());
         String estatusExp = str(projection.getEstatusExpediente());
+        String urlConstancia = obtenerUrlConstanciaSiExiste(projection.getIdExpediente());
 
         // ── Progreso según estatus ──────────────────────────────────────
         int progreso = calcularProgreso(estatusExp, projection.getFechaNotificacion() != null);
@@ -76,15 +83,23 @@ public class DetalleAsesoriaService {
 
         // Evento 3: Conclusión (existe si hay seguimiento)
         EventoBitacoraDTO conclusion = null;
-        if (projection.getSeguimiento() != null) {
+        if (urlConstancia != null) {
             conclusion = EventoBitacoraDTO.builder()
-                    .descripcion(str(projection.getSeguimiento()))
-                    .timestamp(projection.getFechaNotificacion() != null 
-                        ? toTimestamp(projection.getFechaNotificacion().toString()) : "")
+                    .descripcion("Constancia Interna de Remisión emitida.")
+                    .timestamp(toTimestamp(java.time.LocalDateTime.now().toString()))
                     .usuario(str(projection.getNombreAsesor()))
-                    .adjunto(null)
+                    .adjunto(urlConstancia)
                     .datosContribuyente(null)
                     .build();
+        } else if (projection.getSeguimiento() != null) {
+            conclusion = EventoBitacoraDTO.builder()
+                .descripcion(str(projection.getSeguimiento()))
+                .timestamp(projection.getFechaNotificacion() != null
+                    ? toTimestamp(projection.getFechaNotificacion().toString()) : "")
+                .usuario(str(projection.getNombreAsesor()))
+                .adjunto(null)
+                .datosContribuyente(null)
+                .build();
         }
 
         BitacoraDTO bitacora = BitacoraDTO.builder()
@@ -94,11 +109,15 @@ public class DetalleAsesoriaService {
                 .build();
 
         return DetalleAsesoriaResponseDTO.builder()
+                .idExpediente(projection.getIdExpediente())
                 .folio(folio)
                 .fechaRegistro(projection.getFechaSolicitud() != null 
                     ? toFecha(projection.getFechaSolicitud().toString()) : "")
                 .idExpediente(projection.getIdExpediente() != null ? Long.valueOf(projection.getIdExpediente()) : null)
                 .contribuyente(nombreCompleto)
+                .folioAsesoria(folio)
+                .autoridadResponsable(str(projection.getNombreAutoridad()))
+                .descripcionSintetica(str(projection.getProblematica()))
                 .estatusActual(estatusExp)
                 .progresoPorcentaje(progreso)
                 .analisisLegal(analisis)
@@ -128,7 +147,37 @@ public class DetalleAsesoriaService {
 
     private int calcularProgreso(String estatus, boolean tieneCalificacion) {
         if (estatus == null) return 0;
+        String t = estatus.trim().toLowerCase().replace("ó", "o");
+        if (t.contains("constancia") && t.contains("emitida")) return 100;
         if (tieneCalificacion) return 66;
         return 33;
+    }
+
+    private String obtenerUrlConstanciaSiExiste(Integer idExpediente) {
+        if (idExpediente == null) return null;
+        String consecutivo = String.format("%05d", idExpediente);
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        Path dir = root.resolve("uploads/constancias/");
+        if (!Files.exists(dir)) return null;
+
+        Pattern pattern = Pattern.compile("^CONST-REMISION-(\\d{4})-" + Pattern.quote(consecutivo) + "\\.pdf$");
+        try (Stream<Path> stream = Files.list(dir)) {
+            Path archivo = stream
+                .filter((p) -> p.getFileName() != null)
+                .filter((p) -> pattern.matcher(p.getFileName().toString()).matches())
+                .max((a, b) -> {
+                    Matcher ma = pattern.matcher(a.getFileName().toString());
+                    Matcher mb = pattern.matcher(b.getFileName().toString());
+                    int ya = ma.matches() ? Integer.parseInt(ma.group(1)) : 0;
+                    int yb = mb.matches() ? Integer.parseInt(mb.group(1)) : 0;
+                    return Integer.compare(ya, yb);
+                })
+                .orElse(null);
+
+            if (archivo == null) return null;
+            return "/api/files/constancias/" + archivo.getFileName().toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
