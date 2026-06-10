@@ -12,7 +12,7 @@ import com.sigcqal.api.application.ModuloAreaSustantiva.PlantillaQuejaAri.Planti
 import com.sigcqal.api.web.ModuloAreaSustantiva.PlantillaQuejaAri.Dto.PlantillaQuejaAriDTO;
 
 @RestController
-@RequestMapping("/area-sustantiva/plantillas-queja")
+@RequestMapping("/catalogos/plantillas-queja")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*") 
 public class PlantillaQuejaAriController {
