@@ -1,5 +1,6 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.sigcqal.api.infra.Catalogo.Asesor.Entity.AsesorEntity;
@@ -67,7 +68,31 @@ public class ExpedienteEntity {
     @Column(name = "archivo_documento_acredita_personalidad")
     private String archivoDocumentoAcreditaPersonalidad;
 
-        @Column(name = "bloqueado")
+    @Column(name = "estado_alerta_5_dias")
+    private String estadoAlerta5Dias;
+
+    @Column(name = "fecha_envio_oficio_autoridad")
+    private LocalDateTime fechaEnvioOficioAutoridad;
+
+    @Column(name = "fecha_limite_informe")
+    private LocalDate fechaLimiteInforme;
+
+    @Column(name = "fecha_recepcion_informe")
+    private LocalDateTime fechaRecepcionInforme;
+
+    @Column(name = "fojas_informe")
+    private Integer fojasInforme;
+
+    @Column(name = "notificacion_vencimiento_enviada")
+    private Boolean notificacionVencimientoEnviada;
+
+    @Column(name = "numero_oficio_respuesta")
+    private String numeroOficioRespuesta;
+
+    @Column(name = "ruta_pdf_informe")
+    private String rutaPdfInforme;
+
+    @Column(name = "bloqueado")
     private Boolean bloqueado = false;
 
     @Column(name = "fecha_cierre_automatico")
