@@ -40,4 +40,6 @@ public class ClasificacionJuridicaAdapter implements ClasificacionJuridicaReposi
         .map(mapper::toDomain)
         .collect(Collectors.toList());
     }
+
+
 }

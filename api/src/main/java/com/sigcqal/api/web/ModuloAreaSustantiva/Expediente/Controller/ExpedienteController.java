@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.Expediente.ExpedienteService;
+import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAsesoriaResponseDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteResponseDTO;
 
@@ -43,8 +44,10 @@ public class ExpedienteController {
     }
 
     @GetMapping("/{folio}")
-    public ResponseEntity<ExpedienteResponseDTO> obtenerPorFolio(
-            @PathVariable String folio) {
-        return ResponseEntity.ok(service.buscarPorFolio(folio));
-    }
+public ResponseEntity<DetalleAsesoriaResponseDTO> obtenerPorFolio(
+        @PathVariable String folio) {
+    // Tu servicio tendrá que hacer los JOINs en la base de datos 
+    // para construir y retornar el DetalleAsesoriaResponseDTO
+    return ResponseEntity.ok(service.obtenerDetalleCompletoPorFolio(folio));
+}
 }

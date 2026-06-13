@@ -109,11 +109,10 @@ public class DetalleAsesoriaService {
                 .build();
 
         return DetalleAsesoriaResponseDTO.builder()
-                .idExpediente(projection.getIdExpediente())
+                .idExpediente(projection.getIdExpediente() != null ? projection.getIdExpediente().intValue() : null)
                 .folio(folio)
                 .fechaRegistro(projection.getFechaSolicitud() != null 
                     ? toFecha(projection.getFechaSolicitud().toString()) : "")
-                .idExpediente(projection.getIdExpediente() != null ? Long.valueOf(projection.getIdExpediente()) : null)
                 .contribuyente(nombreCompleto)
                 .folioAsesoria(folio)
                 .autoridadResponsable(str(projection.getNombreAutoridad()))
@@ -153,7 +152,7 @@ public class DetalleAsesoriaService {
         return 33;
     }
 
-    private String obtenerUrlConstanciaSiExiste(Integer idExpediente) {
+    private String obtenerUrlConstanciaSiExiste(Long idExpediente) {
         if (idExpediente == null) return null;
         String consecutivo = String.format("%05d", idExpediente);
         Path root = Paths.get(".").toAbsolutePath().normalize();

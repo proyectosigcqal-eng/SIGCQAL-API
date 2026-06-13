@@ -134,7 +134,7 @@ public class ConstanciaInternaRemisionService {
     }
 
     public Optional<ConstanciaGenerada> obtenerExistente(String folio) {
-        var expedienteOpt = expedienteRepository.findFirstByFolioGobierno(folio);
+        var expedienteOpt = expedienteRepository.findByFolioGobierno(folio);
         if (expedienteOpt.isEmpty() || expedienteOpt.get().getId() == null) {
             return Optional.empty();
         }
