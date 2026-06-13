@@ -9,10 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.Turnado.TurnadoService;
 import com.sigcqal.api.application.exception.InvalidRequestException;
+import com.sigcqal.api.domain.Catalogo.Persona.Port.PersonaRepositoryPort;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Model.Expediente;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Port.ExpedienteRepositoryPort;
+import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Mapper.ExpedienteMapper;
+import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAsesoriaResponseDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteResponseDTO;
 
@@ -29,6 +33,7 @@ public class ExpedienteService {
     private final ExpedienteMapper         mapper;
     private final FileUploadPort           fileUploadPort;
     private final TurnadoService           turnadoService;
+    private final PersonaRepositoryPort    personaPort;
 
     // -----------------------------------------------------------------------
     // GUARDAR
@@ -139,4 +144,84 @@ public class ExpedienteService {
         }
         return prefix + String.format("%05d", nextSeq);
     }
+
+  public DetalleAsesoriaResponseDTO obtenerDetalleCompletoPorFolio(String folio) {
+
+    ExpedienteEntity entity = port.findEntityByFolio(folio)
+            .orElseThrow(() -> new RuntimeException("Folio no encontrado: " + folio));
+
+   String nombreContribuyente = null;
+if (entity.getContribuyente() != null 
+        && entity.getContribuyente().getPersona() != null) {
+    var p = entity.getContribuyente().getPersona();
+    nombreContribuyente = String.join(" ",
+        p.getNombre()          != null ? p.getNombre()          : "",
+        p.getApellidoPaterno() != null ? p.getApellidoPaterno() : "",
+        p.getApellidoMaterno() != null ? p.getApellidoMaterno() : ""
+    ).trim();
+}
+
+    // ✅ Nombre del asesor — AsesorEntity solo tiene idPersona, necesitas buscarlo
+  String nombreAsesor = null;
+if (entity.getAsesor() != null && entity.getAsesor().getIdPersona() != null) {
+    try {
+        com.sigcqal.api.domain.Catalogo.Persona.Model.Persona personaAsesor = 
+            personaPort.findById(entity.getAsesor().getIdPersona())
+                .orElse(null);
+
+        if (personaAsesor != null) {
+            nombreAsesor = String.join(" ",
+                personaAsesor.getNombre()          != null ? personaAsesor.getNombre()          : "",
+                personaAsesor.getApellidoPaterno() != null ? personaAsesor.getApellidoPaterno() : "",
+                personaAsesor.getApellidoMaterno() != null ? personaAsesor.getApellidoMaterno() : ""
+            ).trim();
+        }
+    } catch (Exception e) {
+        log.warn("No se pudo obtener persona del asesor: {}", e.getMessage());
+    }
+}
+
+    // ✅ Estatus
+    String estatus = entity.getEstatusExpediente() != null
+            ? entity.getEstatusExpediente().getNombre()
+            : "En Revisión";
+
+    // ✅ Tipo de trámite
+    String tipoTramite = entity.getTipoTramite() != null
+            ? entity.getTipoTramite().getNombre()
+            : null;
+
+    // ✅ Municipio
+    String municipio = entity.getMunicipio() != null
+            ? entity.getMunicipio().getNombreMunicipio()
+            : null;
+
+    return DetalleAsesoriaResponseDTO.builder()
+            .idExpediente(entity.getId())
+            .folio(entity.getFolioGobierno())
+            .fechaRegistro(entity.getFechaSolicitud() != null
+                    ? entity.getFechaSolicitud().toString() : null)
+            .contribuyente(nombreContribuyente)
+            .autoridadResponsable(nombreAsesor)
+            .estatusActual(estatus)
+            .descripcionSintetica(tipoTramite)
+            .progresoPorcentaje(calcularProgreso(estatus))
+            .analisisLegal(null)  // se llena cuando hay detalle_asesoria
+            .bitacora(null)
+            .build();
+}
+
+private Integer calcularProgreso(String estatus) {
+    if (estatus == null) return 0;
+    return switch (estatus.toUpperCase()) {
+        case "EN REVISIÓN", "EN REVISION" -> 10;
+        case "EN CALIFICACIÓN", "EN CALIFICACION" -> 25;
+        case "SEGUIMIENTO DE QUEJA" -> 50;
+        case "EMISIÓN DE CIR", "EMISION DE CIR" -> 65;
+        case "ARI EMITIDO" -> 75;
+        case "OFICIO ENVIADO" -> 85;
+        case "FINALIZADO", "CONCLUIDO" -> 100;
+        default -> 0;
+    };
+}
 }

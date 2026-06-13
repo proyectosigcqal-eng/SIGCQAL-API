@@ -8,4 +8,5 @@ public interface ClasificacionJuridicaRepositoryPort {
 
     ClasificacionJuridica saveClasification(ClasificacionJuridica clasificacionJuridica);
     List<ClasificacionJuridica> findByFolio(Integer idExpediente);
+    
 }

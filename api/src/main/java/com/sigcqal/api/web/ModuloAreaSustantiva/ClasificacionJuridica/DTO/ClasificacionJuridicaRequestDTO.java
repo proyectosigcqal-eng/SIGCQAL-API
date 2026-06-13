@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class ClasificacionJuridicaRequestDTO {
     private Integer idExpediente;
+    private String folioGobierno; 
     private Integer tipoActo;
     private Integer idAutoridad;
     private Integer idEstatusDetalleExpediente;

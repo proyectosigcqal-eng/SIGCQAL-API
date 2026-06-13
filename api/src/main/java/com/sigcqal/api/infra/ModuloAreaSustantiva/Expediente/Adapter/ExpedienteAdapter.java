@@ -50,5 +50,16 @@ public class ExpedienteAdapter implements ExpedienteRepositoryPort {
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 
+        @Override
+public boolean existsById(Long id) {
+    return repository.existsById(id.intValue());
+}
+
+@Override
+public Optional<ExpedienteEntity> findEntityByFolio(String folio) {
+    // Si tu adaptador usa un JpaRepository, será algo así:
+    return repository.findByFolioGobierno(folio);
+}
+
   
 }
