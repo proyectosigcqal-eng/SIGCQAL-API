@@ -1,5 +1,6 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,5 @@ public interface ExpedienteJPARepository extends JpaRepository<ExpedienteEntity,
 
     Optional<ExpedienteEntity> findTopByFolioGobiernoStartingWithOrderByFolioGobiernoDesc(String prefix);
 
+    List<ExpedienteEntity> findByFechaEnvioOficioAutoridadIsNotNullAndFechaRecepcionInformeIsNull();
 }

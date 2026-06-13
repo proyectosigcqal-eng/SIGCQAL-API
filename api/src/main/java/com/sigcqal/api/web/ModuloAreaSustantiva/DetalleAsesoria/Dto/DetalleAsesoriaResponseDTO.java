@@ -9,7 +9,7 @@ import lombok.Data;
 public class DetalleAsesoriaResponseDTO {
 
     @JsonProperty("id_expediente")
-    private Integer idExpediente;
+    private Long idExpediente;
 
     private String folio;
 
