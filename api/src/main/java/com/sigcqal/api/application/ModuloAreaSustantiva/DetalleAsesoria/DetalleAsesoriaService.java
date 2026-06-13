@@ -109,7 +109,7 @@ public class DetalleAsesoriaService {
                 .build();
 
         return DetalleAsesoriaResponseDTO.builder()
-                .idExpediente(projection.getIdExpediente() != null ? projection.getIdExpediente().intValue() : null)
+                .idExpediente(projection.getIdExpediente() != null ? projection.getIdExpediente().longValue() : null)
                 .folio(folio)
                 .fechaRegistro(projection.getFechaSolicitud() != null 
                     ? toFecha(projection.getFechaSolicitud().toString()) : "")

@@ -11,9 +11,11 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity.Resoluc
 public interface ResolucionFinalJPARepository extends JpaRepository<ResolucionFinalEntity, Integer> {
     Optional<ResolucionFinalEntity> findByIdExpediente(Integer idExpediente);
 
-    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END " +
-           "FROM ExpedienteEntity e " +
-           "WHERE e.id = :idExpediente " +
-           "AND e.estatus.nombre = 'DICTAMINACION'")
-    boolean expedienteEnDictaminacion(@Param("idExpediente") Integer idExpediente);
+   @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END " +
+       "FROM ExpedienteEntity e " +
+       "WHERE e.id = :idExpediente AND e.estatusExpediente.id = :idEstatus")
+boolean expedienteEnDictaminacion(
+    @Param("idExpediente") Integer idExpediente,
+    @Param("idEstatus") Long idEstatus
+);
 }

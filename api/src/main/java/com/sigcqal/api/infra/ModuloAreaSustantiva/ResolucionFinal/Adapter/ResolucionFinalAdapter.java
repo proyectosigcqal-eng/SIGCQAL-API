@@ -31,6 +31,6 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
 
     @Override
     public boolean expedienteEnDictaminacion(Integer idExpediente) {
-        return repository.expedienteEnDictaminacion(idExpediente);
+        return repository.expedienteEnDictaminacion(idExpediente, 3L);
     }
 }

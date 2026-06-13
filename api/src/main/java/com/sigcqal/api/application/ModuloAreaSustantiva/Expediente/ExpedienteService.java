@@ -197,7 +197,7 @@ if (entity.getAsesor() != null && entity.getAsesor().getIdPersona() != null) {
             : null;
 
     return DetalleAsesoriaResponseDTO.builder()
-            .idExpediente(entity.getId())
+            .idExpediente(entity.getId().longValue())
             .folio(entity.getFolioGobierno())
             .fechaRegistro(entity.getFechaSolicitud() != null
                     ? entity.getFechaSolicitud().toString() : null)
