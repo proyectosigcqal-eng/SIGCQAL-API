@@ -48,7 +48,7 @@ public class QuejasAriApplicationService {
         quejasAri.setFechaAcuerdo(request.getFechaAcuerdo());
         quejasAri.setIdPlantillaQuejaAri(request.getIdPlantillaQuejaAri());
         quejasAri.setMultasRequerimientos(request.getMultasRequerimientos());
-        
+        quejasAri.setInstituto(request.getInstituto());
         quejasAri.setMultasCredito(request.getMultasCredito());
         quejasAri.setRutaPdfAri(request.getRutaPdfAri());
         
@@ -61,7 +61,8 @@ public class QuejasAriApplicationService {
                 "{{ARTICULOS_VULNERADOS}}", nvl(quejasAri.getArticulosVulneradosAutoridad(), ""),
                 "{{NOMBRE_FIRMANTE}}", nvl(quejasAri.getNombreEncargadoFirma(), ""),
                 "{{MULTAS_REQUERIMIENTOS}}", nvl(quejasAri.getMultasRequerimientos(), ""),
-                "{{MULTAS_CREDITOS}}", nvl(quejasAri.getMultasCredito(), "")
+                "{{MULTAS_CREDITO}}", nvl(quejasAri.getMultasCredito(), ""),
+                "{{INSTITUTO}}", nvl(quejasAri.getInstituto(), "")
             );
 
             byte[] bytes = generadorDocumentoService

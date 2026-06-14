@@ -18,6 +18,7 @@ public class QuejasAriResponseDTO {
     private Long idPlantillaQuejaAri;
     private String multasRequerimientos;
     private String multasCredito;
+    private String instituto;
     // Información adicional de apoyo
     private String nombrePlantilla;
 }

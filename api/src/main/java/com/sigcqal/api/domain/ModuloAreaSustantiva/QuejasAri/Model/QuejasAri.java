@@ -25,6 +25,7 @@ public class QuejasAri {
     private Long idPlantillaQuejaAri;
     private String multasRequerimientos;
     private String multasCredito;
+    private String instituto;
     // Campos adicionales para respuesta en las plantillas o vistas
     private String nombrePlantilla;
 }

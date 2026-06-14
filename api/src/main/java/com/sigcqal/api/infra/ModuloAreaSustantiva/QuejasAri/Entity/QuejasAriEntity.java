@@ -57,6 +57,8 @@ public class QuejasAriEntity {
     @Column(name = "multas_credito", columnDefinition = "TEXT")
     private String multasCredito;
 
+    @Column(name = "instituto", columnDefinition = "TEXT")
+    private String instituto;
     // ELIMINADO: multas_creditos (indicaste que no va en esta tabla)
 
     @PrePersist
