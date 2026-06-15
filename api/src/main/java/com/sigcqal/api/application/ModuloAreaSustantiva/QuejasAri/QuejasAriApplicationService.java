@@ -41,9 +41,12 @@ public class QuejasAriApplicationService {
         QuejasAri quejasAri = new QuejasAri();
         quejasAri.setIdQueja(request.getIdQueja());
         quejasAri.setIdCir(request.getIdCir());
-        quejasAri.setNumExpedienteOficial(request.getNumExpedienteOficial());
+        if (request.getNumExpedienteOficial() == null || request.getNumExpedienteOficial().isBlank()) {
+            quejasAri.setNumExpedienteOficial(generarNumExpedienteOficial());
+        } else {
+            quejasAri.setNumExpedienteOficial(request.getNumExpedienteOficial());
+        }
         quejasAri.setSintesisActosOmisiones(request.getSintesisActosOmisiones());
-        quejasAri.setArticulosVulneradosAutoridad(request.getArticulosVulneradosAutoridad());
         quejasAri.setNombreEncargadoFirma(request.getNombreEncargadoFirma());
         quejasAri.setFechaAcuerdo(request.getFechaAcuerdo());
         quejasAri.setIdPlantillaQuejaAri(request.getIdPlantillaQuejaAri());
@@ -58,7 +61,6 @@ public class QuejasAriApplicationService {
                 "{{NUM_EXPEDIENTE}}", quejasAri.getNumExpedienteOficial() != null ? quejasAri.getNumExpedienteOficial() : "Por definir",
                 "{{FECHA}}", generadorDocumentoService.fechaActual(),
                 "{{SINTESIS_ACTOS}}", nvl(quejasAri.getSintesisActosOmisiones(), ""),
-                "{{ARTICULOS_VULNERADOS}}", nvl(quejasAri.getArticulosVulneradosAutoridad(), ""),
                 "{{NOMBRE_FIRMANTE}}", nvl(quejasAri.getNombreEncargadoFirma(), ""),
                 "{{MULTAS_REQUERIMIENTOS}}", nvl(quejasAri.getMultasRequerimientos(), ""),
                 "{{MULTAS_CREDITO}}", nvl(quejasAri.getMultasCredito(), ""),
@@ -82,6 +84,17 @@ public class QuejasAriApplicationService {
         }
 
         return mapper.toResponse(repositoryPort.save(quejasAri));
+    }
+
+    private String generarNumExpedienteOficial() {
+        int year = LocalDateTime.now().getYear();
+        String candidato;
+        int contador = 1;
+        do {
+            candidato = String.format("CEDECON-ZAC-QR-%03d-%d", contador, year);
+            contador++;
+        } while (repositoryPort.existeNumExpediente(candidato));
+        return candidato;
     }
 
     private String nvl(String value, String fallback) {

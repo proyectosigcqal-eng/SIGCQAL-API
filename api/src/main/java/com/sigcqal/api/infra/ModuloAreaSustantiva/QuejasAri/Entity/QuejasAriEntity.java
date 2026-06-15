@@ -36,9 +36,6 @@ public class QuejasAriEntity {
     @Column(name = "sintesis_actos_omisiones", columnDefinition = "TEXT")
     private String sintesisActosOmisiones;
 
-    @Column(name = "articulos_vulnerados_autoridad", columnDefinition = "TEXT")
-    private String articulosVulneradosAutoridad;
-
     @Column(name = "nombre_encargado_firma")
     private String nombreEncargadoFirma;
 

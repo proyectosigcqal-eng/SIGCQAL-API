@@ -22,7 +22,6 @@ public class QuejasAriMapper {
         entity.setIdCir(domain.getIdCir());
         entity.setNumExpedienteOficial(domain.getNumExpedienteOficial());
         entity.setSintesisActosOmisiones(domain.getSintesisActosOmisiones());
-        entity.setArticulosVulneradosAutoridad(domain.getArticulosVulneradosAutoridad());
         entity.setNombreEncargadoFirma(domain.getNombreEncargadoFirma());
         entity.setFechaAcuerdo(domain.getFechaAcuerdo());
         entity.setRutaPdfAri(domain.getRutaPdfAri());
@@ -47,7 +46,6 @@ public class QuejasAriMapper {
         domain.setIdCir(entity.getIdCir());
         domain.setNumExpedienteOficial(entity.getNumExpedienteOficial());
         domain.setSintesisActosOmisiones(entity.getSintesisActosOmisiones());
-        domain.setArticulosVulneradosAutoridad(entity.getArticulosVulneradosAutoridad());
         domain.setNombreEncargadoFirma(entity.getNombreEncargadoFirma());
         domain.setFechaAcuerdo(entity.getFechaAcuerdo());
         domain.setRutaPdfAri(entity.getRutaPdfAri());
@@ -68,7 +66,6 @@ public class QuejasAriMapper {
         response.setIdCir(domain.getIdCir());
         response.setNumExpedienteOficial(domain.getNumExpedienteOficial());
         response.setSintesisActosOmisiones(domain.getSintesisActosOmisiones());
-        response.setArticulosVulneradosAutoridad(domain.getArticulosVulneradosAutoridad());
         response.setNombreEncargadoFirma(domain.getNombreEncargadoFirma());
         response.setFechaAcuerdo(domain.getFechaAcuerdo());
         response.setRutaPdfAri(domain.getRutaPdfAri());
