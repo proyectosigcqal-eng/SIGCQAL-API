@@ -24,4 +24,5 @@ public class Expediente {
     private Long idEstatusExpediente;
     private String documentoAcreditaPersonalidad;
     private String archivoDocumentoAcreditaPersonalidad;
+    private Boolean bloqueado;
 }
