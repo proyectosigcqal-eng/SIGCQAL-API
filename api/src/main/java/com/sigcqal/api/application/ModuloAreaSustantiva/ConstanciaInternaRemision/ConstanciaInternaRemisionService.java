@@ -1,15 +1,11 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.ConstanciaInternaRemision;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -17,18 +13,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
-import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.application.exception.DuplicateResourceException;
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
@@ -36,12 +27,12 @@ import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.DetalleAsesoria.Model.DetalleAsesoria;
 import com.sigcqal.api.infra.Catalogo.EstatusExpediente.Entity.EstatusExpedienteEntity;
 import com.sigcqal.api.infra.Catalogo.EstatusExpediente.Repository.EstatusExpedienteJpaRepository;
+import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.DetalleAsesoria.Repository.DetalleAsesoriaRepository;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Repository.ExpedienteJPARepository;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.Dto.ConstanciaPreviewResponse;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.Dto.GenerarConstanciaRequest;
-import com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.Dto.GenerarConstanciaResponse;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -53,21 +44,25 @@ import lombok.extern.slf4j.Slf4j;
 public class ConstanciaInternaRemisionService {
 
     private static final Locale LOCALE_ES_MX = new Locale("es", "MX");
-    private static final DateTimeFormatter FMT_TS = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", LOCALE_ES_MX);
-    private static final DateTimeFormatter FMT_HORA = DateTimeFormatter.ofPattern("HH:mm", LOCALE_ES_MX);
-    private static final DateTimeFormatter FMT_DIA = DateTimeFormatter.ofPattern("dd", LOCALE_ES_MX);
-    private static final DateTimeFormatter FMT_ANIO = DateTimeFormatter.ofPattern("yyyy", LOCALE_ES_MX);
+    private static final DateTimeFormatter FMT_FECHA_DOCUMENTO = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", LOCALE_ES_MX);
     private static final String ESTATUS_CONSTANCIA_EMITIDA = "Constancia Emitida";
     private static final String FALLBACK_ASESOR = "ASESOR NO DISPONIBLE";
-    private static final String AREA_RECEPCION = "Sello Digital de Recepción";
+    private static final String PLANTILLA_CONSTANCIA = "plantilla_constancia_interna_remision.docx";
+    private static final String AREA_CANALIZAR = "Representación Legal y Defensa";
+    private static final String SERVICIO_PREVIO = "Quejas";
 
     private final DetalleAsesoriaRepository detalleRepository;
     private final ExpedienteJPARepository expedienteRepository;
     private final EstatusExpedienteJpaRepository estatusRepository;
     private final FileUploadPort fileUploadPort;
+    private final GeneradorDocumentoService generadorDocumentoService;
 
-    public ConstanciaPreviewResponse obtenerPreview(Integer expedienteId) {
-        validarExpedienteId(expedienteId);
+    public ConstanciaPreviewResponse obtenerPreview(String folio) {
+        var expedienteOpt = expedienteRepository.findByFolioGobierno(folio);
+        if (expedienteOpt.isEmpty()) {
+            throw new ResourceNotFoundException("Expediente", null);
+        }
+        Integer expedienteId = expedienteOpt.get().getId();
         DatosConstancia datos = cargarDatosConstancia(expedienteId);
         String motivoBloqueo = obtenerMotivoBloqueo(datos);
 
@@ -77,7 +72,7 @@ public class ConstanciaInternaRemisionService {
             .nombreQuejoso(datos.nombreQuejoso())
             .asunto(datos.asunto())
             .autoridadResponsable(datos.autoridadResponsable())
-            .fechaGeneracion(datos.fechaGeneracion().format(FMT_TS))
+            .fechaGeneracion(datos.fechaGeneracion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", LOCALE_ES_MX)))
             .numeroConstancia(datos.numeroConstancia())
             .asesorEmisor(datos.asesorEmisor())
             .puedeGenerar(motivoBloqueo == null)
@@ -86,7 +81,7 @@ public class ConstanciaInternaRemisionService {
     }
 
     @Transactional
-    public GenerarConstanciaResponse generar(Integer expedienteId, GenerarConstanciaRequest request) {
+    public ConstanciaGenerada generar(Integer expedienteId, GenerarConstanciaRequest request) {
         validarExpedienteId(expedienteId);
         validarRequest(request);
 
@@ -99,13 +94,8 @@ public class ConstanciaInternaRemisionService {
             throw new InvalidRequestException(motivoBloqueo);
         }
 
-        String html = cargarPlantillaHtml(
-            "plantillas/constancia_interna_remision.html",
-            construirVariablesTemplate(datos, request)
-        );
-        byte[] pdf = renderizarPdf(html);
-        byte[] pdfProtegido = protegerPdf(pdf);
-        String url = fileUploadPort.guardarArchivoConstancia(pdfProtegido, datos.nombreArchivo());
+        byte[] archivo = generarDocx(construirVariablesTemplate(datos, request));
+        String url = fileUploadPort.guardarArchivoConstancia(archivo, datos.nombreArchivo());
 
         EstatusExpedienteEntity estatusConstancia = estatusRepository.findByNombreIgnoreCase(ESTATUS_CONSTANCIA_EMITIDA)
             .orElseThrow(() -> new InvalidRequestException("No se encontró el estatus de expediente requerido: " + ESTATUS_CONSTANCIA_EMITIDA));
@@ -122,15 +112,7 @@ public class ConstanciaInternaRemisionService {
             LocalDateTime.now()
         );
 
-        return GenerarConstanciaResponse.builder()
-            .idConstancia(datos.numeroConstancia())
-            .nombreArchivo(datos.nombreArchivo())
-            .urlDescarga(url)
-            .fechaGeneracion(LocalDateTime.now())
-            .estatusExpediente(ESTATUS_CONSTANCIA_EMITIDA)
-            .mensaje("Constancia Interna de Remisión generada exitosamente.")
-            .puedeDescargar(url != null && !url.isBlank())
-            .build();
+        return new ConstanciaGenerada(datos.nombreArchivo(), url, archivo);
     }
 
     public Optional<ConstanciaGenerada> obtenerExistente(String folio) {
@@ -146,11 +128,19 @@ public class ConstanciaInternaRemisionService {
 
         try {
             String nombreArchivo = archivoOpt.get().getFileName().toString();
-            byte[] pdf = Files.readAllBytes(archivoOpt.get());
+            byte[] contenido = Files.readAllBytes(archivoOpt.get());
             String url = "/api/files/constancias/" + nombreArchivo;
-            return Optional.of(new ConstanciaGenerada(nombreArchivo, url, pdf));
+            return Optional.of(new ConstanciaGenerada(nombreArchivo, url, contenido));
         } catch (Exception e) {
             return Optional.empty();
+        }
+    }
+
+    private byte[] generarDocx(Map<String, String> variables) {
+        try {
+            return generadorDocumentoService.generarDesPlantilla(PLANTILLA_CONSTANCIA, variables);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar la constancia en formato DOCX.", e);
         }
     }
 
@@ -189,28 +179,21 @@ public class ConstanciaInternaRemisionService {
             resolverAsesorEmisor(detalle),
             ahora,
             numeroConstancia,
-            numeroConstancia + ".pdf"
+            numeroConstancia + ".docx"
         );
     }
 
     private Map<String, String> construirVariablesTemplate(DatosConstancia datos, GenerarConstanciaRequest request) {
         Map<String, String> variables = new LinkedHashMap<>();
-        variables.put("{{NUM_CONSTANCIA}}", escapeHtml(datos.numeroConstancia()));
-        variables.put("{{FECHA_GENERACION}}", escapeHtml(datos.fechaGeneracion().format(FMT_TS)));
-        variables.put("{{HORA}}", escapeHtml(datos.fechaGeneracion().format(FMT_HORA)));
-        variables.put("{{DIA}}", escapeHtml(datos.fechaGeneracion().format(FMT_DIA)));
-        variables.put("{{MES}}", escapeHtml(
-            datos.fechaGeneracion().getMonth().getDisplayName(TextStyle.FULL, LOCALE_ES_MX).toUpperCase(LOCALE_ES_MX)
-        ));
-        variables.put("{{ANIO}}", escapeHtml(datos.fechaGeneracion().format(FMT_ANIO)));
-        variables.put("{{FOLIO_ASESORIA}}", escapeHtml(datos.folioAsesoria()));
-        variables.put("{{QUEJOSO}}", escapeHtml(datos.nombreQuejoso()));
-        variables.put("{{ASUNTO}}", escapeHtml(datos.asunto()));
-        variables.put("{{AUTORIDAD_RESPONSABLE}}", escapeHtml(datos.autoridadResponsable()));
-        variables.put("{{ANALISIS_JURIDICO}}", escapeHtmlMultiline(request.getAnalisisJuridico()));
-        variables.put("{{DETERMINACION}}", escapeHtmlMultiline(request.getDeterminacion()));
-        variables.put("{{ASESOR_EMISOR}}", escapeHtml(datos.asesorEmisor()));
-        variables.put("{{AREA_RECEPCION}}", escapeHtml(AREA_RECEPCION));
+        variables.put("{{FOLIO_EXPEDIENTE}}", normalizarTextoDocx(datos.folioExpediente()));
+        variables.put("{{CONTRIBUYENTE}}", normalizarTextoDocx(resolverNombreContribuyente(datos)));
+        variables.put("{{FECHA_EMISION}}", normalizarTextoDocx(datos.fechaGeneracion().format(FMT_FECHA_DOCUMENTO)));
+        variables.put("{{AREA_CANALIZAR}}", AREA_CANALIZAR);
+        variables.put("{{SERVICIO_PREVIO}}", SERVICIO_PREVIO);
+        variables.put("{{DOCUMENTACION_REMITE}}", normalizarTextoDocx(request.getDocumentacionRemite()));
+        variables.put("{{MOTIVOS_REMITE}}", normalizarTextoDocx(request.getMotivosRemite()));
+        variables.put("{{OBSERVACIONES}}", normalizarTextoDocx(nvl(request.getObservaciones())));
+        variables.put("{{NOMBRE_ASESOR_EMITE}}", normalizarTextoDocx(datos.asesorEmisor()));
         return variables;
     }
 
@@ -245,8 +228,11 @@ public class ConstanciaInternaRemisionService {
         if (request == null) {
             throw new InvalidRequestException("El body es requerido");
         }
-        if (nvl(request.getAnalisisJuridico()).isBlank()) {
-            throw new InvalidRequestException("El analisisJuridico es requerido");
+        if (nvl(request.getDocumentacionRemite()).isBlank()) {
+            throw new InvalidRequestException("La documentación que se remite es requerida");
+        }
+        if (nvl(request.getMotivosRemite()).isBlank()) {
+            throw new InvalidRequestException("Los motivos por los que se remite son requeridos");
         }
     }
 
@@ -317,7 +303,7 @@ public class ConstanciaInternaRemisionService {
             return Optional.empty();
         }
 
-        Pattern pattern = Pattern.compile("^CONST-REMISION-(\\d{4})-" + Pattern.quote(consecutivo) + "\\.pdf$");
+        Pattern pattern = Pattern.compile("^CONST-REMISION-(\\d{4})-" + Pattern.quote(consecutivo) + "\\.(pdf|docx)$");
 
         try (Stream<Path> stream = Files.list(dir)) {
             return stream
@@ -337,75 +323,6 @@ public class ConstanciaInternaRemisionService {
         return Integer.parseInt(matcher.group(1));
     }
 
-    private String cargarPlantillaHtml(String classpath, Map<String, String> variables) {
-        try {
-            ClassPathResource resource = new ClassPathResource(classpath);
-            try (InputStream is = resource.getInputStream()) {
-                String html = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                for (Map.Entry<String, String> e : variables.entrySet()) {
-                    html = html.replace(e.getKey(), e.getValue() != null ? e.getValue() : "");
-                }
-                return html;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("No se encuentra la plantilla de Constancia Interna de Remisión.", e);
-        }
-    }
-
-    private byte[] renderizarPdf(String html) {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.withHtmlContent(html, null);
-            builder.toStream(out);
-            builder.run();
-            return out.toByteArray();
-        } catch (Exception e) {
-            Throwable root = e;
-            while (root.getCause() != null && root.getCause() != root) {
-                root = root.getCause();
-            }
-
-            String htmlPreview = html == null ? "" : html.substring(0, Math.min(html.length(), 2000));
-
-            log.error(
-                "Error renderizando PDF. exceptionType={} message={} rootType={} rootMessage={} htmlPreview={}",
-                e.getClass().getName(),
-                e.getMessage(),
-                root.getClass().getName(),
-                root.getMessage(),
-                htmlPreview,
-                e
-            );
-
-            throw new RuntimeException("Error al generar el documento.", e);
-        }
-    }
-
-    private byte[] protegerPdf(byte[] pdf) {
-        try (PDDocument doc = PDDocument.load(pdf);
-             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-
-            AccessPermission ap = new AccessPermission();
-            ap.setCanModify(false);
-            ap.setCanModifyAnnotations(false);
-            ap.setCanFillInForm(false);
-            ap.setCanAssembleDocument(false);
-            ap.setCanExtractContent(false);
-            ap.setCanExtractForAccessibility(false);
-            ap.setCanPrint(true);
-            ap.setCanPrintDegraded(true);
-
-            String ownerPassword = UUID.randomUUID().toString();
-            StandardProtectionPolicy policy = new StandardProtectionPolicy(ownerPassword, "", ap);
-            policy.setEncryptionKeyLength(128);
-            doc.protect(policy);
-            doc.save(out);
-            return out.toByteArray();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al proteger el PDF.", e);
-        }
-    }
-
     private boolean esCalificacionPositiva(String value) {
         String t = normalizarSoloLetras(value);
         return t.equals("procede") || t.equals("prevencion subsanada");
@@ -414,22 +331,6 @@ public class ConstanciaInternaRemisionService {
     private boolean esAprobadaParaAdmision(String value) {
         String t = normalizar(value);
         return t.contains("aprobada") && t.contains("admision");
-    }
-
-    private String escapeHtml(String value) {
-        return nvl(value)
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\"", "&quot;")
-            .replace("'", "&#39;");
-    }
-
-    private String escapeHtmlMultiline(String value) {
-        return escapeHtml(value)
-            .replace("\r\n", "\n")
-            .replace("\r", "\n")
-            .replace("\n", "<br/>");
     }
 
     private String nvl(String value) {
@@ -453,6 +354,41 @@ public class ConstanciaInternaRemisionService {
         return t;
     }
 
+    private String normalizarTextoDocx(String value) {
+        return nvl(value)
+            .replace("\r\n", "\n")
+            .replace("\r", "\n");
+    }
+
+    private String resolverNombreContribuyente(DatosConstancia datos) {
+        if (!nvl(datos.nombreQuejoso()).isBlank()) {
+            return datos.nombreQuejoso();
+        }
+        if (datos.expediente().getContribuyente() == null || datos.expediente().getContribuyente().getPersona() == null) {
+            return "";
+        }
+        return nombreCompletoPersona(datos.expediente().getContribuyente().getPersona());
+    }
+
+    private String nombreCompletoPersona(PersonaEntity persona) {
+        StringBuilder sb = new StringBuilder();
+        appendSegment(sb, persona.getNombre());
+        appendSegment(sb, persona.getApellidoPaterno());
+        appendSegment(sb, persona.getApellidoMaterno());
+        return sb.toString();
+    }
+
+    private void appendSegment(StringBuilder sb, String value) {
+        String texto = nvl(value);
+        if (texto.isBlank()) {
+            return;
+        }
+        if (sb.length() > 0) {
+            sb.append(' ');
+        }
+        sb.append(texto);
+    }
+
     private record DatosConstancia(
         Integer expedienteId,
         ExpedienteEntity expediente,
@@ -470,5 +406,5 @@ public class ConstanciaInternaRemisionService {
         String nombreArchivo
     ) {}
 
-    public record ConstanciaGenerada(String nombreArchivo, String url, byte[] pdf) {}
+    public record ConstanciaGenerada(String nombreArchivo, String url, byte[] archivo) {}
 }
