@@ -143,14 +143,20 @@ public class FileDownloadController {
             MediaType contentType;
             if (nombre.endsWith(".pdf")) {
                 contentType = MediaType.APPLICATION_PDF;
+            } else if (nombre.endsWith(".docx")) {
+                contentType = MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                );
             } else {
                 contentType = MediaType.APPLICATION_OCTET_STREAM;
             }
 
+            String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
+
             return ResponseEntity.ok()
                 .contentType(contentType)
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                    "inline; filename=\"" + nombre + "\"")
+                    disposition + "; filename=\"" + nombre + "\"")
                 .body(resource);
 
         } catch (MalformedURLException e) {

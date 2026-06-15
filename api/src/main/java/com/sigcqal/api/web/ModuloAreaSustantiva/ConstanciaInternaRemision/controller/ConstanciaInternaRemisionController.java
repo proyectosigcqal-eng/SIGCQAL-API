@@ -1,7 +1,14 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,77 +21,72 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.ConstanciaInternaRemision.ConstanciaInternaRemisionService;
-import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.Dto.ConstanciaPreviewResponse;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.Dto.GenerarConstanciaRequest;
-import com.sigcqal.api.web.ModuloAreaSustantiva.ConstanciaInternaRemision.Dto.GenerarConstanciaResponse;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/expedientes")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ConstanciaInternaRemisionController {
 
     private final ConstanciaInternaRemisionService service;
 
-    @GetMapping("/{expedienteId}/constancia-interna-remision/preview")
-    public ResponseEntity<ConstanciaPreviewResponse> obtenerPreview(@PathVariable Integer expedienteId) {
-        return ResponseEntity.ok(service.obtenerPreview(expedienteId));
+    public ConstanciaInternaRemisionController(ConstanciaInternaRemisionService service) {
+        this.service = service;
     }
 
-    @PostMapping("/{expedienteId}/constancia-interna-remision")
-    public ResponseEntity<GenerarConstanciaResponse> generarConstancia(
+    @PostMapping("/{expedienteId}/constancia-interna-remision/generate")
+    public ResponseEntity<byte[]> generarConstancia(
         @PathVariable Integer expedienteId,
-        @RequestBody GenerarConstanciaRequest request,
+        @Valid @RequestBody GenerarConstanciaRequest request,
         HttpServletRequest http
     ) {
-        GenerarConstanciaRequest body = request != null ? request : new GenerarConstanciaRequest();
-        validarExpedienteId(expedienteId, body.getExpedienteId());
-        body.setExpedienteId(expedienteId);
-        body.setIpCliente(obtenerIp(http));
-        return ResponseEntity.ok(service.generar(expedienteId, body));
-    }
+        request.setIpCliente(obtenerIp(http));
+        var archivo = service.generar(expedienteId, request);
 
-    @PostMapping("/constancia-interna-remision")
-    public ResponseEntity<GenerarConstanciaResponse> generarConstanciaCompat(
-        @RequestBody GenerarConstanciaRequest request,
-        HttpServletRequest http
-    ) {
-        GenerarConstanciaRequest body = request != null ? request : new GenerarConstanciaRequest();
-        if (body.getExpedienteId() == null || body.getExpedienteId() <= 0) {
-            throw new InvalidRequestException("El expedienteId debe ser mayor a 0");
-        }
-        body.setIpCliente(obtenerIp(http));
-        return ResponseEntity.ok(service.generar(body.getExpedienteId(), body));
-    }
-
-    @GetMapping("/{folio}/constancia-pdf")
-    public ResponseEntity<byte[]> obtenerConstancia(@PathVariable String folio) {
-        var resultOpt = service.obtenerExistente(folio);
-        if (resultOpt.isEmpty()) return ResponseEntity.notFound().build();
-        var result = resultOpt.get();
         return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_PDF)
-            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + result.nombreArchivo() + "\"")
-            .body(result.pdf());
+            .contentType(MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + archivo.nombreArchivo() + "\"")
+            .body(archivo.archivo());
     }
 
-    private void validarExpedienteId(Integer expedienteIdPath, Integer expedienteIdBody) {
-        if (expedienteIdBody != null && !expedienteIdBody.equals(expedienteIdPath)) {
-            throw new InvalidRequestException("El expedienteId del path no coincide con el body");
+    @GetMapping("/{expedienteId}/constancia-interna-remision/download/{filename}")
+    public ResponseEntity<Resource> descargarConstancia(
+        @PathVariable Integer expedienteId,
+        @PathVariable String filename
+    ) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path archivo = root.resolve("uploads/constancias/" + filename);
+            Resource resource = new UrlResource(archivo.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/{folio}/constancia-preview")
+    public ResponseEntity<ConstanciaPreviewResponse> obtenerPreview(@PathVariable String folio) {
+        return ResponseEntity.ok(service.obtenerPreview(folio));
     }
 
     private String obtenerIp(HttpServletRequest request) {
-        String xff = request.getHeader("X-Forwarded-For");
-        if (xff != null && !xff.isBlank()) {
-            String[] parts = xff.split(",");
-            if (parts.length > 0 && parts[0] != null) {
-                return parts[0].trim();
-            }
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
         }
-        return request.getRemoteAddr();
+        return ip;
     }
 }

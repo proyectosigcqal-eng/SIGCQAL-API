@@ -6,6 +6,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
@@ -27,6 +28,19 @@ public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ProblemDetail handleArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Parámetro inválido: " + ex.getName());
+        pd.setTitle("Solicitud inválida");
+        return pd;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        String detail = ex.getBindingResult().getFieldErrors().stream()
+            .findFirst()
+            .map((error) -> error.getDefaultMessage())
+            .filter((message) -> message != null && !message.isBlank())
+            .orElse("La solicitud contiene campos inválidos");
+
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
         pd.setTitle("Solicitud inválida");
         return pd;
     }
