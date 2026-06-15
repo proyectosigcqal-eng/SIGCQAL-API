@@ -68,6 +68,8 @@ public class ExpedienteMapper {
         expediente.setFechaSolicitud(entity.getFechaSolicitud());
         expediente.setDocumentoAcreditaPersonalidad(entity.getDocumentoAcreditaPersonalidad());
         expediente.setArchivoDocumentoAcreditaPersonalidad(entity.getArchivoDocumentoAcreditaPersonalidad());
+        expediente.setBloqueado(entity.getBloqueado());
+        expediente.setFechaCierreAutomatico(entity.getFechaCierreAutomatico());
 
         if (entity.getMunicipio() != null) {
             expediente.setIdMunicipio(entity.getMunicipio().getId());

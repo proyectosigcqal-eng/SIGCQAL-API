@@ -25,4 +25,6 @@ public class Expediente {
     private String documentoAcreditaPersonalidad;
     private String archivoDocumentoAcreditaPersonalidad;
     private Boolean bloqueado;
+    private java.time.LocalDateTime fechaCierreAutomatico;
+
 }

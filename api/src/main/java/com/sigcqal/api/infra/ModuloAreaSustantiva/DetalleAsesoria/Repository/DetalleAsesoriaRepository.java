@@ -25,6 +25,7 @@ public interface DetalleAsesoriaRepository
             a.nombre                                   AS nombre_autoridad,
             ede.nombre                                 AS estatus_detalle,
             da.calificacion_acto,
+            da.problematica,
             da.seguimiento,
             da.fecha_notificacion,
             p.rfc,

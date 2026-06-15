@@ -8,14 +8,24 @@ import lombok.Data;
 @Builder
 public class DetalleAsesoriaResponseDTO {
 
-    private String folio;
-
+    @JsonProperty("id_expediente")
     private Long idExpediente;
+
+    private String folio;
 
     @JsonProperty("fecha_registro")
     private String fechaRegistro;
 
     private String contribuyente;
+
+    @JsonProperty("folio_asesoria")
+    private String folioAsesoria;
+
+    @JsonProperty("autoridad_responsable")
+    private String autoridadResponsable;
+
+    @JsonProperty("descripcion_sintetica")
+    private String descripcionSintetica;
 
     @JsonProperty("estatus_actual")
     private String estatusActual;

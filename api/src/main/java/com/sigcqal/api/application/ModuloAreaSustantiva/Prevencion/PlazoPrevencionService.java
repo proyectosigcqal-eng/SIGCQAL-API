@@ -95,17 +95,21 @@ public class PlazoPrevencionService {
     return fecha;
 }
 
-    private int contarDiasHabiles(LocalDate desde, LocalDate hasta,
+  private int contarDiasHabiles(LocalDate desde, LocalDate hasta,
                                    Set<LocalDate> inhabiles) {
         int count = 0;
         LocalDate fecha = desde;
+        
+        // CAMBIO: Si no quieres contar el día de hoy (desde), 
+        // inicia el conteo desde el día siguiente.
+        fecha = fecha.plusDays(1); 
+        
         while (!fecha.isAfter(hasta)) {
             if (esDiaHabil(fecha, inhabiles)) count++;
             fecha = fecha.plusDays(1);
         }
         return count;
     }
-
     private boolean esDiaHabil(LocalDate fecha, Set<LocalDate> inhabiles) {
         return fecha.getDayOfWeek() != DayOfWeek.SATURDAY
                 && fecha.getDayOfWeek() != DayOfWeek.SUNDAY

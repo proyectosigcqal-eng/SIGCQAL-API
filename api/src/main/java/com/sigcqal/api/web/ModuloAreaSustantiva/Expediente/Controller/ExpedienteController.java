@@ -1,7 +1,6 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.Controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.Expediente.ExpedienteService;
+import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAsesoriaResponseDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteResponseDTO;
 
@@ -30,23 +30,24 @@ public class ExpedienteController {
     private final ExpedienteService service;
 
     @PostMapping
-    public ResponseEntity<ExpedienteResponseDTO> guardar(@RequestBody ExpedienteRequestDTO request) {
-        ExpedienteResponseDTO response = service.guardar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<ExpedienteResponseDTO> guardar(
+            @RequestBody ExpedienteRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(request));
     }
 
     @PostMapping("/{folio}/documento-personalidad")
-public ResponseEntity<ExpedienteResponseDTO> subirDocumento(
-    @PathVariable String folio,
-    @RequestParam("archivo") MultipartFile archivo
-) throws IOException {
-    return ResponseEntity.ok(service.guardarDocumentoPersonalidad(folio, archivo.getBytes()));
-}
+    public ResponseEntity<ExpedienteResponseDTO> subirDocumento(
+            @PathVariable String folio,
+            @RequestParam("archivo") MultipartFile archivo) throws IOException {
+        return ResponseEntity.ok(
+                service.guardarDocumentoPersonalidad(folio, archivo.getBytes()));
+    }
 
-@GetMapping("/{folio}")
-public ResponseEntity<List<ExpedienteResponseDTO>> obtenerPorFolio(@PathVariable String folio) {
-    // Asumiendo que tienes este método en tu service
-    List<ExpedienteResponseDTO> response = service.buscarPorFolio(folio); 
-    return ResponseEntity.ok(response);
+    @GetMapping("/{folio}")
+public ResponseEntity<DetalleAsesoriaResponseDTO> obtenerPorFolio(
+        @PathVariable String folio) {
+    // Tu servicio tendrá que hacer los JOINs en la base de datos 
+    // para construir y retornar el DetalleAsesoriaResponseDTO
+    return ResponseEntity.ok(service.obtenerDetalleCompletoPorFolio(folio));
 }
 }

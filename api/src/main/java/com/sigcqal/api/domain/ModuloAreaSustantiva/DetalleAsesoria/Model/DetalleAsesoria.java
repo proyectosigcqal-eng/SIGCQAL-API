@@ -12,6 +12,7 @@ public interface DetalleAsesoria {
     String getNombreAutoridad();
     String getEstatusDetalle();
     String getCalificacionActo();
+    String getProblematica();
     String getSeguimiento();
     String getFechaNotificacion();
     String getRfc();

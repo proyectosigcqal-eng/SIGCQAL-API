@@ -16,6 +16,7 @@ public class FileUploadAdapter implements FileUploadPort {
     private final String carpetaDestino = "uploads/memorandums/";
     private final String carpetaDestinoOficios = "uploads/oficios/";
     private final String carpetaDestinoExpedientes = "uploads/expedientes/";
+    private final String carpetaDestinoConstancias = "uploads/constancias/";
 
    @Override
 public String guardarArchivo(byte[] contenido, String nombreArchivo) {
@@ -57,7 +58,6 @@ public String guardarArchivoOficio(byte[] contenido, String nombreArchivo) {
     }
 }
 
-
 @Override
 public String guardarArchivoExpediente(byte[] contenido, String nombreArchivo) {
     try {
@@ -66,11 +66,35 @@ public String guardarArchivoExpediente(byte[] contenido, String nombreArchivo) {
         if (!Files.exists(directorioDestino)) {
             Files.createDirectories(directorioDestino);
         }
+        
         Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
         Files.write(ficheroFinal, contenido);
+        System.out.println("Archivo guardado en: " + ficheroFinal.toAbsolutePath());
+
         return "/api/files/expedientes/" + nombreArchivo;
     } catch (IOException e) {
+        e.printStackTrace();
         throw new FileStorageException("Error al guardar documento de expediente: " + e.getMessage(), e);
+    }
+}
+
+@Override
+public String guardarArchivoConstancia(byte[] contenido, String nombreArchivo) {
+    try {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        Path directorioDestino = root.resolve(carpetaDestinoConstancias);
+        if (!Files.exists(directorioDestino)) {
+            Files.createDirectories(directorioDestino);
+        }
+
+        Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+        Files.write(ficheroFinal, contenido);
+        System.out.println("Archivo guardado en: " + ficheroFinal.toAbsolutePath());
+
+        return "/api/files/constancias/" + nombreArchivo;
+    } catch (IOException e) {
+        e.printStackTrace();
+        throw new FileStorageException("Error de E/S al guardar el PDF: " + e.getMessage(), e);
     }
 }
 }
