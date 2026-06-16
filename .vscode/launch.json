@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "SIGCQAL API",
+            "request": "launch",
+            "mainClass": "com.sigcqal.api.ApiApplication",
+            "projectName": "avaluos-api",
+            "cwd": "${workspaceFolder}/api"
+        }
+    ]
+}
