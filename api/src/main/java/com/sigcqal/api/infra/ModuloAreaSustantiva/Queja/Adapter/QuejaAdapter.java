@@ -21,12 +21,14 @@ public class QuejaAdapter implements QuejaRepositoryPort {
 
     @Override
     public Optional<Queja> findById(Integer idQueja) {
-        return repository.findById(idQueja).map(mapper::toDomain);
+        // MODIFICADO: Llama a la query con FETCH JOIN
+        return repository.findByIdConRelaciones(idQueja).map(mapper::toDomain);
     }
 
     @Override
     public List<Queja> findAll() {
-        return repository.findAll().stream()
+        // MODIFICADO: Llama a la query con FETCH JOIN
+        return repository.findAllConRelaciones().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }

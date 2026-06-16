@@ -16,4 +16,13 @@ public class QuejaResponseDTO {
     private Boolean requisitoCompetenciaCedecon;
     private LocalDateTime fechaRegistro;
     private LocalDateTime ultimaActualizacion;
+
+   private String folioGobierno;
+    private String nombreAsesor;
+    private String rfcAsesor;
+    private String nombreRepresentante;
+    private String nombreContribuyente;    // <- NUEVO
+    private String identificacionContribuyente;
+    private LocalDateTime fechaSolicitud;
+    
 }

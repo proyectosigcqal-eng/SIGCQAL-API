@@ -3,11 +3,11 @@ package com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity;
 import java.time.LocalDateTime;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 import com.sigcqal.api.infra.Catalogo.Asesor.Entity.AsesorEntity;
-// Nota: Ajusta los imports de Autoridad y EstatusQueja según tus paquetes de catálogos reales
 import com.sigcqal.api.infra.Catalogo.Autoridad.Entity.AutoridadEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,20 +26,22 @@ public class QuejaEntity {
     @Column(name = "id_queja")
     private Integer idQueja;
 
-    @ManyToOne
+    // MODIFICADO: Eager para asegurar la extracción del expediente y sus personas asociadas
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_expediente")
     private ExpedienteEntity expediente;
 
-    @ManyToOne
+    // MODIFICADO: Eager para asegurar la extracción del asesor y su información personal
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor")
     private AsesorEntity asesor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_autoridad")
     private AutoridadEntity autoridad;
 
     @Column(name = "id_estatus_queja")
-private Long estatusQueja;
+    private Long estatusQueja;
 
     @Column(name = "requisito_identificacion")
     private Boolean requisitoIdentificacion;

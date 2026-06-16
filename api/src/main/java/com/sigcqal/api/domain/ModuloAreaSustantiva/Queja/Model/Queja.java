@@ -22,4 +22,12 @@ public class Queja {
     private Boolean requisitoCompetenciaCedecon;
     private LocalDateTime fechaRegistro;
     private LocalDateTime ultimaActualizacion;
+
+    private String folioGobierno;
+    private String nombreAsesor;          // Nombre completo unificado
+    private String rfcAsesor;
+    private String nombreRepresentante;
+    private String nombreContribuyente;    // <- NUEVO: Nombre completo unificado
+    private String identificacionContribuyente;
+    private LocalDateTime fechaSolicitud;
 }
