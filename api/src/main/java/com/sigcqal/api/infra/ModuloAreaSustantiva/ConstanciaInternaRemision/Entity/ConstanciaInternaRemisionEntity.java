@@ -1,0 +1,47 @@
+package com.sigcqal.api.infra.ModuloAreaSustantiva.ConstanciaInternaRemision.Entity;
+
+import java.time.LocalDateTime;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "constancia_interna_remision", schema = "sustantiva")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ConstanciaInternaRemisionEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "expediente_id", nullable = false)
+    private ExpedienteEntity expediente;
+
+    @Column(name = "ruta_pdf")
+    private String rutaPdf;
+
+    @Column(name = "analisis_juridico")
+    private String analisisJuridico;
+
+    @Column(name = "determinacion")
+    private String determinacion;
+
+    @Column(name = "informe_autoridad_fecha")
+    private String informeAutoridadFecha;
+
+    @Column(name = "informe_autoridad_texto", columnDefinition = "TEXT")
+    private String informeAutoridadTexto;
+
+    @Column(name = "informe_autoridad_asunto")
+    private String informeAutoridadAsunto;
+
+    @Column(name = "autoridad_contesto")
+    private Boolean autoridadContesto;
+
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+}
