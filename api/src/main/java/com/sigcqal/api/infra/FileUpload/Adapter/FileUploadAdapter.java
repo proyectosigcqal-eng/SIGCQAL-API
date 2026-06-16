@@ -97,4 +97,21 @@ public String guardarArchivoConstancia(byte[] contenido, String nombreArchivo) {
         throw new FileStorageException("Error de E/S al guardar el PDF: " + e.getMessage(), e);
     }
 }
+
+public String guardarArchivoQuejaAri(byte[] contenido, String nombreArchivo) {
+    try {
+        Path root = Paths.get("uploads/quejas-ari").toAbsolutePath().normalize();
+        java.nio.file.Files.createDirectories(root); // 🛠️ Esto evita que falle si la carpeta no existe
+        
+        Path fichero = root.resolve(nombreArchivo);
+        java.nio.file.Files.write(fichero, contenido);
+        
+        // Retornamos la URL que usará el frontend para descargar el documento
+        return "/api/files/quejas-ari/" + nombreArchivo; 
+    } catch (IOException e) {
+        e.printStackTrace(); 
+        throw new RuntimeException("Error físico al escribir el archivo ARI en disco", e); // 💥 ¡Ya no devuelve null!
+
+    }
+}
 }
