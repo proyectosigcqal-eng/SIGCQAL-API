@@ -1,4 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.jdt.ls.vmargs": "-Djavax.net.ssl.trustStoreType=Windows-ROOT",
+    "maven.executable.path": "${workspaceFolder}/api/mvnw.cmd",
+    "java.import.maven.enabled": true
 }
