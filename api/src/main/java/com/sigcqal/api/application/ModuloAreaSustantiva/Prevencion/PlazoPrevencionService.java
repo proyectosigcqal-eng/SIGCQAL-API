@@ -82,13 +82,13 @@ public class PlazoPrevencionService {
 
         // ✅ 7. Retorno normal
         return PlazoPrevencion.builder()
-                .folioExpediente(folio)
-                .fechaInicio(fechaInicio)
-                .fechaLimite(fechaLimite)
-                .diasHabilesRestantes(vencido ? 0 : diasRestantes)
-                .semaforoEstado(semaforo)
-                .vencido(vencido)
-                .build();
+        .folioExpediente(folio)
+        .fechaInicio(fechaInicio)                              
+        .fechaLimite(fechaLimite.atStartOfDay())               
+        .diasHabilesRestantes(vencido ? 0 : diasRestantes)
+        .semaforoEstado(semaforo)
+        .vencido(vencido)
+        .build();
     }
 
     private LocalDate sumarDiasHabiles(LocalDate desde, int dias,

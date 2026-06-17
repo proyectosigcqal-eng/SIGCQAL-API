@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 public class PlazoPrevencion {
     private String folioExpediente;
     private LocalDateTime fechaInicio;
-    private LocalDate fechaLimite;
+    private LocalDateTime fechaLimite;
     private Integer diasHabilesRestantes;
     private String semaforoEstado;   
     private Boolean vencido;
