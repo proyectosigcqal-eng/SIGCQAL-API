@@ -51,6 +51,7 @@ public class QuejasAriApplicationService {
             quejasAri.setNumExpedienteOficial(request.getNumExpedienteOficial());
         }
         quejasAri.setSintesisActosOmisiones(request.getSintesisActosOmisiones());
+        quejasAri.setAbreviaturaEncargado(request.getAbreviaturaEncargado());
         quejasAri.setNombreEncargadoFirma(request.getNombreEncargadoFirma());if (request.getFechaAcuerdo() != null) {
         quejasAri.setFechaAcuerdo(request.getFechaAcuerdo().atStartOfDay());
         }
@@ -70,6 +71,7 @@ public class QuejasAriApplicationService {
                 Map.entry("{{MULTAS_REQUERIMIENTOS}}", nvl(quejasAri.getMultasRequerimientos(), "")),
                 Map.entry("{{MULTAS_CREDITO}}",       nvl(quejasAri.getMultasCredito(), "")),
                 Map.entry("{{INSTITUTO}}",             nvl(quejasAri.getInstituto(), "")),
+                Map.entry("{{ABREVIATURA_FIRMANTE}}", nvl(quejasAri.getAbreviaturaEncargado(), "")),
                 
                 // 🔍 Nuevas variables inyectadas desde el Front-End para la plantilla .docx
                 Map.entry("{{FOLIO_GOBIERNO}}",       nvl(request.getFolioGobierno(), "[FOLIO]")),
