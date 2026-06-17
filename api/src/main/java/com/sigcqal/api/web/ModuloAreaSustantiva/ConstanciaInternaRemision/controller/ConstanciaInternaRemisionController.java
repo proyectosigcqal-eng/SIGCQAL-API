@@ -77,6 +77,20 @@ public class ConstanciaInternaRemisionController {
         }
     }
 
+    @PostMapping("/{expedienteId}/constancia-interna-remision/preview")
+    public ResponseEntity<String> previewCIR(
+        @PathVariable Integer expedienteId,
+        @Valid @RequestBody GenerarConstanciaRequest request) {
+        try {
+            String html = service.generarHtmlPreview(request);
+            return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_HTML)
+                .body(html);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/{folio}/constancia-preview")
     public ResponseEntity<ConstanciaPreviewResponse> obtenerPreview(@PathVariable String folio) {
         return ResponseEntity.ok(service.obtenerPreview(folio));

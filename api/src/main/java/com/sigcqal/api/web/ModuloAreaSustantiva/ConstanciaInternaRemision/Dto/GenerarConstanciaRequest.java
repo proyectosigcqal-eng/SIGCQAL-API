@@ -18,6 +18,9 @@ public class GenerarConstanciaRequest {
     private String motivosRemite;
 
     private String observaciones;
+    private String asesorQueRemite;
+    private String nombreEncargado;
+    private String fechaCIR;
     private String ipCliente;
 }
 

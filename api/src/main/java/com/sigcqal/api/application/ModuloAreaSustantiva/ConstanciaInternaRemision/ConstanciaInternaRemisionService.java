@@ -1,5 +1,7 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.ConstanciaInternaRemision;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,6 +9,7 @@ import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
@@ -134,6 +138,55 @@ public class ConstanciaInternaRemisionService {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    public String generarHtmlPreview(GenerarConstanciaRequest request) {
+        try {
+            String htmlTemplate = loadTemplate("cir_preview.html");
+            String membreteBase64 = loadMembreteBase64();
+
+            String html = htmlTemplate
+                .replace("{{MEMBRETE_BASE64}}", membreteBase64)
+                .replace("{{FUNDAMENTOS}}", sanitize(request.getDocumentacionRemite()))
+                .replace("{{FUNDAMENTOS_CLASS}}", request.getDocumentacionRemite() != null && !request.getDocumentacionRemite().isBlank() ? "" : "content-empty")
+                .replace("{{OBSERVACIONES}}", sanitize(request.getObservaciones()))
+                .replace("{{OBSERVACIONES_CLASS}}", request.getObservaciones() != null && !request.getObservaciones().isBlank() ? "" : "content-empty")
+                .replace("{{FECHA_CIR}}", request.getFechaCIR() != null ? request.getFechaCIR() : "")
+                .replace("{{FECHA_CLASS}}", request.getFechaCIR() != null && !request.getFechaCIR().isBlank() ? "" : "content-empty")
+                .replace("{{ASESOR_QUEMITE}}", sanitize(request.getAsesorQueRemite()))
+                .replace("{{NOMBRE_ENCARGADO}}", sanitize(request.getNombreEncargado()))
+                .replace("{{FECHA_GENERACION}}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+
+            return html;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar HTML preview: " + e.getMessage(), e);
+        }
+    }
+
+    private String loadMembreteBase64() {
+        try {
+            ClassPathResource resource = new ClassPathResource("assets/membrete.jpg");
+            if (!resource.exists()) {
+                return "";
+            }
+            byte[] bytes = resource.getInputStream().readAllBytes();
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+    private String loadTemplate(String templateName) throws IOException {
+        ClassPathResource resource = new ClassPathResource("plantillas/" + templateName);
+        return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+    }
+
+    private String sanitize(String input) {
+        if (input == null) return "";
+        return input.replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll("\r\n|\r|\n", "<br/>");
     }
 
     private byte[] generarDocx(Map<String, String> variables) {
