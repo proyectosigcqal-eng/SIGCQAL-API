@@ -1,21 +1,16 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity.ResolucionFinalEntity;
 
+@Repository
 public interface ResolucionFinalJPARepository extends JpaRepository<ResolucionFinalEntity, Integer> {
-    Optional<ResolucionFinalEntity> findByIdExpediente(Integer idExpediente);
 
-   @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END " +
-       "FROM ExpedienteEntity e " +
-       "WHERE e.id = :idExpediente AND e.estatusExpediente.id = :idEstatus")
-boolean expedienteEnDictaminacion(
-    @Param("idExpediente") Integer idExpediente,
-    @Param("idEstatus") Long idEstatus
-);
+    List<ResolucionFinalEntity> findByIdExpediente(Integer idExpediente);
+
+    boolean existsByIdExpediente(Integer idExpediente);
 }
