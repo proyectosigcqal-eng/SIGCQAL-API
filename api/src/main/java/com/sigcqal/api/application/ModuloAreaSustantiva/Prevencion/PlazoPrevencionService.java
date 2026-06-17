@@ -26,36 +26,40 @@ public class PlazoPrevencionService {
 
     public PlazoPrevencion calcularPlazo(String folio) {
 
-        // Obtener fecha de inicio (cuando cambió a "En Prevención")
+        // ✅ 1. Si ya está bloqueado — devuelve vencido sin calcular nada
+        boolean estaBloqueado = expedienteRepository.findBloqueadoByFolio(folio)
+                .orElse(false);
+
+        if (estaBloqueado) {
+            return PlazoPrevencion.builder()
+                    .folioExpediente(folio)
+                    .fechaInicio(null)
+                    .fechaLimite(null)
+                    .diasHabilesRestantes(0)
+                    .semaforoEstado("ROJO")
+                    .vencido(true)
+                    .build();
+        }
+
+        // ✅ 2. Busca fecha de inicio — si no está en prevención devuelve vacío
         LocalDateTime fechaInicio = expedienteRepository
                 .findFechaPrevencionByFolio(folio)
                 .orElseThrow(() -> new InvalidRequestException(
                         "Expediente no encontrado o no está En Prevención: " + folio));
 
-                        System.out.println("fechaInicio raw: " + fechaInicio);
-             
+        LocalDate inicio         = fechaInicio.toLocalDate();
+        LocalDate busquedaHasta  = inicio.plusDays(30);
 
-
-        LocalDate inicio = fechaInicio.toLocalDate();
-        System.out.println("inicio LocalDate: " + fechaInicio.toLocalDate());
-        LocalDate busquedaHasta = inicio.plusDays(30); // rango seguro
-
-        // Traer días inhábiles del rango
+        // ✅ 3. Días inhábiles del rango
         List<DiaInhabil> inhabiles = diaInhabilPort.findByRangoFechas(inicio, busquedaHasta);
         Set<LocalDate> fechasInhabiles = inhabiles.stream()
                 .map(DiaInhabil::getFecha)
                 .collect(Collectors.toSet());
 
-        // Calcular fecha límite sumando exactamente 3 días hábiles
-        System.out.println("=== TRAZANDO sumarDiasHabiles ===");
-        System.out.println("desde: " + inicio);
-        System.out.println("dias: " + DIAS_HABILES_PLAZO);
-        System.out.println("inhabiles en rango: " + fechasInhabiles);
-
+        // ✅ 4. Fecha límite
         LocalDate fechaLimite = sumarDiasHabiles(inicio, DIAS_HABILES_PLAZO, fechasInhabiles);
-        System.out.println("fechaLimite resultado: " + fechaLimite);
 
-        // Calcular días hábiles restantes desde hoy
+        // ✅ 5. Días restantes desde hoy
         LocalDate hoy = LocalDate.now();
         List<DiaInhabil> inhabilesRestantes = diaInhabilPort.findByRangoFechas(hoy, fechaLimite);
         Set<LocalDate> fechasInhabilesRestantes = inhabilesRestantes.stream()
@@ -63,10 +67,20 @@ public class PlazoPrevencionService {
                 .collect(Collectors.toSet());
 
         int diasRestantes = contarDiasHabiles(hoy, fechaLimite, fechasInhabilesRestantes);
-        boolean vencido = hoy.isAfter(fechaLimite);
+        boolean vencido   = hoy.isAfter(fechaLimite);
+
+        // ✅ 6. Si venció pero no se ha bloqueado aún — cierra automáticamente
+        if (vencido) {
+            try {
+                expedienteRepository.cerrarExpedienteVencido(folio);
+            } catch (Exception e) {
+                // No interrumpe el flujo — el scheduler lo cerrará después
+            }
+        }
 
         String semaforo = calcularSemaforo(diasRestantes, vencido);
 
+        // ✅ 7. Retorno normal
         return PlazoPrevencion.builder()
                 .folioExpediente(folio)
                 .fechaInicio(fechaInicio)
@@ -77,39 +91,28 @@ public class PlazoPrevencionService {
                 .build();
     }
 
-    // ── Lógica de cálculo de días hábiles ──────────────────────────────
-
-  private LocalDate sumarDiasHabiles(LocalDate desde, int dias,
-                                    Set<LocalDate> inhabiles) {
-    LocalDate fecha = desde;
-    int contados = 0;
-    while (contados < dias) {
-        fecha = fecha.plusDays(1);
-        System.out.println("  evaluando: " + fecha 
-            + " dow=" + fecha.getDayOfWeek() 
-            + " habil=" + esDiaHabil(fecha, inhabiles)
-            + " contados=" + contados);
-        if (esDiaHabil(fecha, inhabiles)) contados++;
+    private LocalDate sumarDiasHabiles(LocalDate desde, int dias,
+                                        Set<LocalDate> inhabiles) {
+        LocalDate fecha = desde;
+        int contados = 0;
+        while (contados < dias) {
+            fecha = fecha.plusDays(1);
+            if (esDiaHabil(fecha, inhabiles)) contados++;
+        }
+        return fecha;
     }
-    System.out.println("  → fecha limite: " + fecha);
-    return fecha;
-}
 
-  private int contarDiasHabiles(LocalDate desde, LocalDate hasta,
+    private int contarDiasHabiles(LocalDate desde, LocalDate hasta,
                                    Set<LocalDate> inhabiles) {
         int count = 0;
-        LocalDate fecha = desde;
-        
-        // CAMBIO: Si no quieres contar el día de hoy (desde), 
-        // inicia el conteo desde el día siguiente.
-        fecha = fecha.plusDays(1); 
-        
+        LocalDate fecha = desde.plusDays(1);
         while (!fecha.isAfter(hasta)) {
             if (esDiaHabil(fecha, inhabiles)) count++;
             fecha = fecha.plusDays(1);
         }
         return count;
     }
+
     private boolean esDiaHabil(LocalDate fecha, Set<LocalDate> inhabiles) {
         return fecha.getDayOfWeek() != DayOfWeek.SATURDAY
                 && fecha.getDayOfWeek() != DayOfWeek.SUNDAY

@@ -14,7 +14,7 @@ public class Queja {
     private Integer idQueja;
     private Integer idExpediente;
     private Long idAsesor;
-    private Long idAutoridad;
+    private Long idDetalleAsesoria;
     private Long idEstatusQueja;
     private Boolean requisitoIdentificacion;
     private Boolean requisitoActosFiscales;
@@ -30,4 +30,5 @@ public class Queja {
     private String nombreContribuyente;    // <- NUEVO: Nombre completo unificado
     private String identificacionContribuyente;
     private LocalDateTime fechaSolicitud;
+    private String nombreAutoridad;      // <- NUEVO: Nombre completo unificado
 }

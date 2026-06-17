@@ -21,28 +21,31 @@ public class QuejaMapper {
         domain.setFechaRegistro(entity.getFechaRegistro());
         domain.setUltimaActualizacion(entity.getUltimaActualizacion());
 
-        // 1. MAPEO DESDE EXPEDIENTE
+        if (entity.getEstatusQueja() != null) {
+            domain.setIdEstatusQueja(entity.getEstatusQueja());
+        }
+
+        // ── 1. Expediente ───────────────────────────────────────────────
         if (entity.getExpediente() != null) {
             domain.setIdExpediente(entity.getExpediente().getId());
             domain.setFolioGobierno(entity.getExpediente().getFolioGobierno());
-            domain.setFechaSolicitud(entity.getExpediente().getFechaSolicitud()); // <- NUEVO: Extracción directa de la entidad
-            
-            // Representante Legal
+            domain.setFechaSolicitud(entity.getExpediente().getFechaSolicitud());
+
             if (entity.getExpediente().getRepresentanteLegal() != null) {
-                domain.setNombreRepresentante(formarNombreCompleto(entity.getExpediente().getRepresentanteLegal()));
+                domain.setNombreRepresentante(
+                    formarNombreCompleto(entity.getExpediente().getRepresentanteLegal()));
             }
-            
-            // Contribuyente -> Persona
-            if (entity.getExpediente().getContribuyente() != null && 
+
+            if (entity.getExpediente().getContribuyente() != null &&
                 entity.getExpediente().getContribuyente().getPersona() != null) {
-                
-                PersonaEntity personaCont = entity.getExpediente().getContribuyente().getPersona();
+                PersonaEntity personaCont =
+                    entity.getExpediente().getContribuyente().getPersona();
                 domain.setNombreContribuyente(formarNombreCompleto(personaCont));
                 domain.setIdentificacionContribuyente(personaCont.getIdentificacionOficial());
             }
         }
 
-        // 2. MAPEO DESDE ASESOR
+        // ── 2. Asesor ───────────────────────────────────────────────────
         if (entity.getAsesor() != null) {
             domain.setIdAsesor(entity.getAsesor().getIdAsesor());
             if (entity.getAsesor().getPersona() != null) {
@@ -52,11 +55,10 @@ public class QuejaMapper {
             }
         }
 
-        if (entity.getAutoridad() != null) {
-            domain.setIdAutoridad(entity.getAutoridad().getId());
-        }
-        if (entity.getEstatusQueja() != null) {
-            domain.setIdEstatusQueja(entity.getEstatusQueja());
+        // ── 3. DetalleAsesoria ──────────────────────────────────────────
+        // Solo mapeamos el ID — DetalleAsesoriaEntity no tiene relación con Autoridad
+        if (entity.getDetalleAsesoria() != null) {
+            domain.setIdDetalleAsesoria(entity.getDetalleAsesoria().getId());
         }
 
         return domain;
@@ -69,7 +71,7 @@ public class QuejaMapper {
         dto.setIdQueja(domain.getIdQueja());
         dto.setIdExpediente(domain.getIdExpediente());
         dto.setIdAsesor(domain.getIdAsesor());
-        dto.setIdAutoridad(domain.getIdAutoridad());
+        dto.setIdDetalleAsesoria(domain.getIdDetalleAsesoria());
         dto.setIdEstatusQueja(domain.getIdEstatusQueja());
         dto.setRequisitoIdentificacion(domain.getRequisitoIdentificacion());
         dto.setRequisitoActosFiscales(domain.getRequisitoActosFiscales());
@@ -77,10 +79,8 @@ public class QuejaMapper {
         dto.setRequisitoCompetenciaCedecon(domain.getRequisitoCompetenciaCedecon());
         dto.setFechaRegistro(domain.getFechaRegistro());
         dto.setUltimaActualizacion(domain.getUltimaActualizacion());
-        
-        // Mapeo hacia el DTO de respuesta final
         dto.setFolioGobierno(domain.getFolioGobierno());
-        dto.setFechaSolicitud(domain.getFechaSolicitud()); // <- NUEVO: Traspaso al DTO
+        dto.setFechaSolicitud(domain.getFechaSolicitud());
         dto.setNombreAsesor(domain.getNombreAsesor());
         dto.setRfcAsesor(domain.getRfcAsesor());
         dto.setNombreRepresentante(domain.getNombreRepresentante());

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 import com.sigcqal.api.infra.Catalogo.Asesor.Entity.AsesorEntity;
 import com.sigcqal.api.infra.Catalogo.Autoridad.Entity.AutoridadEntity;
+import com.sigcqal.api.infra.Catalogo.DetalleAsesoria.Entity.DetalleAsesoriaEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,9 +37,9 @@ public class QuejaEntity {
     @JoinColumn(name = "id_asesor")
     private AsesorEntity asesor;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_autoridad")
-    private AutoridadEntity autoridad;
+     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_detalle_asesoria")
+    private DetalleAsesoriaEntity detalleAsesoria;
 
     @Column(name = "id_estatus_queja")
     private Long estatusQueja;

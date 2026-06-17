@@ -13,7 +13,6 @@ import com.sigcqal.api.domain.Catalogo.Persona.Port.PersonaRepositoryPort;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Model.Expediente;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Port.ExpedienteRepositoryPort;
-import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Mapper.ExpedienteMapper;
 import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAsesoriaResponseDTO;
