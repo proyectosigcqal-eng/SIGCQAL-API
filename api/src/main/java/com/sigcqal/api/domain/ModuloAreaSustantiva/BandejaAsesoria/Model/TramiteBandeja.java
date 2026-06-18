@@ -20,4 +20,12 @@ public class TramiteBandeja {
     private String ultimaModificacionTimestamp;
     private Boolean tieneBitacora;
     private Boolean tieneFicha;
+    private Boolean tieneCir;
+    private Boolean tieneAri;
+    private Boolean tieneOficio;
+    private Boolean tieneContestacion;
+    private Boolean tieneAcci;
+    private Boolean tieneResolucion;
+    private Boolean bloqueado;
+    private Boolean checklistCompleto;
 }

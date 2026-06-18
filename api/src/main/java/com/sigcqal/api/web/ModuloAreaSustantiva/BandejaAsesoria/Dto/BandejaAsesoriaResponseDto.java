@@ -12,6 +12,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @NoArgsConstructor
 public class BandejaAsesoriaResponseDto {
     private String folio;
+    private Boolean tieneCir;
+    private Boolean tieneAri;
+    private Boolean tieneOficio;
+    private Boolean tieneContestacion;
+    private Boolean tieneAcci;
+    private Boolean tieneResolucion;
+    private Boolean bloqueado;
+    private Boolean checklistCompleto;
 
     @JsonProperty("municipio_procedencia")
     private String municipioProcedencia;

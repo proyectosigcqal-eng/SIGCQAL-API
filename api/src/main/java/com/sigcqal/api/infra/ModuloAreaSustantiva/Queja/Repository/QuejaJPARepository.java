@@ -44,22 +44,16 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
     Optional<Integer> findIdExpedienteByFolio(@Param("folio") String folio);
 
     // PROCEDE — vincula detalle_asesoria, avanza estatus a CIR
-   @Modifying
+  @Modifying
 @Query(value = """
     UPDATE sustantiva.quejas
     SET id_detalle_asesoria = :idDetalleAsesoria,
-        id_estatus_queja    = (
-            SELECT id_estatus_queja FROM catalogos.cat_estatus_queja
-            WHERE UPPER(descripcion_estatus) LIKE '%CIR%'
-            ORDER BY orden LIMIT 1
-        ),
         ultima_actualizacion = NOW()
     WHERE id_expediente = :idExpediente
     """, nativeQuery = true)
 void admitirQueja(
         @Param("idDetalleAsesoria") Integer idDetalleAsesoria,
         @Param("idExpediente")      Integer idExpediente);
-
 @Modifying
 @Query(value = """
     UPDATE sustantiva.quejas

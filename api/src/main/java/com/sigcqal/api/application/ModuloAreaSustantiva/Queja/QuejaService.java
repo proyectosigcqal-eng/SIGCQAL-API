@@ -31,19 +31,17 @@ public class QuejaService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-    @Transactional
+  @Transactional
 public void admitirQueja(String folio) {
-    // 1. Obtener id_expediente
     Integer idExpediente = quejaRepo.findIdExpedienteByFolio(folio)
             .orElseThrow(() -> new RuntimeException(
                     "No se encontró expediente con folio: " + folio));
 
-    // 2. Obtener id_detalle_asesoria del expediente
     Integer idDetalleAsesoria = quejaRepo.findIdDetalleByExpediente(idExpediente)
             .orElseThrow(() -> new RuntimeException(
                     "No se encontró detalle de asesoría para: " + folio));
 
-    // 3. Admitir: vincula detalle y avanza a CIR
+    // Ya NO avanza a CIR — solo marca que pasó validación
     port.admitir(idDetalleAsesoria, idExpediente);
 }
 
