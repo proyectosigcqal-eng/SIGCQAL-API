@@ -17,6 +17,7 @@ public class QuejasAriRequestDTO {
     private String instituto;
     private String multasCredito;
     private String rutaPdfAri;
+    private String abreviaturaEncargado; // Nuevo campo para la abreviatura del encargado
 
     // Campos enriquecidos
     private String folioGobierno;

@@ -29,6 +29,7 @@ public class QuejasAriMapper {
         entity.setMultasRequerimientos(domain.getMultasRequerimientos());
         entity.setMultasCredito(domain.getMultasCredito());
         entity.setInstituto(domain.getInstituto());
+        entity.setAbreviaturaEncargado(domain.getAbreviaturaEncargado());
 
         // NOTA: Se eliminaron por completo las asignaciones de campos foráneos 
         // hacia la entidad para evitar que se intenten persistir en la BD.
@@ -53,6 +54,7 @@ public class QuejasAriMapper {
         domain.setMultasRequerimientos(entity.getMultasRequerimientos());
         domain.setMultasCredito(entity.getMultasCredito());
         domain.setInstituto(entity.getInstituto());
+        domain.setAbreviaturaEncargado(entity.getAbreviaturaEncargado());
         return domain;
     }
 
@@ -73,6 +75,7 @@ public class QuejasAriMapper {
         response.setMultasRequerimientos(domain.getMultasRequerimientos());
         response.setMultasCredito(domain.getMultasCredito());
         response.setInstituto(domain.getInstituto());
+        response.setAbreviaturaEncargado(domain.getAbreviaturaEncargado());
         // Atributo informativo transitorio (no va a la BD)
         response.setNombrePlantilla(domain.getNombrePlantilla());
 
