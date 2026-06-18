@@ -56,6 +56,9 @@ public class QuejasAriEntity {
 
     @Column(name = "instituto", columnDefinition = "TEXT")
     private String instituto;
+
+    @Column(name = "siglas_abreviatura_encargado", columnDefinition = "TEXT")
+    private String abreviaturaEncargado;
     // ELIMINADO: multas_creditos (indicaste que no va en esta tabla)
 
     @PrePersist

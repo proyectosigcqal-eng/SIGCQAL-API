@@ -1,8 +1,6 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto;
 
-import java.sql.Date;
-
-import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Model.TipoResolucion;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,12 +8,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ResolucionFinalResponseDTO {
-    private TipoResolucion tipoResolucion;
-    private String rutaDocumento;
-    private Date fechaEmision;
-    private String nombreEstatus;
+
+    private Integer   idResolucionFinal;
+    private LocalDate fechaEmisionResolucion;
+    private String    conceptoCobro;
+    private String    contactoVia;
+    private Integer   numeroCredito;
+    private String    folioCredito;
+    private Integer   idExpediente;
+    private Integer   idAri;
+    private Integer   idQuejaRespuestaAutoridad;
+    private Integer   idEstatusQueja;
 }

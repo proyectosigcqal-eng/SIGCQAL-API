@@ -10,12 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
+import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAri.Model.QuejasAri;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAri.Port.QuejasAriRepositoryPort;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAri.Mapper.QuejasAriMapper;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriResponseDTO;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Model.Expediente;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.Queja;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Port.QuejaRepositoryPort;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -39,6 +43,12 @@ public class QuejasAriApplicationService {
     @Autowired
     private GeneradorDocumentoService generadorDocumentoService;
 
+    @Autowired
+    private org.springframework.context.ApplicationContext context;
+
+    @Autowired
+private QuejaRepositoryPort quejaRepositoryPort;
+
     @Transactional
     public QuejasAriResponseDTO guardarQuejasAri(QuejasAriRequestDTO request) {
 
@@ -51,6 +61,7 @@ public class QuejasAriApplicationService {
             quejasAri.setNumExpedienteOficial(request.getNumExpedienteOficial());
         }
         quejasAri.setSintesisActosOmisiones(request.getSintesisActosOmisiones());
+        quejasAri.setAbreviaturaEncargado(request.getAbreviaturaEncargado());
         quejasAri.setNombreEncargadoFirma(request.getNombreEncargadoFirma());if (request.getFechaAcuerdo() != null) {
         quejasAri.setFechaAcuerdo(request.getFechaAcuerdo().atStartOfDay());
         }
@@ -70,6 +81,7 @@ public class QuejasAriApplicationService {
                 Map.entry("{{MULTAS_REQUERIMIENTOS}}", nvl(quejasAri.getMultasRequerimientos(), "")),
                 Map.entry("{{MULTAS_CREDITO}}",       nvl(quejasAri.getMultasCredito(), "")),
                 Map.entry("{{INSTITUTO}}",             nvl(quejasAri.getInstituto(), "")),
+                Map.entry("{{ABREVIATURA_FIRMANTE}}", nvl(quejasAri.getAbreviaturaEncargado(), "")),
                 
                 // 🔍 Nuevas variables inyectadas desde el Front-End para la plantilla .docx
                 Map.entry("{{FOLIO_GOBIERNO}}",       nvl(request.getFolioGobierno(), "[FOLIO]")),
@@ -124,8 +136,30 @@ public class QuejasAriApplicationService {
 
         return quejasAriList.stream()
             .filter(queja -> queja != null)
-            .map(mapper::toResponse)
-            .collect(Collectors.toList());
+            .map(queja -> {
+                // 1. Convertimos el modelo de dominio plano a DTO base
+                QuejasAriResponseDTO responseDTO = mapper.toResponse(queja);
+                
+                // 2. Enriquecimiento de datos foráneos desde la Queja Padre
+                try {
+                    if (queja.getIdQueja() != null) {
+                        // Buscamos la queja padre convirtiendo el Long a Integer (.intValue())
+                        Queja quejaPadre = quejaRepositoryPort.findById(queja.getIdQueja().intValue()).orElse(null);
+                        
+                        if (quejaPadre != null) {
+                            // 🌟 ¡MAGIA! Extraemos los campos unificados que ya existen en tu clase Queja
+                            responseDTO.setFolioGobierno(quejaPadre.getFolioGobierno());
+                            responseDTO.setNombreContribuyente(quejaPadre.getNombreContribuyente());
+                        }
+                    }
+                } catch (Exception e) {
+                    // Evita que un error de datos foráneos tumbe el listado completo
+                    System.err.println("Advertencia al cargar datos foráneos para ARI ID " + queja.getIdAri() + ": " + e.getMessage());
+                }
+                
+                return responseDTO;
+            })
+            .collect(java.util.stream.Collectors.toList());
     }
 
     public List<QuejasAriResponseDTO> listarPorIdQueja(Long idQueja) {

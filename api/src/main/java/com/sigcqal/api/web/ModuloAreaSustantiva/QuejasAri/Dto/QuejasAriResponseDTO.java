@@ -18,6 +18,10 @@ public class QuejasAriResponseDTO {
     private String multasRequerimientos;
     private String multasCredito;
     private String instituto;
+    private String abreviaturaEncargado; // Nuevo campo para la abreviatura del encargado
     // Información adicional de apoyo
     private String nombrePlantilla;
+
+    private String folioGobierno;
+    private String nombreContribuyente;
 }
