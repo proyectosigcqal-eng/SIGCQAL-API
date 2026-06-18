@@ -2,6 +2,9 @@ package com.sigcqal.api.web.Catalogo.Prevencion.controller;
 
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,22 +23,21 @@ public class PlazoPrevencionController {
 
     private final PlazoPrevencionService service;
 
-    @GetMapping("/{folio}/plazo-prevencion")
+   @GetMapping("/{folio}/plazo-prevencion")
 public ResponseEntity<PlazoPrevencionResponseDTO> obtenerPlazo(
         @PathVariable String folio) {
     try {
         PlazoPrevencion plazo = service.calcularPlazo(folio);
         PlazoPrevencionResponseDTO dto = PlazoPrevencionResponseDTO.builder()
                 .folioExpediente(plazo.getFolioExpediente())
-                .fechaInicio(plazo.getFechaInicio().toString())
-                .fechaLimite(plazo.getFechaLimite().toString())
+                .fechaInicio(formatFecha(plazo.getFechaInicio()))  // ✅ null-safe
+                .fechaLimite(formatFecha(plazo.getFechaLimite()))  // ✅ null-safe
                 .diasHabilesRestantes(plazo.getDiasHabilesRestantes())
                 .semaforoEstado(plazo.getSemaforoEstado())
                 .vencido(plazo.getVencido())
                 .build();
         return ResponseEntity.ok(dto);
     } catch (InvalidRequestException e) {
-        // ✅ Expediente no está en prevención — devuelve vacío, no error
         return ResponseEntity.ok(
             PlazoPrevencionResponseDTO.builder()
                 .folioExpediente(folio)
@@ -46,5 +48,9 @@ public ResponseEntity<PlazoPrevencionResponseDTO> obtenerPlazo(
                 .build()
         );
     }
+}
+
+private String formatFecha(LocalDateTime fecha) {
+    return fecha != null ? fecha.toString() : null;
 }
 }
