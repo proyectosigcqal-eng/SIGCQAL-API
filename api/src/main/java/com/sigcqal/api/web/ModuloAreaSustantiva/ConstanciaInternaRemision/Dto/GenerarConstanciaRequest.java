@@ -22,5 +22,6 @@ public class GenerarConstanciaRequest {
     private String nombreEncargado;
     private String fechaCIR;
     private String ipCliente;
+    private String autoridadResponsable;
 }
 

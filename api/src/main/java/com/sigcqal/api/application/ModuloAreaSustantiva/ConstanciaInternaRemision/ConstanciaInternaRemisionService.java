@@ -49,9 +49,11 @@ public class ConstanciaInternaRemisionService {
 
     private static final Locale LOCALE_ES_MX = new Locale("es", "MX");
     private static final DateTimeFormatter FMT_FECHA_DOCUMENTO = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", LOCALE_ES_MX);
+    private static final DateTimeFormatter FMT_FECHA_CORTA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", LOCALE_ES_MX);
     private static final String ESTATUS_CONSTANCIA_EMITIDA = "Constancia Emitida";
     private static final String FALLBACK_ASESOR = "ASESOR NO DISPONIBLE";
     private static final String PLANTILLA_CONSTANCIA = "plantilla_constancia_interna_remision.docx";
+    private static final String PLANTILLA_CIR_PREVIEW = "cir_preview.html";
     private static final String AREA_CANALIZAR = "Representación Legal y Defensa";
     private static final String SERVICIO_PREVIO = "Quejas";
 
@@ -60,6 +62,48 @@ public class ConstanciaInternaRemisionService {
     private final EstatusExpedienteJpaRepository estatusRepository;
     private final FileUploadPort fileUploadPort;
     private final GeneradorDocumentoService generadorDocumentoService;
+
+    // ============ PREVIEW (Para iframe en frontend) ============
+
+    /**
+     * Genera HTML preview de la CIR para visualización en iframe.
+     * Carga datos del expediente + request del usuario.
+     * 
+     * @param expedienteId ID del expediente
+     * @param request Datos del formulario (documentacionRemite, motivosRemite, observaciones, etc.)
+     * @return HTML renderizado con membrete base64 y placeholders reemplazados
+     */
+    public String generarHtmlPreview(Integer expedienteId, GenerarConstanciaRequest request) {
+        validarExpedienteId(expedienteId);
+        
+        DatosConstancia datos = cargarDatosConstancia(expedienteId);
+        String html = loadTemplate(PLANTILLA_CIR_PREVIEW);
+        String membreteBase64 = loadMembreteBase64();
+
+        // Reemplazar placeholders con datos del expediente + request
+        html = html
+            .replace("{{MEMBRETE_BASE64}}", membreteBase64)
+            .replace("{{FOLIO_EXPEDIENTE}}", sanitize(datos.folioExpediente()))
+            .replace("{{CONTRIBUYENTE}}", sanitize(resolverNombreContribuyente(datos)))
+            .replace("{{AUTORIDAD_RESPONSABLE}}", sanitize(datos.autoridadResponsable()))
+            .replace("{{ASUNTO}}", sanitize(datos.asunto()))
+            .replace("{{FECHA_EMISION}}", datos.fechaGeneracion().format(FMT_FECHA_DOCUMENTO))
+            .replace("{{NUMERO_CONSTANCIA}}", sanitize(datos.numeroConstancia()))
+            .replace("{{DOCUMENTACION_REMITE}}", sanitize(request.getDocumentacionRemite()))
+            .replace("{{DOCUMENTACION_CLASS}}", isNullOrEmpty(request.getDocumentacionRemite()) ? "content-empty" : "")
+            .replace("{{MOTIVOS_REMITE}}", sanitize(request.getMotivosRemite()))
+            .replace("{{MOTIVOS_CLASS}}", isNullOrEmpty(request.getMotivosRemite()) ? "content-empty" : "")
+            .replace("{{OBSERVACIONES}}", sanitize(request.getObservaciones()))
+            .replace("{{OBSERVACIONES_CLASS}}", isNullOrEmpty(request.getObservaciones()) ? "content-empty" : "")
+            .replace("{{ASESOR_QUE_REMITE}}", sanitize(request.getAsesorQueRemite()))
+            .replace("{{NOMBRE_ENCARGADO}}", sanitize(request.getNombreEncargado()))
+            .replace("{{FECHA_GENERACION}}", LocalDateTime.now().format(FMT_FECHA_CORTA))
+            .replace("{{ASESOR_EMISOR}}", sanitize(datos.asesorEmisor()));
+
+        return html;
+    }
+
+    // ============ GENERACIÓN (Para descarga DOCX) ============
 
     public ConstanciaPreviewResponse obtenerPreview(String folio) {
         var expedienteOpt = expedienteRepository.findByFolioGobierno(folio);
@@ -140,53 +184,46 @@ public class ConstanciaInternaRemisionService {
         }
     }
 
-    public String generarHtmlPreview(GenerarConstanciaRequest request) {
-        try {
-            String htmlTemplate = loadTemplate("cir_preview.html");
-            String membreteBase64 = loadMembreteBase64();
-
-            String html = htmlTemplate
-                .replace("{{MEMBRETE_BASE64}}", membreteBase64)
-                .replace("{{FUNDAMENTOS}}", sanitize(request.getDocumentacionRemite()))
-                .replace("{{FUNDAMENTOS_CLASS}}", request.getDocumentacionRemite() != null && !request.getDocumentacionRemite().isBlank() ? "" : "content-empty")
-                .replace("{{OBSERVACIONES}}", sanitize(request.getObservaciones()))
-                .replace("{{OBSERVACIONES_CLASS}}", request.getObservaciones() != null && !request.getObservaciones().isBlank() ? "" : "content-empty")
-                .replace("{{FECHA_CIR}}", request.getFechaCIR() != null ? request.getFechaCIR() : "")
-                .replace("{{FECHA_CLASS}}", request.getFechaCIR() != null && !request.getFechaCIR().isBlank() ? "" : "content-empty")
-                .replace("{{ASESOR_QUEMITE}}", sanitize(request.getAsesorQueRemite()))
-                .replace("{{NOMBRE_ENCARGADO}}", sanitize(request.getNombreEncargado()))
-                .replace("{{FECHA_GENERACION}}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
-
-            return html;
-        } catch (Exception e) {
-            throw new RuntimeException("Error al generar HTML preview: " + e.getMessage(), e);
-        }
-    }
+    // ============ HELPERS: Carga de Templates & Assets ============
 
     private String loadMembreteBase64() {
         try {
             ClassPathResource resource = new ClassPathResource("assets/membrete.jpg");
             if (!resource.exists()) {
+                log.warn("Membrete asset no encontrado en assets/membrete.jpg");
                 return "";
             }
             byte[] bytes = resource.getInputStream().readAllBytes();
             return Base64.getEncoder().encodeToString(bytes);
         } catch (IOException e) {
+            log.error("Error al cargar membrete base64", e);
             return "";
         }
     }
 
-    private String loadTemplate(String templateName) throws IOException {
-        ClassPathResource resource = new ClassPathResource("plantillas/" + templateName);
-        return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+    private String loadTemplate(String templateName) {
+        try {
+            ClassPathResource resource = new ClassPathResource("plantillas/" + templateName);
+            if (!resource.exists()) {
+                throw new ResourceNotFoundException("Template", templateName);
+            }
+            return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Error cargando template " + templateName + ": " + e.getMessage(), e);
+        }
     }
 
     private String sanitize(String input) {
         if (input == null) return "";
-        return input.replaceAll("&", "&amp;")
+        return input
+            .replaceAll("&", "&amp;")
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;")
             .replaceAll("\r\n|\r|\n", "<br/>");
+    }
+
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     private byte[] generarDocx(Map<String, String> variables) {
@@ -196,6 +233,8 @@ public class ConstanciaInternaRemisionService {
             throw new RuntimeException("Error al generar la constancia en formato DOCX.", e);
         }
     }
+
+    // ============ HELPERS: Carga de Datos ============
 
     private DatosConstancia cargarDatosConstancia(Integer expedienteId) {
         ExpedienteEntity expediente = expedienteRepository.findById(expedienteId)
@@ -250,6 +289,8 @@ public class ConstanciaInternaRemisionService {
         return variables;
     }
 
+    // ============ HELPERS: Validaciones & Bloqueos ============
+
     private String obtenerMotivoBloqueo(DatosConstancia datos) {
         if (datos.folioExpediente().isBlank()) {
             return "El expediente no tiene folio de gobierno";
@@ -294,6 +335,8 @@ public class ConstanciaInternaRemisionService {
             throw new InvalidRequestException("El expedienteId debe ser mayor a 0");
         }
     }
+
+    // ============ HELPERS: Resolvers & String Utils ============
 
     private String resolverAsesorEmisor(DetalleAsesoria detalle) {
         String username = resolverUsernameDesdeSecurityContext();
@@ -441,6 +484,8 @@ public class ConstanciaInternaRemisionService {
         }
         sb.append(texto);
     }
+
+    // ============ INNER RECORDS ============
 
     private record DatosConstancia(
         Integer expedienteId,

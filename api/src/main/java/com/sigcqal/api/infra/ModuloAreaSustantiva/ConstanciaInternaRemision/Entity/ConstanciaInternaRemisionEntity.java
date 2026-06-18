@@ -2,11 +2,14 @@ package com.sigcqal.api.infra.ModuloAreaSustantiva.ConstanciaInternaRemision.Ent
 
 import java.time.LocalDateTime;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+
 @Entity
-@Table(name = "constancia_interna_remision", schema = "sustantiva")
+@Table(name = "quejas_cir", schema = "sustantiva")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +19,11 @@ public class ConstanciaInternaRemisionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Relación correcta con la tabla quejas (ajusta según tu diagrama)
+    @ManyToOne
+    @JoinColumn(name = "id_queja", nullable = false) 
+    private QuejaEntity queja;
 
     @ManyToOne
     @JoinColumn(name = "expediente_id", nullable = false)
