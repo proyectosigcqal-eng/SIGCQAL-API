@@ -21,4 +21,7 @@ public class QuejasAriResponseDTO {
     private String abreviaturaEncargado; // Nuevo campo para la abreviatura del encargado
     // Información adicional de apoyo
     private String nombrePlantilla;
+
+    private String folioGobierno;
+    private String nombreContribuyente;
 }
