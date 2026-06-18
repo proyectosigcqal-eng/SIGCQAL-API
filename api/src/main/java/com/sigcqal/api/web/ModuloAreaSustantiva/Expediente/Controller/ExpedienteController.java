@@ -22,7 +22,7 @@ import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteRespons
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/clasificacion-juridica/expedientes")
+@RequestMapping("/api/v1/expedientes")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ExpedienteController {

@@ -1,45 +1,61 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity;
 
-import java.sql.Date;
-
-import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Model.TipoResolucion;
-import com.sigcqal.api.infra.Catalogo.EstatusExpediente.Entity.EstatusExpedienteEntity;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "resolucion_final", schema = "sustantiva")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResolucionFinalEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_resolucion_final")
-    private Integer id;
+    private Integer idResolucionFinal;
 
+    @Column(name = "fecha_emision_resolucion", nullable = false)
+    private LocalDate fechaEmisionResolucion;
+
+    @Column(name = "concepto_cobro", length = 255)
+    private String conceptoCobro;
+
+    @Column(name = "contacto_via", length = 100)
+    private String contactoVia;
+
+    @Column(name = "numero_credito")
+    private Integer numeroCredito;
+
+    @Column(name = "folio_credito", length = 50)
+    private String folioCredito;
+
+    // -------------------------------------------------------------------
+    // Llaves foráneas guardadas como columna simple (sin @ManyToOne) para
+    // mantener el mismo patrón liviano usado en otras entidades del módulo.
+    // Si más adelante se requiere navegar la relación completa (ej. traer
+    // el expediente completo), se puede añadir el @ManyToOne correspondiente.
+    // -------------------------------------------------------------------
     @Column(name = "id_expediente", nullable = false)
     private Integer idExpediente;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_resolucion", nullable = false)
-    private TipoResolucion tipoResolucion;
+    @Column(name = "id_ari", nullable = false)
+    private Integer idAri;
 
-    @Column(name = "ruta_documento", nullable = false)
-    private String rutaDocumento;
+    @Column(name = "id_queja_respuesta_autoridad", nullable = false)
+    private Integer idQuejaRespuestaAutoridad;
 
-    @Column(name = "fecha_emision", nullable = false)
-    private Date fechaEmision;
-
-    @ManyToOne
-    @JoinColumn(name = "id_estatus_expediente")
-    private EstatusExpedienteEntity estatusExpediente;
+    @Column(name = "id_estatus_queja", nullable = false)
+    private Integer idEstatusQueja;
 }

@@ -17,6 +17,7 @@ public class FileUploadAdapter implements FileUploadPort {
     private final String carpetaDestinoOficios = "uploads/oficios/";
     private final String carpetaDestinoExpedientes = "uploads/expedientes/";
     private final String carpetaDestinoConstancias = "uploads/constancias/";
+    private final String carpetaDestinoQuejasAri = "uploads/quejas-ari/";
 
    @Override
 public String guardarArchivo(byte[] contenido, String nombreArchivo) {
@@ -97,4 +98,25 @@ public String guardarArchivoConstancia(byte[] contenido, String nombreArchivo) {
         throw new FileStorageException("Error de E/S al guardar el PDF: " + e.getMessage(), e);
     }
 }
+
+@Override
+    public String guardarArchivoQuejaAri(byte[] contenido, String nombreArchivo) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path directorioDestino = root.resolve(carpetaDestinoQuejasAri);
+            
+            if (!Files.exists(directorioDestino)) {
+                Files.createDirectories(directorioDestino);
+            }
+            
+            Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+            Files.write(ficheroFinal, contenido);
+            System.out.println("Archivo ARI guardado físicamente en: " + ficheroFinal.toAbsolutePath());
+            
+            return "/api/files/quejas-ari/" + nombreArchivo; 
+        } catch (IOException e) {
+            e.printStackTrace(); 
+            throw new RuntimeException("Error físico al escribir el archivo ARI en disco: " + e.getMessage(), e);
+        }
+    }
 }
