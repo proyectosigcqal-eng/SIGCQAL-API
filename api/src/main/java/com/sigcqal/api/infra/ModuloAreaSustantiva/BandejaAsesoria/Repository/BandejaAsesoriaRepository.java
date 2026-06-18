@@ -68,5 +68,4 @@ List<Object[]> obtenerBandejaRaw(
     @Param("estatus") String estatus,
     @Param("tipoTramite") String tipoTramite
 );
-
 }

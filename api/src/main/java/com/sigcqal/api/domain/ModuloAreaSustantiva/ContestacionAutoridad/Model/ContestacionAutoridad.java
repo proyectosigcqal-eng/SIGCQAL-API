@@ -16,4 +16,5 @@ public class ContestacionAutoridad {
     private String observaciones;
     private String decision;
     private LocalDateTime fechaRegistro;
+    private LocalDateTime fechaOficio;
 }
