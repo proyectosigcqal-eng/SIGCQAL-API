@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntity, Integer> {
 
-    @Query(value = """
-      SELECT 
+  @Query(value = """
+  SELECT 
     e.folio_gobierno,
     m.nombre_municipio,
     CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', COALESCE(p.apellido_materno, '')),
@@ -52,20 +52,20 @@ LEFT JOIN catalogos.personas p ON p.id_persona = c.id_persona
 LEFT JOIN sustantiva.detalle_asesoria da ON da.id_expediente = e.id_expediente
 LEFT JOIN catalogos.cat_municipios m ON m.id_municipio = e.id_municipio
 LEFT JOIN catalogos.tipo_acto_emitido ta ON ta.id_tipo_acto_emitido = da.id_tipo_acto_emitido
-LEFT JOIN catalogos.cat_estatus_queja eq ON eq.id_estatus_queja = e.id_estatus_expediente
-LEFT JOIN catalogos.estatus_detalle_expediente ede ON ede.id_estatus_detalle_expediente = da.id_estatus_detalle_expediente
 LEFT JOIN sustantiva.quejas qj ON qj.id_expediente = e.id_expediente
+LEFT JOIN catalogos.cat_estatus_queja eq ON eq.id_estatus_queja = qj.id_estatus_queja  -- ← corregido
+LEFT JOIN catalogos.estatus_detalle_expediente ede ON ede.id_estatus_detalle_expediente = da.id_estatus_detalle_expediente
 WHERE (:search IS NULL OR :search = ''
        OR LOWER(CONCAT(p.nombre,' ',p.apellido_paterno)) LIKE LOWER(CONCAT('%', :search, '%'))
        OR LOWER(e.folio_gobierno) LIKE LOWER(CONCAT('%', :search, '%')))
-AND (:estatus IS NULL OR :estatus = '' OR eq.descripcion_estatus = :estatus) 
+AND (:estatus IS NULL OR :estatus = '' OR eq.descripcion_estatus = :estatus)
 AND (:tipoTramite IS NULL OR :tipoTramite = '' 
      OR CAST(e.id_tipo_tramite AS VARCHAR) = :tipoTramite)
 ORDER BY da.fecha_notificacion DESC NULLS LAST
-        """, nativeQuery = true)
-    List<Object[]> obtenerBandejaRaw(
-        @Param("search") String search,
-        @Param("estatus") String estatus,
-        @Param("tipoTramite") String tipoTramite
-    );
+    """, nativeQuery = true)
+List<Object[]> obtenerBandejaRaw(
+    @Param("search") String search,
+    @Param("estatus") String estatus,
+    @Param("tipoTramite") String tipoTramite
+);
 }

@@ -14,4 +14,5 @@ public class ContestacionAutoridadRequestDTO {
     private String observaciones;
     private String decision;
     private String fechaRegistro;
+    private String fechaOficio;
 }

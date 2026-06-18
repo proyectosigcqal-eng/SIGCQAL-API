@@ -46,4 +46,7 @@ public class ContestacionAutoridadEntity {
 
     @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
+
+    @Column(name = "fecha_oficio")
+    private LocalDateTime fechaOficio;
 }
