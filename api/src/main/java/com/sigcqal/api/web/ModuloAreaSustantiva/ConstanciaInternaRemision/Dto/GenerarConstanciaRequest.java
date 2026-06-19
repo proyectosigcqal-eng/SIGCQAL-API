@@ -23,5 +23,11 @@ public class GenerarConstanciaRequest {
     private String fechaCIR;
     private String ipCliente;
     private String autoridadResponsable;
+    
+    // ✅ NUEVO: Campo para fundamentos legales/administrativos de la remisión
+    private String fundamentos;
+    private String areaQueRemite;
+    private String areaQueRecibe;
+    private String servicioPrestado;
+    private String asesorQueRecibe;
 }
-

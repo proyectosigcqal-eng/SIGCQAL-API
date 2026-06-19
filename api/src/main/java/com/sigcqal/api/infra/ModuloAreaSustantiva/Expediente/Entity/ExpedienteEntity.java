@@ -2,21 +2,16 @@ package com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List; // ← AGREGAR
 
 import com.sigcqal.api.infra.Catalogo.Asesor.Entity.AsesorEntity;
 import com.sigcqal.api.infra.Catalogo.EstatusExpediente.Entity.EstatusExpedienteEntity;
 import com.sigcqal.api.infra.Catalogo.Municipio.Entity.MunicipioEntity;
 import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
 import com.sigcqal.api.infra.Catalogo.TipoTramite.Entity.TipoTramiteEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity; // ← AGREGAR
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -61,6 +56,10 @@ public class ExpedienteEntity {
     @ManyToOne
     @JoinColumn(name = "id_estatus_expediente")
     private EstatusExpedienteEntity estatusExpediente;
+
+    // ✅ AGREGAR ESTA RELACIÓN:
+    @OneToMany(mappedBy = "expediente", fetch = FetchType.LAZY)
+    private List<QuejaEntity> quejas;
 
     @Column(name = "documento_acredita_personalidad")
     private String documentoAcreditaPersonalidad;
