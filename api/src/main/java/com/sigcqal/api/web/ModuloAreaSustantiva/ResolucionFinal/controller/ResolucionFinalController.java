@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Controller;
+package com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.controller;
 
 import java.util.List;
 

@@ -20,6 +20,7 @@ public class ContestacionAutoridadMapper {
         e.setObservaciones(domain.getObservaciones());
         e.setDecision(domain.getDecision());
         e.setFechaRegistro(LocalDateTime.now());
+        e.setFechaOficio(domain.getFechaOficio());
         return e;
     }
 
@@ -34,6 +35,7 @@ public class ContestacionAutoridadMapper {
         d.setObservaciones(e.getObservaciones());
         d.setDecision(e.getDecision());
         d.setFechaRegistro(e.getFechaRegistro());
+        d.setFechaOficio(e.getFechaOficio());
         return d;
     }
 }
