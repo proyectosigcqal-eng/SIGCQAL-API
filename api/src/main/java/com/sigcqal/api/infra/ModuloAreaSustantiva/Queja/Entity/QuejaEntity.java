@@ -15,11 +15,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "quejas", schema = "sustantiva")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class QuejaEntity {
 
     @Id
@@ -37,7 +43,7 @@ public class QuejaEntity {
     @JoinColumn(name = "id_asesor")
     private AsesorEntity asesor;
 
-     @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_detalle_asesoria")
     private DetalleAsesoriaEntity detalleAsesoria;
 
