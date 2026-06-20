@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,12 +42,6 @@ public class ResolucionFinalEntity {
     @Column(name = "folio_credito", length = 50)
     private String folioCredito;
 
-    // -------------------------------------------------------------------
-    // Llaves foráneas guardadas como columna simple (sin @ManyToOne) para
-    // mantener el mismo patrón liviano usado en otras entidades del módulo.
-    // Si más adelante se requiere navegar la relación completa (ej. traer
-    // el expediente completo), se puede añadir el @ManyToOne correspondiente.
-    // -------------------------------------------------------------------
     @Column(name = "id_expediente", nullable = false)
     private Integer idExpediente;
 
@@ -58,4 +53,13 @@ public class ResolucionFinalEntity {
 
     @Column(name = "id_estatus_queja", nullable = false)
     private Integer idEstatusQueja;
-}
+
+    @Column(name = "ruta_resolucion_final", length = 500)
+    private String rutaResolucionFinal;
+
+    @Column(name = "fecha_emision")
+    private LocalDateTime fechaEmision;
+
+    @Column(name = "id_estatus_expediente", nullable = false)
+    private Integer idEstatusExpediente;
+};

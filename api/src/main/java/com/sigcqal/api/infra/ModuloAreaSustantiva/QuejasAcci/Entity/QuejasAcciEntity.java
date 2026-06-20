@@ -1,30 +1,49 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAcci.Entity;
 
 
-import jakarta.persistence.*;
-import lombok.Data;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioAutoridad.Entity.OficioAutoridadEntity; // Asegúrate de tener esta entidad
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @Entity
 @Table(name = "quejas_acci", schema = "sustantiva")
 @Data
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+
 public class QuejasAcciEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_acci")
-    private Long id;
+    private Integer idAcci;
 
-    @Column(name = "id_queja", nullable = false)
-    private Long idQueja;
+    // Relación con Queja
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_queja", nullable = false)
+    private QuejaEntity queja;
 
-    @Column(name = "id_oficio_autoridad")
-    private Long idOficioAutoridad;
+    // Relación con Oficio Autoridad
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_oficio_autoridad", nullable = false, unique = true)
+    private OficioAutoridadEntity oficioAutoridad;
 
-    @Column(name = "justificacion_investigacion", columnDefinition = "TEXT")
+    @Column(name = "justificacion_investigacion", nullable = false, columnDefinition = "TEXT")
     private String justificacionInvestigacion;
 
-    @Column(name = "nuevos_requerimientos_autoridad", columnDefinition = "TEXT")
+    @Column(name = "nuevos_requerimientos_autoridad", nullable = false, columnDefinition = "TEXT")
+
     private String nuevosRequerimientosAutoridad;
 
     @Column(name = "plazo_dias_habiles")
@@ -38,6 +57,7 @@ public class QuejasAcciEntity {
 
     @Column(name = "concluido")
     private Boolean concluido = false;
+
 
     @Column(name = "fecha_conclusion")
     private LocalDateTime fechaConclusion;

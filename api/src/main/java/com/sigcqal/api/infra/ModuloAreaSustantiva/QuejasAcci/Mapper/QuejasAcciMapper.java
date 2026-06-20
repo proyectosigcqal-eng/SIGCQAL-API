@@ -1,6 +1,9 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAcci.Mapper;
+
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAcci.Model.QuejasAcci;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAcci.Entity.QuejasAcciEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioAutoridad.Entity.OficioAutoridadEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -8,9 +11,20 @@ public class QuejasAcciMapper {
 
     public QuejasAcciEntity toEntity(QuejasAcci domain) {
         QuejasAcciEntity e = new QuejasAcciEntity();
-        e.setId(domain.getId());
-        e.setIdQueja(domain.getIdQueja());
-        e.setIdOficioAutoridad(domain.getIdOficioAutoridad());
+        e.setIdAcci(domain.getId().intValue());
+
+        if (domain.getIdQueja() != null) {
+            QuejaEntity queja = new QuejaEntity();
+            queja.setIdQueja(domain.getIdQueja().intValue());
+            e.setQueja(queja);
+        }
+
+        if (domain.getIdOficioAutoridad() != null) {
+            OficioAutoridadEntity oficio = new OficioAutoridadEntity();
+            oficio.setIdOficioAutoridad(domain.getIdOficioAutoridad().intValue());
+            e.setOficioAutoridad(oficio);
+        }
+
         e.setJustificacionInvestigacion(domain.getJustificacionInvestigacion());
         e.setNuevosRequerimientosAutoridad(domain.getNuevosRequerimientosAutoridad());
         e.setPlazoDiasHabiles(domain.getPlazoDiasHabiles());
@@ -23,9 +37,9 @@ public class QuejasAcciMapper {
 
     public QuejasAcci toDomain(QuejasAcciEntity e) {
         return QuejasAcci.builder()
-                .id(e.getId())
-                .idQueja(e.getIdQueja())
-                .idOficioAutoridad(e.getIdOficioAutoridad())
+                .id(e.getIdAcci().longValue())
+                .idQueja(e.getQueja() != null ? e.getQueja().getIdQueja().longValue() : null)
+                .idOficioAutoridad(e.getOficioAutoridad() != null ? e.getOficioAutoridad().getIdOficioAutoridad().longValue() : null)
                 .justificacionInvestigacion(e.getJustificacionInvestigacion())
                 .nuevosRequerimientosAutoridad(e.getNuevosRequerimientosAutoridad())
                 .plazoDiasHabiles(e.getPlazoDiasHabiles())

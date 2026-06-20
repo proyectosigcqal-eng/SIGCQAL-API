@@ -2,15 +2,14 @@ package com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.ResolucionFinal.ResolucionFinalService;
@@ -51,16 +50,33 @@ public class ResolucionFinalController {
         return ResponseEntity.ok(service.listarPorExpediente(idExpediente));
     }
 
-    @GetMapping("/{idResolucionFinal}/oficio")
-    public ResponseEntity<byte[]> generarOficio(@PathVariable Integer idResolucionFinal) {
-        byte[] documento = service.generarOficio(idResolucionFinal);
+    /**
+     * Genera el Acuerdo de Cierre (.docx). Los query params coinciden
+     * EXACTAMENTE con los campos del formulario en
+     * EditorResolucionFinal.jsx, para que el frontend pueda mandarlos
+     * directo sin transformación.
+     */
+    @PostMapping("/{idResolucionFinal}/generar-oficio")
+    public ResponseEntity<ResolucionFinalResponseDTO> generarOficio(
+            @PathVariable Integer idResolucionFinal,
+            @RequestParam(required = false) String folio,
+            @RequestParam(required = false) String expedienteNum,
+            @RequestParam(required = false) String autoridadFiscal,
+            @RequestParam(required = false) String fechaSolicitud,
+            @RequestParam(required = false) String nombreContribuyente,
+            @RequestParam(required = false) String motivoQueja,
+            @RequestParam(required = false) String oficioNumero,
+            @RequestParam(required = false) String fechaOficio,
+            @RequestParam(required = false) String fechaIngresoOficio,
+            @RequestParam(required = false) String numeroCreditoMulta,
+            @RequestParam(required = false) String contactoVia,
+            @RequestParam(required = false) String iniciales) {
 
-        String nombreArchivo = "Oficio_ResolucionFinal_" + idResolucionFinal + ".docx";
+        ResolucionFinalResponseDTO response = service.generarOficio(
+                idResolucionFinal, folio, expedienteNum, autoridadFiscal, fechaSolicitud,
+                nombreContribuyente, motivoQueja, oficioNumero, fechaOficio,
+                fechaIngresoOficio, numeroCreditoMulta, contactoVia, iniciales);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nombreArchivo + "\"")
-                .body(documento);
+        return ResponseEntity.ok(response);
     }
 }

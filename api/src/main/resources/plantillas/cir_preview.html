@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constancia Interna de Remisión - Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Arial", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .page {
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            margin: 20px auto;
+            padding: 2cm;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5cm;
+            border-bottom: 2px solid #000;
+            padding-bottom: 0.5cm;
+        }
+        .membrete {
+            max-width: 120px;
+            height: auto;
+        }
+        .header-info {
+            text-align: right;
+            font-size: 11px;
+        }
+        .titulo {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 1cm;
+            text-transform: uppercase;
+        }
+        .section {
+            margin-bottom: 0.8cm;
+        }
+        .label {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 0.3cm;
+            color: #1a1a1a;
+        }
+        .content {
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 0.4cm;
+            border: 1px solid #ccc;
+            min-height: 0.9cm;
+            background: #fafafa;
+            word-wrap: break-word;
+        }
+        .content-empty {
+            color: #aaa;
+            font-style: italic;
+        }
+        .precargados {
+            background: #f0f4ff;
+            padding: 0.8cm;
+            border-radius: 6px;
+            border-left: 4px solid #0066cc;
+        }
+        .precargados-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8cm;
+            margin-top: 0.5cm;
+        }
+        .precargado-field {
+            font-size: 11px;
+        }
+        .precargado-label {
+            font-weight: 600;
+            font-size: 11px;
+            color: #0066cc;
+            margin-bottom: 0.2cm;
+        }
+        .precargado-value {
+            font-size: 12px;
+            color: #333;
+        }
+        .footer {
+            margin-top: 1.5cm;
+            padding-top: 1cm;
+            border-top: 1px solid #ccc;
+            font-size: 10px;
+            text-align: center;
+            color: #666;
+        }
+        .firma-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1cm;
+            margin-top: 1.5cm;
+        }
+        .firma-box {
+            text-align: center;
+        }
+        .firma-line {
+            border-top: 1px solid #000;
+            margin: 2cm 0 0.3cm 0;
+            height: 0;
+        }
+        .firma-name {
+            font-size: 11px;
+            margin-top: 0.2cm;
+        }
+        .firma-title {
+            font-size: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <!-- <img src="data:image/jpeg;base64,{{MEMBRETE_BASE64}}" alt="Membrete" class="membrete"> -->
+            <div class="header-info">
+                <strong>CEDECON</strong><br>
+                Comisión Estatal de Defensa del Contribuyente de Zacatecas
+            </div>
+        </div>
+
+        <div class="titulo">Constancia Interna de Remisión</div>
+
+        <div class="section">
+            <div class="label">Fundamentos:</div>
+            <div class="content {{FUNDAMENTOS_CLASS}}">{{FUNDAMENTOS}}</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Observaciones:</div>
+            <div class="content {{OBSERVACIONES_CLASS}}">{{OBSERVACIONES}}</div>
+        </div>
+
+        <div class="section">
+            <div class="label">Fecha de Emisión:</div>
+            <div class="content {{FECHA_CLASS}}">{{FECHA_CIR}}</div>
+        </div>
+
+        <div class="section precargados">
+            <div class="label" style="color: #0066cc;">Datos Precargados</div>
+            <div class="precargados-row">
+                <div class="precargado-field">
+                    <div class="precargado-label">Asesor que Remite</div>
+                    <div class="precargado-value">{{ASESOR_QUEMITE}}</div>
+                </div>
+                <div class="precargado-field">
+                    <div class="precargado-label">Persona Encargada</div>
+                    <div class="precargado-value">{{NOMBRE_ENCARGADO}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="firma-section">
+            <div class="firma-box">
+                <div class="firma-line"></div>
+                <div class="firma-name">{{ASESOR_QUEMITE}}</div>
+                <div class="firma-title">Asesor que Remite</div>
+            </div>
+            <div class="firma-box">
+                <div class="firma-line"></div>
+                <div class="firma-name">{{NOMBRE_ENCARGADO}}</div>
+                <div class="firma-title">Persona Encargada</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Documento generado automáticamente por SIGCQAL</p>
+            <p>Fecha de generación: {{FECHA_GENERACION}}</p>
+        </div>
+    </div>
+</body>
+</html>
