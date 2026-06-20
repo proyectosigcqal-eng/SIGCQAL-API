@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TramiteBandeja {
     private String folio;
+    private String idExpediente;
     private String municipioProcedencia;
     private String contribuyente;
     private String tipoActo;

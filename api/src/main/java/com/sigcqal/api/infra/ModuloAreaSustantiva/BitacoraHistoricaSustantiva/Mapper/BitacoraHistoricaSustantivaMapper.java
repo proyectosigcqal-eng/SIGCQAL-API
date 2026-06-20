@@ -17,16 +17,16 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioAutoridad.Entity.OficioA
 public class BitacoraHistoricaSustantivaMapper {
 
     // Método para ACCI
-    public BitacoraHistoricaSustantiva mapAcciToDomain(QuejasAcciEntity entity) {
-        return BitacoraHistoricaSustantiva.builder()
-            .tipoEvento("Acción de Investigación (ACCI)")
-            .fecha(entity.getFechaEmisionAcci().atStartOfDay()) // Asegura convertir LocalDate a LocalDateTime
-            .autorCompleto("Sistema")
-            .descripcion("ACCI: " + entity.getJustificacionInvestigacion())
-            .estatus(Boolean.TRUE.equals(entity.getConcluido()) ? "Concluido" : "En Proceso")
-            .fuente("ACCI")
-            .build();
-    }
+   public BitacoraHistoricaSustantiva mapAcciToDomain(QuejasAcciEntity entity) {
+    return BitacoraHistoricaSustantiva.builder()
+        .tipoEvento("Acción de Investigación (ACCI)")
+        .fecha(entity.getFechaEmisionAcci()) // ← sin .atStartOfDay(), ya es LocalDateTime
+        .autorCompleto("Sistema")
+        .descripcion("ACCI: " + entity.getJustificacionInvestigacion())
+        .estatus(Boolean.TRUE.equals(entity.getConcluido()) ? "Concluido" : "En Proceso")
+        .fuente("ACCI")
+        .build();
+}
 
     // Cambia esto en BitacoraHistoricaMapper
     public BitacoraHistoricaSustantiva mapRespuestaToDomain(ContestacionAutoridadEntity entity) {

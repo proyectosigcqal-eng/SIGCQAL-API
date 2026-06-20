@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Model.ResolucionFinal;
+import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalDatosPreviosDTO;
 
 public interface ResolucionFinalRepositoryPort {
 
@@ -25,4 +26,6 @@ public interface ResolucionFinalRepositoryPort {
      */
     ResolucionFinal actualizarOficioGenerado(
             Integer idResolucionFinal, String rutaResolucionFinal, LocalDateTime fechaEmision);
+    
+    Optional<ResolucionFinalDatosPreviosDTO> obtenerDatosPreviosPorFolio(String folio);
 }

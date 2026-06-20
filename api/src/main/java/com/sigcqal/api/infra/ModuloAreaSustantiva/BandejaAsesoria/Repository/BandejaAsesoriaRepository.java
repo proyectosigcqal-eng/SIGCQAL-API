@@ -13,6 +13,7 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
   @Query(value = """
   SELECT 
     e.folio_gobierno,
+    e.id_expediente,
     m.nombre_municipio,
     CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', COALESCE(p.apellido_materno, '')),
     ta.nombre,
@@ -58,7 +59,16 @@ LEFT JOIN catalogos.estatus_detalle_expediente ede ON ede.id_estatus_detalle_exp
 WHERE (:search IS NULL OR :search = ''
        OR LOWER(CONCAT(p.nombre,' ',p.apellido_paterno)) LIKE LOWER(CONCAT('%', :search, '%'))
        OR LOWER(e.folio_gobierno) LIKE LOWER(CONCAT('%', :search, '%')))
-AND (:estatus IS NULL OR :estatus = '' OR eq.descripcion_estatus = :estatus)
+AND (
+    :estatus IS NULL 
+    OR :estatus = '' 
+    OR eq.descripcion_estatus = :estatus
+    OR (:estatus = 'Asignada a Asesor' 
+        AND qj.id_estatus_queja IS NULL 
+        AND COALESCE(e.bloqueado, false) = false)
+    OR (:estatus = 'Cerrada / Concluida' 
+        AND COALESCE(e.bloqueado, false) = true)
+)
 AND (:tipoTramite IS NULL OR :tipoTramite = '' 
      OR CAST(e.id_tipo_tramite AS VARCHAR) = :tipoTramite)
 ORDER BY da.fecha_notificacion DESC NULLS LAST

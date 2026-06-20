@@ -1,5 +1,6 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAcci.Entity;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -7,14 +8,20 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioAutoridad.Entity.OficioAutoridadEntity; // Asegúrate de tener esta entidad
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @Entity
 @Table(name = "quejas_acci", schema = "sustantiva")
 @Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class QuejasAcciEntity {
 
     @Id
@@ -36,19 +43,21 @@ public class QuejasAcciEntity {
     private String justificacionInvestigacion;
 
     @Column(name = "nuevos_requerimientos_autoridad", nullable = false, columnDefinition = "TEXT")
+
     private String nuevosRequerimientosAutoridad;
 
     @Column(name = "plazo_dias_habiles")
     private Integer plazoDiasHabiles;
 
-    @Column(name = "fecha_emision_acci", nullable = false)
-    private LocalDate fechaEmisionAcci;
+    @Column(name = "fecha_emision_acci")
+    private LocalDateTime fechaEmisionAcci;
 
-    @Column(name = "ruta_pdf_acci", nullable = false)
+    @Column(name = "ruta_pdf_acci", length = 500)
     private String rutaPdfAcci;
 
     @Column(name = "concluido")
-    private Boolean concluido;
+    private Boolean concluido = false;
+
 
     @Column(name = "fecha_conclusion")
     private LocalDateTime fechaConclusion;

@@ -13,7 +13,6 @@ import com.sigcqal.api.application.Catalogo.Rol.RolService;
 import com.sigcqal.api.web.Catalogo.Rol.Dto.RolDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController

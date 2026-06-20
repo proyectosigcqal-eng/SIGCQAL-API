@@ -13,6 +13,7 @@ import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Model.ResolucionFinal;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Port.ResolucionFinalRepositoryPort;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Mapper.ResolucionFinalMapper;
+import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalDatosPreviosDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalResponseDTO;
 
@@ -29,7 +30,7 @@ public class ResolucionFinalService {
     private final FileUploadPort                 fileUploadPort;
     private final GeneradorDocumentoService      generadorDocumentoService;
 
-    private static final String NOMBRE_PLANTILLA = "plantilla_acuerdo_cierre.docx";
+    private static final String NOMBRE_PLANTILLA = "plantilla_resolucion_final.docx";
 
     // -----------------------------------------------------------------------
     // GUARDAR
@@ -162,6 +163,12 @@ public class ResolucionFinalService {
                     "El expediente " + idExpediente + " ya cuenta con una resolución final registrada.");
         }
     }
+
+    public ResolucionFinalDatosPreviosDTO obtenerDatosPrevios(String folio) {
+    return port.obtenerDatosPreviosPorFolio(folio)
+            .orElseThrow(() -> new RuntimeException(
+                    "No se encontró información previa para el folio: " + folio));
+}
 
     private String nvl(String v, String fallback) {
         return (v != null && !v.isBlank()) ? v : fallback;

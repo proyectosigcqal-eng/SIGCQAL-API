@@ -12,7 +12,6 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
 @Repository
 public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> {
 
-    // ── Queries existentes ──────────────────────────────────────────────
     @Query("SELECT q FROM QuejaEntity q " +
            "LEFT JOIN FETCH q.expediente e " +
            "LEFT JOIN FETCH e.representanteLegal rep " +
@@ -32,12 +31,8 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
            "LEFT JOIN FETCH a.persona p_ase")
     List<QuejaEntity> findAllConRelaciones();
 
-    // ✅ NUEVO: Buscar queja por id_expediente
     Optional<QuejaEntity> findByExpediente_Id(Integer expedienteId);
 
-    // ── NUEVOS para checklist ───────────────────────────────────────────
-
-    // Buscar id_expediente por folio (para el service)
     @Query(value = """
         SELECT q.id_expediente FROM sustantiva.quejas q
         JOIN sustantiva.expedientes e ON e.id_expediente = q.id_expediente
@@ -46,7 +41,6 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
         """, nativeQuery = true)
     Optional<Integer> findIdExpedienteByFolio(@Param("folio") String folio);
 
-    // PROCEDE — vincula detalle_asesoria, avanza estatus a CIR
     @Modifying
     @Query(value = """
         UPDATE sustantiva.quejas
@@ -58,21 +52,16 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
             @Param("idDetalleAsesoria") Integer idDetalleAsesoria,
             @Param("idExpediente")      Integer idExpediente);
 
+    // ✅ ID directo — evita problemas de encoding con texto
     @Modifying
     @Query(value = """
         UPDATE sustantiva.quejas
-        SET id_estatus_queja = (
-                SELECT id_estatus_queja FROM catalogos.cat_estatus_queja
-                WHERE UPPER(descripcion_estatus) LIKE '%ACLARACIÓN%'
-                   OR UPPER(descripcion_estatus) LIKE '%ACLARACION%'
-                ORDER BY orden LIMIT 1
-            ),
+        SET id_estatus_queja     = 2,
             ultima_actualizacion = NOW()
         WHERE id_expediente = :idExpediente
         """, nativeQuery = true)
     void requerirAclaracion(@Param("idExpediente") Integer idExpediente);
 
-    // Buscar id_detalle_asesoria por id_expediente
     @Query(value = """
         SELECT id_detalle_asesoria FROM sustantiva.detalle_asesoria
         WHERE id_expediente = :idExpediente
@@ -100,7 +89,6 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
         @Param("narrativa")      Boolean narrativa,
         @Param("competencia")    Boolean competencia);
 
-    // ← Cambia Optional<Object[]> por List<Object[]>
     @Query(value = """
         SELECT q.requisito_identificacion,
                q.requisito_actos_fiscales,
@@ -155,4 +143,14 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
         @Param("narrativa")      Boolean narrativa,
         @Param("competencia")    Boolean competencia
     );
+
+    // ✅ Marca procede — estatus 1 = Asignada a Asesor con checklist completo
+    @Modifying
+    @Query(value = """
+        UPDATE sustantiva.quejas
+        SET id_estatus_queja     = 1,
+            ultima_actualizacion = NOW()
+        WHERE id_expediente = :idExpediente
+        """, nativeQuery = true)
+    void marcarProcede(@Param("idExpediente") Integer idExpediente);
 }

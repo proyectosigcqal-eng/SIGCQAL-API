@@ -31,7 +31,7 @@ public class QuejaService {
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-  @Transactional
+@Transactional
 public void admitirQueja(String folio) {
     Integer idExpediente = quejaRepo.findIdExpedienteByFolio(folio)
             .orElseThrow(() -> new RuntimeException(
@@ -41,8 +41,8 @@ public void admitirQueja(String folio) {
             .orElseThrow(() -> new RuntimeException(
                     "No se encontró detalle de asesoría para: " + folio));
 
-    // Ya NO avanza a CIR — solo marca que pasó validación
     port.admitir(idDetalleAsesoria, idExpediente);
+    quejaRepo.marcarProcede(idExpediente); // ← nuevo: estatus = 1 "Asignada a Asesor"
 }
 
 @Transactional
