@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.ResolucionFinal.ResolucionFinalService;
+import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalDatosPreviosDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalResponseDTO;
 
@@ -49,6 +50,12 @@ public class ResolucionFinalController {
             @PathVariable Integer idExpediente) {
         return ResponseEntity.ok(service.listarPorExpediente(idExpediente));
     }
+
+    @GetMapping("/datos-previos/{folio}")
+public ResponseEntity<ResolucionFinalDatosPreviosDTO> obtenerDatosPrevios(
+        @PathVariable String folio) {
+    return ResponseEntity.ok(service.obtenerDatosPrevios(folio));
+}
 
     /**
      * Genera el Acuerdo de Cierre (.docx). Los query params coinciden

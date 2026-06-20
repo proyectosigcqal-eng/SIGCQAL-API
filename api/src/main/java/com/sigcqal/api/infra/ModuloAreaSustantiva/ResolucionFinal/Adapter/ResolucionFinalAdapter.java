@@ -12,6 +12,7 @@ import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Port.Resoluci
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity.ResolucionFinalEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Mapper.ResolucionFinalMapper;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Repository.ResolucionFinalJPARepository;
+import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalDatosPreviosDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -69,4 +70,28 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
 
         return mapper.toDomain(repository.save(entity));
     }
+
+@Override
+public Optional<ResolucionFinalDatosPreviosDTO> obtenerDatosPreviosPorFolio(String folio) {
+    List<Object[]> rows = repository.findDatosPreviosByFolio(folio);
+    if (rows.isEmpty()) return Optional.empty();
+
+    Object[] row = rows.get(0);
+    return Optional.of(ResolucionFinalDatosPreviosDTO.builder()
+            .idExpediente(row[0] != null ? ((Number) row[0]).intValue() : null)
+            .idAri(row[1] != null ? ((Number) row[1]).intValue() : null)
+            .idQuejaRespuestaAutoridad(row[2] != null ? ((Number) row[2]).intValue() : null)
+            .idEstatusQueja(row[3] != null ? ((Number) row[3]).intValue() : null)
+            .idEstatusExpediente(row[4] != null ? ((Number) row[4]).intValue() : null)
+            
+            // ✅ CORRECCIÓN: Extraemos como Timestamp y lo convertimos a LocalDate
+            .fechaSolicitud(row[5] != null ? ((java.sql.Timestamp) row[5]).toLocalDateTime().toLocalDate() : null)
+            
+            .numeroOficio(row[6] != null ? row[6].toString() : null)
+            
+            // ✅ CORRECCIÓN: Aplicamos lo mismo para la fecha del oficio por seguridad
+            .fechaOficio(row[7] != null ? ((java.sql.Timestamp) row[7]).toLocalDateTime().toLocalDate() : null)
+            
+            .build());
+}
 }

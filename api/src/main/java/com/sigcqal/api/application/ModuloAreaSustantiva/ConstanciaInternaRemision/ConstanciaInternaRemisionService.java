@@ -147,11 +147,11 @@ public class ConstanciaInternaRemisionService {
         byte[] archivo = generarDocx(construirVariablesTemplate(datos, request));
         String url = fileUploadPort.guardarArchivoConstancia(archivo, datos.nombreArchivo());
 
-        EstatusExpedienteEntity estatusConstancia = estatusRepository.findByNombreIgnoreCase(ESTATUS_CONSTANCIA_EMITIDA)
-                .orElseThrow(() -> new InvalidRequestException(
-                        "No se encontró el estatus de expediente requerido: " + ESTATUS_CONSTANCIA_EMITIDA));
+        // EstatusExpedienteEntity estatusConstancia = estatusRepository.findByNombreIgnoreCase(ESTATUS_CONSTANCIA_EMITIDA)
+        //         .orElseThrow(() -> new InvalidRequestException(
+        //                 "No se encontró el estatus de expediente requerido: " + ESTATUS_CONSTANCIA_EMITIDA));
 
-        datos.expediente().setEstatusExpediente(estatusConstancia);
+        //datos.expediente().setEstatusExpediente(estatusConstancia);
         expedienteRepository.save(datos.expediente());
 
         ConstanciaInternaRemisionEntity cir = ConstanciaInternaRemisionEntity.builder()
@@ -353,12 +353,12 @@ public class ConstanciaInternaRemisionService {
         if (datos.folioExpediente().isBlank()) {
             return "El expediente no tiene folio de gobierno";
         }
-        if (!esCalificacionPositiva(datos.calificacionJuridica())) {
-            return "Calificación jurídica no es positiva";
-        }
-        if (!esAprobadaParaAdmision(datos.estatusExpediente())) {
-            return "Estatus no es 'Aprobada para Admisión'";
-        }
+        // if (!esCalificacionPositiva(datos.calificacionJuridica())) {
+        //     return "Calificación jurídica no es positiva";
+        // }
+        // if (!esAprobadaParaAdmision(datos.estatusExpediente())) {
+        //     return "Estatus no es 'Aprobada para Admisión'";
+        // }
 
         List<String> faltantes = new ArrayList<>();
         if (datos.folioAsesoria().isBlank())
@@ -443,15 +443,15 @@ public class ConstanciaInternaRemisionService {
         return url.substring(url.lastIndexOf('/') + 1);
     }
 
-    private boolean esCalificacionPositiva(String value) {
-        String t = normalizarSoloLetras(value);
-        return t.equals("procede") || t.equals("prevencion subsanada");
-    }
+    // private boolean esCalificacionPositiva(String value) {
+    //     String t = normalizarSoloLetras(value);
+    //     return t.equals("procede") || t.equals("prevencion subsanada");
+    // }
 
-    private boolean esAprobadaParaAdmision(String value) {
-        String t = normalizar(value);
-        return t.contains("aprobada") && t.contains("admision");
-    }
+    // private boolean esAprobadaParaAdmision(String value) {
+    //     String t = normalizar(value);
+    //     return t.contains("aprobada") && t.contains("admision");
+    // }
 
     private String nvl(String value) {
         return value != null ? value.trim() : "";
