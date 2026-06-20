@@ -1,15 +1,15 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.ResolucionFinal;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.application.exception.InvalidRequestException;
+import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Model.ResolucionFinal;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Port.ResolucionFinalRepositoryPort;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Mapper.ResolucionFinalMapper;
@@ -25,8 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ResolucionFinalService {
 
     private final ResolucionFinalRepositoryPort port;
-    private final ResolucionFinalMapper         mapper;
-    private final OficioResolucionFinalGenerator oficioGenerator;
+    private final ResolucionFinalMapper          mapper;
+    private final FileUploadPort                 fileUploadPort;
+    private final GeneradorDocumentoService      generadorDocumentoService;
+
+    private static final String NOMBRE_PLANTILLA = "plantilla_acuerdo_cierre.docx";
 
     // -----------------------------------------------------------------------
     // GUARDAR
@@ -45,6 +48,7 @@ public class ResolucionFinalService {
                 .idAri(request.getIdAri())
                 .idQuejaRespuestaAutoridad(request.getIdQuejaRespuestaAutoridad())
                 .idEstatusQueja(request.getIdEstatusQueja())
+                .idEstatusExpediente(request.getIdEstatusExpediente())
                 .build();
 
         ResolucionFinal guardado = port.save(resolucionFinal);
@@ -82,21 +86,70 @@ public class ResolucionFinalService {
     }
 
     // -----------------------------------------------------------------------
-    // GENERAR OFICIO (.docx) A PARTIR DE LA PLANTILLA
+    // GENERAR OFICIO (.docx) — ACUERDO DE CIERRE
     // -----------------------------------------------------------------------
-    public byte[] generarOficio(Integer idResolucionFinal) {
-        ResolucionFinal resolucionFinal = port.findById(idResolucionFinal)
+    /**
+     * Genera el Acuerdo de Cierre (.docx), lo guarda en disco vía
+     * FileUploadPort, y actualiza resolucion_final con ruta_resolucion_final
+     * y fecha_emision.
+     *
+     * Los parámetros corresponden EXACTAMENTE a los campos capturados en
+     * EditorResolucionFinal.jsx: folio, expedienteNum, autoridadFiscal,
+     * fechaSolicitud, nombreContribuyente, motivoQueja, oficioNumero,
+     * fechaOficio, fechaIngresoOficio, numeroCreditoMulta, contactoVia,
+     * iniciales.
+     */
+    public ResolucionFinalResponseDTO generarOficio(
+            Integer idResolucionFinal,
+            String  folio,
+            String  expedienteNum,
+            String  autoridadFiscal,
+            String  fechaSolicitud,
+            String  nombreContribuyente,
+            String  motivoQueja,
+            String  oficioNumero,
+            String  fechaOficio,
+            String  fechaIngresoOficio,
+            String  numeroCreditoMulta,
+            String  contactoVia,
+            String  iniciales) {
+
+        port.findById(idResolucionFinal)
                 .orElseThrow(() -> new RuntimeException(
                         "Resolución final no encontrada: " + idResolucionFinal));
 
-        Map<String, String> placeholders = construirPlaceholders(resolucionFinal);
-
         try {
-            return oficioGenerator.generar(placeholders);
+            Map<String, String> variables = Map.ofEntries(
+                Map.entry("{{FOLIO}}",               nvl(folio,               "[FOLIO]")),
+                Map.entry("{{EXPEDIENTE}}",          nvl(expedienteNum,       "[EXPEDIENTE]")),
+                Map.entry("{{AUTORIDAD_FISCAL}}",    nvl(autoridadFiscal,     "[AUTORIDAD FISCAL]")),
+                Map.entry("{{FECHA}}",               generadorDocumentoService.fechaActual()),
+                Map.entry("{{FECHA_SOLICITUD}}",     nvl(fechaSolicitud,      "[FECHA SOLICITUD]")),
+                Map.entry("{{CONTRIBUYENTE}}",       nvl(nombreContribuyente, "[CONTRIBUYENTE]")),
+                Map.entry("{{MOTIVO_QUEJA}}",        nvl(motivoQueja,         "[MOTIVO DE QUEJA]")),
+                Map.entry("{{OFICIO}}",               nvl(oficioNumero,        "[OFICIO]")),
+                Map.entry("{{FECHA_OFICIO}}",        nvl(fechaOficio,         "[FECHA OFICIO]")),
+                Map.entry("{{FECHA_INGRESO}}",       nvl(fechaIngresoOficio,  "[FECHA INGRESO]")),
+                Map.entry("{{NUMERO_CREDITO}}",      nvl(numeroCreditoMulta,  "[NUMERO CREDITO]")),
+                Map.entry("{{CONTACTO_VIA}}",        nvl(contactoVia,         "[CONTACTO VÍA]")),
+                Map.entry("{{INICIALES}}",           nvl(iniciales,           ""))
+            );
+
+            byte[] bytes = generadorDocumentoService.generarDesPlantilla(NOMBRE_PLANTILLA, variables);
+
+            String nombreArchivo = "ACUERDO_CIERRE_" + idResolucionFinal
+                    + "_" + System.currentTimeMillis() + ".docx";
+            String ruta = fileUploadPort.guardarArchivoExpediente(bytes, nombreArchivo);
+
+            ResolucionFinal actualizado = port.actualizarOficioGenerado(
+                    idResolucionFinal, ruta, LocalDateTime.now());
+
+            return mapper.toResponse(actualizado);
+
         } catch (Exception e) {
-            log.error("[ResolucionFinal] Error generando oficio para id {}: {}",
+            log.error("[ResolucionFinal] Error generando el Acuerdo de Cierre para id {}: {}",
                     idResolucionFinal, e.getMessage());
-            throw new RuntimeException("No se pudo generar el oficio: " + e.getMessage(), e);
+            throw new RuntimeException("Error al generar el Acuerdo de Cierre: " + e.getMessage(), e);
         }
     }
 
@@ -110,49 +163,7 @@ public class ResolucionFinalService {
         }
     }
 
-    /**
-     * Arma los valores que reemplazan los {{PLACEHOLDERS}} de plantilla_oficio.docx.
-     * NOTA: NOMBRE_EMISOR, AREA_DESTINATARIO, INSTRUCCION, NOMBRE_FIRMANTE y
-     * AREA_FIRMANTE dependen de datos que hoy no viven en resolucion_final
-     * (folio/expediente/contribuyente vienen de otras tablas — ver puntos
-     * pendientes al final de este archivo). Se dejan con valores por defecto
-     * o vacíos hasta integrar esos joins.
-     */
-    private Map<String, String> construirPlaceholders(ResolucionFinal resolucionFinal) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "MX"));
-        LocalDate fecha = resolucionFinal.getFechaEmisionResolucion();
-        String fechaTexto = fecha != null ? fecha.format(formatter) : "";
-
-        String credito = resolucionFinal.getFolioCredito() != null
-                ? resolucionFinal.getFolioCredito()
-                : (resolucionFinal.getNumeroCredito() != null
-                        ? String.valueOf(resolucionFinal.getNumeroCredito())
-                        : "");
-
-        return Map.ofEntries(
-                Map.entry("FOLIO", "RF-" + resolucionFinal.getIdResolucionFinal()),
-                Map.entry("ASUNTO", resolucionFinal.getConceptoCobro() != null
-                        ? resolucionFinal.getConceptoCobro() : ""),
-                Map.entry("FECHA", fechaTexto),
-                Map.entry("AREA_DESTINATARIO", ""),     // pendiente: viene de id_expediente -> autoridad
-                Map.entry("NOMBRE_EMISOR", ""),         // pendiente: viene del usuario/firmante en sesión
-                Map.entry("INSTRUCCION", construirInstruccion(resolucionFinal, credito)),
-                Map.entry("NOMBRE_FIRMANTE", ""),       // pendiente: catálogo de firmantes
-                Map.entry("AREA_FIRMANTE", "Comisión Estatal de la Defensa del Contribuyente")
-        );
-    }
-
-    private String construirInstruccion(ResolucionFinal resolucionFinal, String credito) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("relativo a ").append(resolucionFinal.getConceptoCobro() != null
-                ? resolucionFinal.getConceptoCobro() : "");
-        if (!credito.isBlank()) {
-            sb.append(", con número de crédito ").append(credito);
-        }
-        if (resolucionFinal.getContactoVia() != null && !resolucionFinal.getContactoVia().isBlank()) {
-            sb.append(". Contacto realizado vía ").append(resolucionFinal.getContactoVia());
-        }
-        sb.append(".");
-        return sb.toString();
+    private String nvl(String v, String fallback) {
+        return (v != null && !v.isBlank()) ? v : fallback;
     }
 }

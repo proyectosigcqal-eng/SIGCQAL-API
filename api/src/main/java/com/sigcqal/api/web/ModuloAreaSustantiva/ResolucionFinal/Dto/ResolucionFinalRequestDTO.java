@@ -40,4 +40,7 @@ public class ResolucionFinalRequestDTO {
 
     @NotNull(message = "El estatus de la queja es obligatorio")
     private Integer idEstatusQueja;
+
+    @NotNull(message = "El estatus del expediente es obligatorio")
+    private Integer idEstatusExpediente;
 }
