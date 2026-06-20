@@ -1,5 +1,6 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Adapter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
 
     private final ResolucionFinalJPARepository repository;
-    private final ResolucionFinalMapper        mapper;
+    private final ResolucionFinalMapper         mapper;
 
     @Override
     public ResolucionFinal save(ResolucionFinal resolucionFinal) {
@@ -32,11 +33,6 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
     public Optional<ResolucionFinal> findById(Integer idResolucionFinal) {
         return repository.findById(idResolucionFinal)
                 .map(mapper::toDomain);
-    }
-
-    @Override
-    public Optional<ResolucionFinalEntity> findEntityById(Integer idResolucionFinal) {
-        return repository.findById(idResolucionFinal);
     }
 
     @Override
@@ -58,5 +54,19 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
     @Override
     public boolean existsByIdExpediente(Integer idExpediente) {
         return repository.existsByIdExpediente(idExpediente);
+    }
+
+    @Override
+    public ResolucionFinal actualizarOficioGenerado(
+            Integer idResolucionFinal, String rutaResolucionFinal, LocalDateTime fechaEmision) {
+
+        ResolucionFinalEntity entity = repository.findById(idResolucionFinal)
+                .orElseThrow(() -> new RuntimeException(
+                        "Resolución final no encontrada: " + idResolucionFinal));
+
+        entity.setRutaResolucionFinal(rutaResolucionFinal);
+        entity.setFechaEmision(fechaEmision);
+
+        return mapper.toDomain(repository.save(entity));
     }
 }

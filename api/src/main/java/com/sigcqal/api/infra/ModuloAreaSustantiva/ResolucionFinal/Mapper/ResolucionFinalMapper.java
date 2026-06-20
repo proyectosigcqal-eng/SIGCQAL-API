@@ -24,6 +24,9 @@ public class ResolucionFinalMapper {
                 .idAri(domain.getIdAri())
                 .idQuejaRespuestaAutoridad(domain.getIdQuejaRespuestaAutoridad())
                 .idEstatusQueja(domain.getIdEstatusQueja())
+                .rutaResolucionFinal(domain.getRutaResolucionFinal())
+                .fechaEmision(domain.getFechaEmision())
+                .idEstatusExpediente(domain.getIdEstatusExpediente())
                 .build();
     }
 
@@ -42,6 +45,9 @@ public class ResolucionFinalMapper {
                 .idAri(entity.getIdAri())
                 .idQuejaRespuestaAutoridad(entity.getIdQuejaRespuestaAutoridad())
                 .idEstatusQueja(entity.getIdEstatusQueja())
+                .rutaResolucionFinal(entity.getRutaResolucionFinal())
+                .fechaEmision(entity.getFechaEmision())
+                .idEstatusExpediente(entity.getIdEstatusExpediente())
                 .build();
     }
 
@@ -60,6 +66,9 @@ public class ResolucionFinalMapper {
                 .idAri(domain.getIdAri())
                 .idQuejaRespuestaAutoridad(domain.getIdQuejaRespuestaAutoridad())
                 .idEstatusQueja(domain.getIdEstatusQueja())
+                .rutaResolucionFinal(domain.getRutaResolucionFinal())
+                .fechaEmision(domain.getFechaEmision())
+                .idEstatusExpediente(domain.getIdEstatusExpediente())
                 .build();
     }
 }
