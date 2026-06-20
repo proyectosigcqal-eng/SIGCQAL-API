@@ -57,12 +57,7 @@ void admitirQueja(
 @Modifying
 @Query(value = """
     UPDATE sustantiva.quejas
-    SET id_estatus_queja = (
-            SELECT id_estatus_queja FROM catalogos.cat_estatus_queja
-            WHERE UPPER(descripcion_estatus) LIKE '%ACLARACIÓN%'
-               OR UPPER(descripcion_estatus) LIKE '%ACLARACION%'
-            ORDER BY orden LIMIT 1
-        ),
+    SET id_estatus_queja     = 2,
         ultima_actualizacion = NOW()
     WHERE id_expediente = :idExpediente
     """, nativeQuery = true)
@@ -151,4 +146,13 @@ void upsertRequisitos(
     @Param("narrativa")      Boolean narrativa,
     @Param("competencia")    Boolean competencia
 );
+
+@Modifying
+@Query(value = """
+    UPDATE sustantiva.quejas
+    SET id_estatus_queja  = 1,
+        ultima_actualizacion = NOW()
+    WHERE id_expediente = :idExpediente
+    """, nativeQuery = true)
+void marcarProcede(@Param("idExpediente") Integer idExpediente);
 }

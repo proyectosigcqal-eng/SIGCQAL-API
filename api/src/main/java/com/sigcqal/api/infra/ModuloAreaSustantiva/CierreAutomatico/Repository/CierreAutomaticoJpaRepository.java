@@ -13,18 +13,24 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEn
 public interface CierreAutomaticoJpaRepository extends JpaRepository<ExpedienteEntity, Integer> {
 
     // Trae todos los expedientes "En Prevención" no bloqueados
-    @Query(value = """
-        SELECT e.id_expediente,
-               e.folio_gobierno,
-               e.fecha_solicitud
-        FROM sustantiva.expedientes e
-        JOIN catalogos.estatus_expediente ee
-          ON ee.id_estatus_expediente = e.id_estatus_expediente
-        WHERE UPPER(ee.nombre) LIKE '%PREVENCI%'
-          AND (e.bloqueado IS NULL OR e.bloqueado = false)
-        """, nativeQuery = true)
-    List<Object[]> findExpedientesEnPrevencionRaw();
-
+   // CierreAutomaticoJpaRepository — query corregido
+@Query(value = """
+    SELECT e.id_expediente,
+           e.folio_gobierno,
+           e.fecha_solicitud
+    FROM sustantiva.expedientes e
+    JOIN catalogos.estatus_expediente ee
+      ON ee.id_estatus_expediente = e.id_estatus_expediente
+    LEFT JOIN sustantiva.quejas qj
+      ON qj.id_expediente = e.id_expediente
+    WHERE UPPER(ee.nombre) LIKE '%PREVENCI%'
+      AND (e.bloqueado IS NULL OR e.bloqueado = false)
+      AND (
+          qj.id_estatus_queja IS NULL        -- sin queja registrada
+          OR qj.id_estatus_queja <= 2        -- solo Asignada(1) o Validación(2)
+      )
+    """, nativeQuery = true)
+List<Object[]> findExpedientesEnPrevencionRaw();
     // Actualiza estatus y bloquea el expediente atómicamente
     @Modifying
     @Query(value = """

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @NoArgsConstructor
 public class BandejaAsesoriaResponseDto {
     private String folio;
+    private String idExpediente;
     private Boolean tieneCir;
     private Boolean tieneAri;
     private Boolean tieneOficio;
