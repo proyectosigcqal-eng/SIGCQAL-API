@@ -153,4 +153,37 @@ public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> 
         WHERE id_expediente = :idExpediente
         """, nativeQuery = true)
     void marcarProcede(@Param("idExpediente") Integer idExpediente);
+
+  
+@Modifying
+@Query(value = """
+    UPDATE sustantiva.quejas
+    SET id_estatus_queja = (
+            SELECT id_estatus_queja
+            FROM catalogos.cat_estatus_queja
+            WHERE descripcion_estatus = 'CIR Generada (Constancia Interna de Remisión)'
+            LIMIT 1
+        ),
+        ultima_actualizacion = NOW()
+    WHERE id_expediente = :idExpediente
+    """, nativeQuery = true)
+void marcarCirGenerada(@Param("idExpediente") Integer idExpediente);
+
+@Modifying
+@Query(value = """
+    UPDATE sustantiva.quejas
+    SET id_estatus_queja     = :idEstatus,
+        ultima_actualizacion = NOW()
+    WHERE id_expediente = :idExpediente
+    """, nativeQuery = true)
+void actualizarEstatusQueja(
+        @Param("idExpediente") Integer idExpediente,
+        @Param("idEstatus")    Integer idEstatus);
+
+        @Query(value = """
+    SELECT id_expediente FROM sustantiva.quejas
+    WHERE id_queja = :idQueja
+    LIMIT 1
+    """, nativeQuery = true)
+Optional<Integer> findIdExpedienteByIdQueja(@Param("idQueja") Long idQueja);
 }

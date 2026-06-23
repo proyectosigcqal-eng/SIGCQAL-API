@@ -3,12 +3,15 @@ package com.sigcqal.api.application.ModuloAreaSustantiva.QuejasAcci;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.EstatusQuejaIds;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAcci.Model.QuejasAcci;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAcci.Port.QuejasAcciRepositoryPort;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Repository.QuejaJPARepository;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAcci.Dto.QuejasAcciRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAcci.Dto.QuejasAcciResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +25,9 @@ public class QuejasAcciService {
     private final QuejasAcciRepositoryPort port;
     private final FileUploadPort           fileUploadPort;
     private final GeneradorDocumentoService generadorDocumentoService;
+    private final QuejaJPARepository quejaJpaRepository; // ← nuevo
 
+@Transactional
     public QuejasAcciResponseDTO guardar(QuejasAcciRequestDTO request) {
         // Genera el DOCX del ACCI
         String rutaPdf = null;
@@ -65,6 +70,11 @@ public class QuejasAcciService {
                 .rutaPdfAcci(rutaPdf)
                 .concluido(false)
                 .build());
+
+                quejaJpaRepository.findIdExpedienteByFolio(request.getFolioExpediente())
+    .ifPresent(idExpediente ->
+        quejaJpaRepository.actualizarEstatusQueja(idExpediente, EstatusQuejaIds.ACCI_GENERADO));
+
 
         return toResponse(guardado, rutaPdf);
     }

@@ -132,4 +132,16 @@ public class ConstanciaInternaRemisionController {
         }
         return ip;
     }
+
+    @GetMapping("/folio/{folio}/constancia-interna-remision/descargar")
+public ResponseEntity<byte[]> descargarConstanciaPorFolio(@PathVariable String folio) {
+    log.info("Descargando CIR por folio: {}", folio);
+    return service.obtenerExistente(folio)
+        .map(cir -> ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cir.nombreArchivo() + "\"")
+            .body(cir.archivo()))
+        .orElseGet(() -> ResponseEntity.notFound().build());
+}
 }

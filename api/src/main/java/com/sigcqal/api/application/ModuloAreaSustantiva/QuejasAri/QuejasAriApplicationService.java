@@ -14,12 +14,17 @@ import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAri.Model.QuejasAri;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.QuejasAri.Port.QuejasAriRepositoryPort;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.ConstanciaInternaRemision.Repository.ConstanciaInternaRemisionJpaRepository;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Repository.QuejaJPARepository;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAri.Mapper.QuejasAriMapper;
+import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriContextoDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriResponseDTO;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Expediente.Model.Expediente;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.EstatusQuejaIds;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.Queja;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Port.QuejaRepositoryPort;
+
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -31,6 +36,10 @@ import java.util.Locale;
 @Service
 public class QuejasAriApplicationService {
 
+    @Autowired
+    private ConstanciaInternaRemisionJpaRepository cirJpaRepository;
+    @Autowired
+    private QuejaJPARepository quejaJpaRepository;
     @Autowired
     private QuejasAriRepositoryPort repositoryPort;
 
@@ -103,6 +112,12 @@ private QuejaRepositoryPort quejaRepositoryPort;
             }
 
             quejasAri.setRutaPdfAri(url);
+           
+            if (quejasAri.getIdQueja() != null) {
+    quejaJpaRepository.findIdExpedienteByIdQueja(quejasAri.getIdQueja())
+        .ifPresent(idExpediente ->
+            quejaJpaRepository.actualizarEstatusQueja(idExpediente, EstatusQuejaIds.ARI_GENERADO));
+}
 
         } catch (Exception e) {
             System.err.println("Error generando DOCX quejas ARI: " + e.getMessage());
@@ -215,5 +230,22 @@ private String formatearFechaEspanol(String fechaInput) {
         System.err.println("Error al formatear fechaSolicitud en el Back-End: " + e.getMessage());
         return fechaInput;
     }
+}
+
+public QuejasAriContextoDTO obtenerContextoPorFolio(String folio) {
+    Integer idExpediente = quejaJpaRepository.findIdExpedienteByFolio(folio)
+        .orElseThrow(() -> new RuntimeException("No se encontró expediente para el folio: " + folio));
+
+    var queja = quejaJpaRepository.findByExpediente_Id(idExpediente)
+        .orElseThrow(() -> new RuntimeException("No se encontró queja para el expediente: " + idExpediente));
+
+    Long idCir = cirJpaRepository.findLatestByExpedienteId(idExpediente)
+        .map(cir -> cir.getIdCir())
+        .orElse(null);
+
+    return QuejasAriContextoDTO.builder()
+        .idQueja(queja.getIdQueja().longValue())
+        .idCir(idCir)
+        .build();
 }
 }
