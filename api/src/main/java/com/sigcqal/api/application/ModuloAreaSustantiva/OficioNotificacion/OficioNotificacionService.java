@@ -4,11 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.OficioNotificacion.Model.OficioNotificacion;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.OficioNotificacion.Port.OficioNotificacionRepositoryPort;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.EstatusQuejaIds;
 import com.sigcqal.api.web.ModuloAreaSustantiva.OficioNotificacion.Dto.OficioNotificacionResponseDTO;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Repository.QuejaJPARepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -18,13 +22,15 @@ public class OficioNotificacionService {
     private final FileUploadPort                   fileUploadPort;
     private final GeneradorDocumentoService        generadorDocumentoService;
     private final OficioNotificacionRepositoryPort oficioRepo;
+    private final QuejaJPARepository               quejaJpaRepository;
 
+    @Transactional // ← AGREGADO: sin esto, actualizarEstatusQueja truena
     public OficioNotificacionResponseDTO generarOficio(
             String  folioExpediente,
             String  numOficio,
             Integer idAutoridad,
             String  nombreAutoridad,
-            String  nombreContribuyente,  
+            String  nombreContribuyente,
             String  fechaAcuerdo,
             String  fundamento,
             String  inicialesAsesor,
@@ -67,11 +73,14 @@ public class OficioNotificacionService {
                     .fechaGeneracion(LocalDateTime.now())
                     .build());
 
+            quejaJpaRepository.findIdExpedienteByFolio(folioExpediente)
+                .ifPresent(idExpediente ->
+                    quejaJpaRepository.actualizarEstatusQueja(idExpediente, EstatusQuejaIds.OFICIO_EMITIDO));
+
             return OficioNotificacionResponseDTO.builder()
                     .id(guardado.getId())
                     .url(ruta)
                     .build();
-                    
 
         } catch (Exception e) {
             throw new RuntimeException("Error al generar el oficio: " + e.getMessage(), e);

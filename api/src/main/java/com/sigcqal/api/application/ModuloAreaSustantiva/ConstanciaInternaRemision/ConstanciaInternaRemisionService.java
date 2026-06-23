@@ -172,6 +172,7 @@ public class ConstanciaInternaRemisionService {
                 .build();
 
         cirRepository.save(cir);
+        quejaRepository.marcarCirGenerada(datos.expedienteId()); 
 
         log.info("Constancia generada: expedienteId={} quejaId={} usuario={} cirId={}",
                 datos.expedienteId(),

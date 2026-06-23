@@ -6,12 +6,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.EstatusQuejaIds;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Model.ResolucionFinal;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ResolucionFinal.Port.ResolucionFinalRepositoryPort;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Repository.QuejaJPARepository;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Mapper.ResolucionFinalMapper;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalDatosPreviosDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Dto.ResolucionFinalRequestDTO;
@@ -29,12 +32,14 @@ public class ResolucionFinalService {
     private final ResolucionFinalMapper          mapper;
     private final FileUploadPort                 fileUploadPort;
     private final GeneradorDocumentoService      generadorDocumentoService;
+    private final QuejaJPARepository quejaJpaRepository; // ← nuevo
 
     private static final String NOMBRE_PLANTILLA = "plantilla_resolucion_final.docx";
 
     // -----------------------------------------------------------------------
     // GUARDAR
     // -----------------------------------------------------------------------
+    @Transactional
     public ResolucionFinalResponseDTO guardar(ResolucionFinalRequestDTO request) {
 
         validarUnicaResolucionPorExpediente(request.getIdExpediente());
@@ -100,6 +105,8 @@ public class ResolucionFinalService {
      * fechaOficio, fechaIngresoOficio, numeroCreditoMulta, contactoVia,
      * iniciales.
      */
+
+    @Transactional
     public ResolucionFinalResponseDTO generarOficio(
             Integer idResolucionFinal,
             String  folio,
@@ -115,9 +122,9 @@ public class ResolucionFinalService {
             String  contactoVia,
             String  iniciales) {
 
-        port.findById(idResolucionFinal)
-                .orElseThrow(() -> new RuntimeException(
-                        "Resolución final no encontrada: " + idResolucionFinal));
+        ResolucionFinal resolucionExistente = port.findById(idResolucionFinal)
+        .orElseThrow(() -> new RuntimeException(
+                "Resolución final no encontrada: " + idResolucionFinal));
 
         try {
             Map<String, String> variables = Map.ofEntries(
@@ -144,6 +151,12 @@ public class ResolucionFinalService {
 
             ResolucionFinal actualizado = port.actualizarOficioGenerado(
                     idResolucionFinal, ruta, LocalDateTime.now());
+
+                    if (resolucionExistente.getIdExpediente() != null) {
+    quejaJpaRepository.actualizarEstatusQueja(
+        resolucionExistente.getIdExpediente(), EstatusQuejaIds.RESOLUCION);
+}
+
 
             return mapper.toResponse(actualizado);
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.QuejasAri.QuejasAriApplicationService;
+import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriContextoDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.QuejasAri.Dto.QuejasAriResponseDTO;
 
@@ -55,6 +56,11 @@ public class QuejasAriController {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    @GetMapping("/contexto/{folio}")
+    public ResponseEntity<QuejasAriContextoDTO> obtenerContexto(@PathVariable String folio) {
+        return ResponseEntity.ok(service.obtenerContextoPorFolio(folio));
     }
 
     @GetMapping("/{id}")

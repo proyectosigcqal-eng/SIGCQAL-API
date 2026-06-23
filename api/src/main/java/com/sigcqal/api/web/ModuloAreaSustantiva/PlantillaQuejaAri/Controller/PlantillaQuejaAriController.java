@@ -23,5 +23,7 @@ public class PlantillaQuejaAriController {
     public ResponseEntity<List<PlantillaQuejaAriDTO>> listarPlantillas() {
         return ResponseEntity.ok(plantillaService.listarPlantillas());
     }
+
+    
     
 }
