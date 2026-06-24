@@ -12,6 +12,10 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
 @Repository
 public interface QuejaJPARepository extends JpaRepository<QuejaEntity, Integer> {
 
+    // ── Queries existentes ──────────────────────────────────────────────
+    @Query("SELECT q.idQueja FROM QuejaEntity q WHERE q.expediente.folioGobierno = :folio")
+    Integer findIdQuejaByFolio(@Param("folio") String folio);
+    
     @Query("SELECT q FROM QuejaEntity q " +
            "LEFT JOIN FETCH q.expediente e " +
            "LEFT JOIN FETCH e.representanteLegal rep " +

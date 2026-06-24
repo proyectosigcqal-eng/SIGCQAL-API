@@ -18,6 +18,8 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.BitacoraHistoricaSustantiva.Ma
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ContestacionAutoridad.Repository.ContestacionAutoridadJpaRepository;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Repository.ResolucionFinalJPARepository;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.NotificacionCierreyAcuerdodeRazon.Repository.NotificacionCierreyAcuerdodeRazonJPARepository;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.ConstanciaInternaRemision.Entity.ConstanciaInternaRemisionEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.ConstanciaInternaRemision.Repository.ConstanciaInternaRemisionJpaRepository;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BitacoraHistoricaSustantiva.Model.BitacoraHistoricaSustantiva;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BitacoraHistoricaSustantiva.Port.BitacoraHistoricaSustantivaRepositoryPort;
 import com.sigcqal.api.infra.Catalogo.Persona.Repository.PersonaJpaRepository;
@@ -37,6 +39,8 @@ public class BitacoraHistoricaSustantivaAdapter implements BitacoraHistoricaSust
     private final NotificacionCierreyAcuerdodeRazonJPARepository notificacionCierreyAcuerdodeRazonRepo;
     private final PersonaJpaRepository personaRepo;
     private final BitacoraHistoricaSustantivaMapper mapper;
+    private final ConstanciaInternaRemisionJpaRepository constanciaInternaRemisionRepo;
+
 
     @Override
     public List<BitacoraHistoricaSustantiva> obtenerHistorialIntegral(Integer idQueja) {
@@ -66,7 +70,16 @@ public class BitacoraHistoricaSustantivaAdapter implements BitacoraHistoricaSust
                         }
                         historial.add(mapper.mapNotificacionToDomain(not, nombre));
                     });
-            }
+
+            
+            
+                constanciaInternaRemisionRepo.findAll().stream()
+                    .filter(cir -> cir.getExpediente() != null && cir.getExpediente().getId() != null 
+                                && cir.getExpediente().getId().equals(idExp))
+                    .forEach(cir -> {
+                        historial.add(mapper.mapCirToDomain(cir));
+                    });
+        }
         });
 
         // 2. ARI
@@ -95,7 +108,9 @@ public class BitacoraHistoricaSustantivaAdapter implements BitacoraHistoricaSust
                 } else {
                     validarIntegridadFecha(oficio, null, "OficioAutoridad");
                 }
+
         });
+        
         // 6. Ordenamiento final
         return historial.stream()
                 .sorted(Comparator.comparing(BitacoraHistoricaSustantiva::getFecha))

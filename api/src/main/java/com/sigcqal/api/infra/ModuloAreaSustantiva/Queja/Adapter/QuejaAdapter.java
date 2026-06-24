@@ -52,4 +52,9 @@ public void actualizarRequisitos(String folio, Boolean identificacion,
                                     actosFiscales, narrativa, competencia);
 }
 
+        @Override
+        public Integer findIdByFolio(String folio) {
+            return repository.findIdQuejaByFolio(folio);
+        }
+
 }

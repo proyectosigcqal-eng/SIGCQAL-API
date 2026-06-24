@@ -16,5 +16,5 @@ public interface QuejaRepositoryPort {
                            Boolean actosFiscales, Boolean narrativa,
                            Boolean competencia);
 
-                           
+    Integer findIdByFolio(String folio); 
 }
