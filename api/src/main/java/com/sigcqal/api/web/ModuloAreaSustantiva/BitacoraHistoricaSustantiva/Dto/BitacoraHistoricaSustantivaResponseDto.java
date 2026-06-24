@@ -18,7 +18,5 @@ public class BitacoraHistoricaSustantivaResponseDto {
     private String descripcion;
     private String estatus;
     private String fuente;
-
-    // Puedes agregar un constructor vacío si utilizas frameworks de serialización 
-    // específicos que lo requieran (aunque @Data suele ser suficiente con @Builder)
+    private String rutaArchivo; 
 }

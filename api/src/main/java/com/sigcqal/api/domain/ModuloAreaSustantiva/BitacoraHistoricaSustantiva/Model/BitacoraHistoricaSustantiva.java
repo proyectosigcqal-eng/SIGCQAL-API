@@ -16,4 +16,5 @@ public class BitacoraHistoricaSustantiva {
     private String descripcion;       // Detalles específicos (ej: "Oficio #123", "Justificación...")
     private String estatus;           // El estatus en el que queda la queja tras este evento
     private String fuente;            // Identificador de origen: "QUEJAS", "CIR", "ACCI", etc.
+    private String rutaArchivo;     // Ruta o URL del archivo asociado al evento, si aplica
 }

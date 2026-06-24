@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAcci.Entity.QuejasAcciEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAri.Entity.QuejasAriEntity;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BitacoraHistoricaSustantiva.Model.BitacoraHistoricaSustantiva;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.ConstanciaInternaRemision.Entity.ConstanciaInternaRemisionEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ContestacionAutoridad.Entity.ContestacionAutoridadEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity.ResolucionFinalEntity;
@@ -17,16 +18,17 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioAutoridad.Entity.OficioA
 public class BitacoraHistoricaSustantivaMapper {
 
     // Método para ACCI
-   public BitacoraHistoricaSustantiva mapAcciToDomain(QuejasAcciEntity entity) {
-    return BitacoraHistoricaSustantiva.builder()
-        .tipoEvento("Acción de Investigación (ACCI)")
-        .fecha(entity.getFechaEmisionAcci()) // ← sin .atStartOfDay(), ya es LocalDateTime
-        .autorCompleto("Sistema")
-        .descripcion("ACCI: " + entity.getJustificacionInvestigacion())
-        .estatus(Boolean.TRUE.equals(entity.getConcluido()) ? "Concluido" : "En Proceso")
-        .fuente("ACCI")
-        .build();
-}
+    public BitacoraHistoricaSustantiva mapAcciToDomain(QuejasAcciEntity entity) {
+        return BitacoraHistoricaSustantiva.builder()
+            .tipoEvento("Acción de Investigación (ACCI)")
+            .fecha(entity.getFechaEmisionAcci()) // Asegura convertir LocalDate a LocalDateTime
+            .autorCompleto("Sistema")
+            .descripcion("ACCI: " + entity.getJustificacionInvestigacion())
+            .estatus(Boolean.TRUE.equals(entity.getConcluido()) ? "Concluido" : "En Proceso")
+            .fuente("ACCI")
+            .rutaArchivo(entity.getRutaPdfAcci()) // Asumiendo que la entidad tiene un campo para la ruta del PDF
+            .build();
+    }
 
     // Cambia esto en BitacoraHistoricaMapper
     public BitacoraHistoricaSustantiva mapRespuestaToDomain(ContestacionAutoridadEntity entity) {
@@ -34,7 +36,9 @@ public class BitacoraHistoricaSustantivaMapper {
             .tipoEvento("Respuesta de Autoridad")
             .fecha(entity.getFechaRegistro()) // Ajustado a la fecha de registro de la respuesta
             .autorCompleto(entity.getNombreTitular())
-            // ... resto igual
+            .estatus("Recibida")
+            .fuente("Respuesta de Autoridad")
+            .rutaArchivo(entity.getRutaPdfInforme())
             .build();
     }
 // ... otros imports
@@ -56,6 +60,7 @@ public class BitacoraHistoricaSustantivaMapper {
             .tipoEvento("Acuerdo de Inicio")
             .fecha(ari.getFechaAcuerdo())
             .descripcion("ARI generado")
+            .rutaArchivo(ari.getRutaPdfAri())
             .build();
     }
 
@@ -98,6 +103,7 @@ public class BitacoraHistoricaSustantivaMapper {
             .descripcion("Medio de notificación: " + entity.getMedioNotificacion())
             .estatus("Cerrado")
             .fuente("NotificacionCierre")
+            .rutaArchivo(entity.getRutaArchivoAcuerdo())
             .build();
     }
 
@@ -112,7 +118,19 @@ public class BitacoraHistoricaSustantivaMapper {
                 .descripcion(domain.getDescripcion())
                 .estatus(domain.getEstatus())
                 .fuente(domain.getFuente())
+                .rutaArchivo(domain.getRutaArchivo())
                 .build();
+    }
+
+    public BitacoraHistoricaSustantiva mapCirToDomain(ConstanciaInternaRemisionEntity cir) {
+    return BitacoraHistoricaSustantiva.builder()
+            .tipoEvento("Constancia Interna de Remisión")
+            .fecha(cir.getFechaCreacion()) // Usamos el campo que vimos en tu Entity
+            .descripcion("Observaciones: " + cir.getObservaciones())
+            .estatus("Generado") // O el estatus que consideres apropiado
+            .fuente("CIR")
+            .rutaArchivo(cir.getRutaPdfCir())
+            .build();
     }
 
 }
