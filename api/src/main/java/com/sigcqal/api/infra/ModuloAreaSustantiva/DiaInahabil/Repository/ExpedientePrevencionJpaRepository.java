@@ -15,9 +15,7 @@ import java.util.Optional;
 public interface ExpedientePrevencionJpaRepository
         extends JpaRepository<ExpedienteEntity, Integer> {
 
-    // Busca la fecha en que el expediente entró a "En Prevención"
-    // Ajusta el nombre/valor del estatus según tu catálogo
-   // En ExpedientePrevencionRepository, reemplaza el @Query por este:
+
 @Query(value = """
     SELECT e.fecha_solicitud
     FROM sustantiva.expedientes e
@@ -36,12 +34,7 @@ Optional<Boolean> findBloqueadoByFolio(@Param("folio") String folio);
     UPDATE sustantiva.expedientes
     SET bloqueado = true,
         fecha_cierre_automatico = NOW(),
-        id_estatus_expediente = (
-            SELECT id_estatus_expediente
-            FROM catalogos.estatus_expediente
-            WHERE UPPER(nombre) LIKE '%NO PRESENTADA%'
-            LIMIT 1
-        )
+        id_estatus_expediente = 5
     WHERE folio_gobierno = :folio
       AND (bloqueado IS NULL OR bloqueado = false)
     """, nativeQuery = true)

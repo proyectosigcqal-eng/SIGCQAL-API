@@ -18,6 +18,7 @@ public class AsesorMapper {
         domain.setEspecialidad(entity.getEspecialidad());
         domain.setCargaActual(entity.getCargaActual());
         domain.setUltimaAsignacionAt(entity.getUltimaAsignacionAt());
+        domain.setActivo(entity.getActivo() != null ? entity.getActivo() : true);
         return domain;
     }
 
@@ -32,6 +33,7 @@ public class AsesorMapper {
         entity.setEspecialidad(domain.getEspecialidad());
         entity.setCargaActual(domain.getCargaActual());
         entity.setUltimaAsignacionAt(domain.getUltimaAsignacionAt());
+        entity.setActivo(domain.getActivo());
         return entity;
     }
 }

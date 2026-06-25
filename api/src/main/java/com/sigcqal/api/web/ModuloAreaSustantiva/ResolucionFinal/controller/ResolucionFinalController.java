@@ -86,4 +86,16 @@ public ResponseEntity<ResolucionFinalDatosPreviosDTO> obtenerDatosPrevios(
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/folio/{folio}/descargar")
+public ResponseEntity<byte[]> descargarPorFolio(@PathVariable String folio) {
+    return service.obtenerArchivoPorFolio(folio)
+        .map(archivo -> ResponseEntity.ok()
+            .contentType(org.springframework.http.MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
+            .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + archivo.nombreArchivo() + "\"")
+            .body(archivo.contenido()))
+        .orElseGet(() -> ResponseEntity.notFound().build());
+}
 }

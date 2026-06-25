@@ -8,6 +8,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.Optional;
+
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -186,4 +193,35 @@ public class ResolucionFinalService {
     private String nvl(String v, String fallback) {
         return (v != null && !v.isBlank()) ? v : fallback;
     }
+
+    public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
+
+public Optional<ArchivoDescarga> obtenerArchivoPorFolio(String folio) {
+    Integer idExpediente = quejaJpaRepository.findIdExpedienteByFolio(folio).orElse(null);
+    if (idExpediente == null) return Optional.empty();
+
+    List<ResolucionFinal> lista = port.findByIdExpediente(idExpediente);
+    if (lista == null || lista.isEmpty()) return Optional.empty();
+
+    ResolucionFinal ultimo = lista.stream()
+        .max(Comparator.comparing(ResolucionFinal::getIdResolucionFinal))
+        .orElse(null);
+    if (ultimo == null || ultimo.getRutaResolucionFinal() == null || ultimo.getRutaResolucionFinal().isBlank()) {
+        return Optional.empty();
+    }
+
+    String nombreArchivo = extraerNombreArchivo(ultimo.getRutaResolucionFinal());
+    try {
+        Path filePath = Paths.get("uploads/expedientes/").resolve(nombreArchivo);
+        byte[] contenido = Files.exists(filePath) ? Files.readAllBytes(filePath) : new byte[0];
+        return Optional.of(new ArchivoDescarga(nombreArchivo, contenido));
+    } catch (IOException e) {
+        return Optional.empty();
+    }
+}
+
+private String extraerNombreArchivo(String url) {
+    if (url == null || url.isEmpty()) return "";
+    return url.substring(url.lastIndexOf('/') + 1);
+}
 }

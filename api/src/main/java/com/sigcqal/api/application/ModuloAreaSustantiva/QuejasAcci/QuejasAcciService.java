@@ -13,9 +13,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +35,9 @@ public class QuejasAcciService {
 
 @Transactional
     public QuejasAcciResponseDTO guardar(QuejasAcciRequestDTO request) {
+
+        Long idQueja = resolverIdQueja(request);
+    Long idOficioAutoridad = resolverIdOficioAutoridad(request);
         // Genera el DOCX del ACCI
         String rutaPdf = null;
         try {
@@ -60,16 +69,16 @@ public class QuejasAcciService {
             throw new RuntimeException("Error generando ACCI: " + e.getMessage(), e);
         }
 
-        QuejasAcci guardado = port.guardar(QuejasAcci.builder()
-                .idQueja(request.getIdQueja())
-                .idOficioAutoridad(request.getIdOficioAutoridad())
-                .justificacionInvestigacion(request.getDocumentosAnexos())
-                .nuevosRequerimientosAutoridad(request.getMotivosRequerimiento())
-                .plazoDiasHabiles(5)
-                .fechaEmisionAcci(LocalDateTime.now())
-                .rutaPdfAcci(rutaPdf)
-                .concluido(false)
-                .build());
+       QuejasAcci guardado = port.guardar(QuejasAcci.builder()
+        .idQueja(idQueja) 
+        .idOficioNotificacion(idOficioAutoridad)
+        .justificacionInvestigacion(request.getDocumentosAnexos())
+        .nuevosRequerimientosAutoridad(request.getMotivosRequerimiento())
+        .plazoDiasHabiles(5)
+        .fechaEmisionAcci(LocalDateTime.now())
+        .rutaPdfAcci(rutaPdf)
+        .concluido(false)
+        .build());
 
                 quejaJpaRepository.findIdExpedienteByFolio(request.getFolioExpediente())
     .ifPresent(idExpediente ->
@@ -78,6 +87,29 @@ public class QuejasAcciService {
 
         return toResponse(guardado, rutaPdf);
     }
+
+    // ── Resuelve idQueja desde folioExpediente si el caller no lo manda ──
+private Long resolverIdQueja(QuejasAcciRequestDTO request) {
+    if (request.getIdQueja() != null) return request.getIdQueja();
+
+    Integer idExpediente = quejaJpaRepository.findIdExpedienteByFolio(request.getFolioExpediente())
+        .orElseThrow(() -> new RuntimeException(
+            "No se encontró expediente para el folio: " + request.getFolioExpediente()));
+
+    return quejaJpaRepository.findByExpediente_Id(idExpediente)
+        .map(q -> q.getIdQueja().longValue())
+        .orElseThrow(() -> new RuntimeException(
+            "No se encontró queja para el expediente: " + idExpediente));
+}
+
+// ── Resuelve idOficioAutoridad (el Oficio ligado al ARI) desde folioExpediente ──
+private Long resolverIdOficioAutoridad(QuejasAcciRequestDTO request) {
+    if (request.getIdOficioAutoridad() != null) return request.getIdOficioAutoridad();
+
+    return quejaJpaRepository.findIdOficioAutoridadByFolio(request.getFolioExpediente())
+        .orElseThrow(() -> new RuntimeException(
+            "No se encontró un Oficio de Notificación previo para el folio: " + request.getFolioExpediente()));
+}
 
     public List<QuejasAcciResponseDTO> listarPorQueja(Long idQueja) {
         return port.findByIdQueja(idQueja)
@@ -99,4 +131,39 @@ public class QuejasAcciService {
     private String nvl(String v, String fallback) {
         return (v != null && !v.isBlank()) ? v : fallback;
     }
+
+    public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
+
+public Optional<ArchivoDescarga> obtenerArchivoPorFolio(String folio) {
+    Integer idExpediente = quejaJpaRepository.findIdExpedienteByFolio(folio).orElse(null);
+    if (idExpediente == null) return Optional.empty();
+
+    var quejaOpt = quejaJpaRepository.findByExpediente_Id(idExpediente);
+    if (quejaOpt.isEmpty()) return Optional.empty();
+
+    Long idQueja = quejaOpt.get().getIdQueja().longValue();
+    List<QuejasAcci> lista = port.findByIdQueja(idQueja);
+    if (lista == null || lista.isEmpty()) return Optional.empty();
+
+    QuejasAcci ultimo = lista.stream()
+        .max(Comparator.comparing(QuejasAcci::getId))
+        .orElse(null);
+    if (ultimo == null || ultimo.getRutaPdfAcci() == null || ultimo.getRutaPdfAcci().isBlank()) {
+        return Optional.empty();
+    }
+
+    String nombreArchivo = extraerNombreArchivo(ultimo.getRutaPdfAcci());
+    try {
+        Path filePath = Paths.get("uploads/expedientes/").resolve(nombreArchivo);
+        byte[] contenido = Files.exists(filePath) ? Files.readAllBytes(filePath) : new byte[0];
+        return Optional.of(new ArchivoDescarga(nombreArchivo, contenido));
+    } catch (IOException e) {
+        return Optional.empty();
+    }
+}
+
+private String extraerNombreArchivo(String url) {
+    if (url == null || url.isEmpty()) return "";
+    return url.substring(url.lastIndexOf('/') + 1);
+}
 }

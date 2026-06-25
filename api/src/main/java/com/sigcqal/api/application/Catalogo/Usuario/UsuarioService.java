@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
+import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
+import com.sigcqal.api.domain.Catalogo.Persona.Port.PersonaRepositoryPort;
 import com.sigcqal.api.domain.Catalogo.Usuario.Model.Usuario;
 import com.sigcqal.api.domain.Catalogo.Usuario.Port.UsuarioRepositoryPort;
+import com.sigcqal.api.web.Admin.Dto.UsuarioAdminRequestDTO;
 import com.sigcqal.api.web.Catalogo.Usuario.Dto.UsuarioDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UsuarioService {
     private final UsuarioRepositoryPort repositoryPort;
+    private final PersonaRepositoryPort  personaRepositoryPort;
 
     public List<UsuarioDTO> obtenerUsuarios() {
         return repositoryPort.findAll().stream().map(this::mapToResponse).toList();
@@ -41,6 +45,41 @@ public class UsuarioService {
         dto.setNombreArea(dom.getNombreArea());
         dto.setUsuarioLogin(dom.getUsuarioLogin());
         dto.setCorreoElectronico(dom.getCorreoElectronico());
+        dto.setActivo(dom.getActivo()); 
         return dto;
     }
+
+    public UsuarioDTO crearUsuario(UsuarioAdminRequestDTO request) {
+    if (request.getNombre() == null || request.getUsuarioLogin() == null
+            || request.getPassword() == null) {
+        throw new InvalidRequestException("Nombre, usuario y contraseña son obligatorios.");
+    }
+
+    // 1. Crear persona
+    Persona persona = new Persona();
+    persona.setNombre(request.getNombre());
+    persona.setApellidoPaterno(request.getApellidoPaterno());
+    persona.setApellidoMaterno(request.getApellidoMaterno());
+    persona.setCorreo(request.getCorreo());
+    Long idPersona = personaRepositoryPort.save(persona).getId();
+
+    // 2. Crear usuario
+    Usuario usuario = new Usuario();
+    usuario.setIdPersona(idPersona);
+    usuario.setUsuarioLogin(request.getUsuarioLogin());
+    usuario.setPassword(request.getPassword()); // hash en prod
+    usuario.setCorreoElectronico(request.getCorreo());
+    usuario.setIdArea(request.getIdArea());
+    usuario.setActivo(true);
+
+    return mapToResponse(repositoryPort.save(usuario));
+}
+
+public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
+    repositoryPort.actualizarRoles(idUsuario, idRoles);
+}
+
+public void darBajaUsuario(Long idUsuario) {
+    repositoryPort.darBaja(idUsuario);
+}
 }

@@ -1,8 +1,15 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.OficioNotificacion;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
@@ -102,4 +109,32 @@ public class OficioNotificacionService {
                "y 27 de los Lineamientos Generales de Actuación de la Comisión Estatal de " +
                "la Defensa del Contribuyente.";
     }
+
+    public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
+
+public Optional<ArchivoDescarga> obtenerArchivoPorFolio(String folio) {
+    List<OficioNotificacion> lista = oficioRepo.buscarPorFolio(folio);
+    if (lista == null || lista.isEmpty()) return Optional.empty();
+
+    OficioNotificacion ultimo = lista.stream()
+        .max(Comparator.comparing(OficioNotificacion::getId))
+        .orElse(null);
+    if (ultimo == null || ultimo.getRutaPdf() == null || ultimo.getRutaPdf().isBlank()) {
+        return Optional.empty();
+    }
+
+    String nombreArchivo = extraerNombreArchivo(ultimo.getRutaPdf());
+    try {
+        Path filePath = Paths.get("uploads/expedientes/").resolve(nombreArchivo);
+        byte[] contenido = Files.exists(filePath) ? Files.readAllBytes(filePath) : new byte[0];
+        return Optional.of(new ArchivoDescarga(nombreArchivo, contenido));
+    } catch (IOException e) {
+        return Optional.empty();
+    }
+}
+
+private String extraerNombreArchivo(String url) {
+    if (url == null || url.isEmpty()) return "";
+    return url.substring(url.lastIndexOf('/') + 1);
+}
 }

@@ -190,4 +190,13 @@ void actualizarEstatusQueja(
     LIMIT 1
     """, nativeQuery = true)
 Optional<Integer> findIdExpedienteByIdQueja(@Param("idQueja") Long idQueja);
+
+@Query(value = """
+    SELECT id_oficio_notificacion
+    FROM sustantiva.oficio_notificacion
+    WHERE folio_expediente = :folio
+    ORDER BY id_oficio_notificacion DESC
+    LIMIT 1
+    """, nativeQuery = true)
+Optional<Long> findIdOficioAutoridadByFolio(@Param("folio") String folio);
 }

@@ -1,11 +1,11 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAcci.Entity;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioNotificacion.Entity.OficioNotificacionEntity;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
-import com.sigcqal.api.infra.ModuloAreaSustantiva.OficioAutoridad.Entity.OficioAutoridadEntity; // Asegúrate de tener esta entidad
+
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,9 +35,9 @@ public class QuejasAcciEntity {
     private QuejaEntity queja;
 
     // Relación con Oficio Autoridad
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_oficio_autoridad", nullable = false, unique = true)
-    private OficioAutoridadEntity oficioAutoridad;
+    @ManyToOne
+        @JoinColumn(name = "id_oficio_autoridad")
+        private OficioNotificacionEntity oficioNotificacion; 
 
     @Column(name = "justificacion_investigacion", nullable = false, columnDefinition = "TEXT")
     private String justificacionInvestigacion;

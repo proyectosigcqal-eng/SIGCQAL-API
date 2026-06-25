@@ -37,4 +37,6 @@ public class AsesorEntity {
 
     @Column(name = "ultima_asignacion_at")
     private LocalDateTime ultimaAsignacionAt;
-}
+        @Column(name = "activo")
+    private Boolean activo = true;
+    }
