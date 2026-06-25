@@ -26,10 +26,9 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
     EXISTS (SELECT 1 FROM sustantiva.quejas_cir c WHERE c.id_queja = qj.id_queja) AS tiene_cir,       -- row[11]
     EXISTS (SELECT 1 FROM sustantiva.quejas_ari a WHERE a.id_queja = qj.id_queja) AS tiene_ari,       -- row[12]
     EXISTS (
-        SELECT 1 FROM sustantiva.quejas_oficios_autoridad o
-        JOIN sustantiva.quejas_ari ar ON ar.id_ari = o.id_ari
-        WHERE ar.id_queja = qj.id_queja
-    ) AS tiene_oficio,      -- row[13]
+    SELECT 1 FROM sustantiva.oficio_notificacion on2
+    WHERE on2.folio_expediente = e.folio_gobierno
+) AS tiene_oficio,
     EXISTS (
         SELECT 1 FROM sustantiva.quejas_respuestas_autoridad r
         WHERE r.id_queja = qj.id_queja

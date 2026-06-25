@@ -19,5 +19,6 @@ public class Usuario {
     private String usuarioLogin;
     private String correoElectronico;
     private String password;
+    private Boolean  activo; 
 
 }

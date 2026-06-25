@@ -76,4 +76,16 @@ public class QuejasAriController {
         service.finalizarAri(id, archivo.getBytes());
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/folio/{folio}/descargar")
+public ResponseEntity<byte[]> descargarPorFolio(@PathVariable String folio) {
+    return service.obtenerArchivoPorFolio(folio)
+        .map(archivo -> ResponseEntity.ok()
+            .contentType(org.springframework.http.MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
+            .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + archivo.nombreArchivo() + "\"")
+            .body(archivo.contenido()))
+        .orElseGet(() -> ResponseEntity.notFound().build());
+}
 }

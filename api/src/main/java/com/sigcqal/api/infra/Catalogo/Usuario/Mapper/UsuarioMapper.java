@@ -22,7 +22,7 @@ public class UsuarioMapper {
         Usuario domain = new Usuario();
         domain.setId(entity.getId());
         domain.setIdPersona(entity.getIdPersona());
-        
+        domain.setActivo(entity.getActivo());
         domain.setUsuarioLogin(entity.getUsuarioLogin());
         domain.setCorreoElectronico(entity.getCorreoElectronico());
         domain.setPassword(entity.getPassword());
@@ -49,6 +49,7 @@ public class UsuarioMapper {
         UsuarioEntity entity = new UsuarioEntity();
         entity.setId(domain.getId());
         entity.setIdPersona(domain.getIdPersona());
+        entity.setActivo(domain.getActivo());
         entity.setUsuarioLogin(domain.getUsuarioLogin());
         entity.setCorreoElectronico(domain.getCorreoElectronico());
         entity.setPassword(domain.getPassword());

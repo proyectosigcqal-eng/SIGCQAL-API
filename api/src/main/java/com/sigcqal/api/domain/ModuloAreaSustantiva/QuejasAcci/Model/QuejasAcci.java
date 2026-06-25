@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class QuejasAcci {
     private Long          id;
     private Long          idQueja;
-    private Long          idOficioAutoridad;
+    private Long          idOficioNotificacion;
     private String        justificacionInvestigacion;
     private String        nuevosRequerimientosAutoridad;
     private Integer       plazoDiasHabiles;

@@ -1,12 +1,16 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.Prevencion;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.PeriodoPrevencion.DiaInhabil.Model.DiaInhabil;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.PeriodoPrevencion.DiaInhabil.Port.DiaInhabilRepositoryPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.PeriodoPrevencion.PlazoPrevencion.Model.PlazoPrevencion;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.EstatusQuejaIds;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.DiaInahabil.Repository.ExpedientePrevencionJpaRepository;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Repository.QuejaJPARepository;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlazoPrevencionService {
@@ -23,10 +28,11 @@ public class PlazoPrevencionService {
 
     private final DiaInhabilRepositoryPort diaInhabilPort;
     private final ExpedientePrevencionJpaRepository expedienteRepository;
+    private final QuejaJPARepository quejaJpaRepository; // ← nuevo
 
+    @Transactional
     public PlazoPrevencion calcularPlazo(String folio) {
 
-        // ✅ 1. Si ya está bloqueado — devuelve vencido sin calcular nada
         boolean estaBloqueado = expedienteRepository.findBloqueadoByFolio(folio)
                 .orElse(false);
 
@@ -41,7 +47,6 @@ public class PlazoPrevencionService {
                     .build();
         }
 
-        // ✅ 2. Busca fecha de inicio — si no está en prevención devuelve vacío
         LocalDateTime fechaInicio = expedienteRepository
                 .findFechaPrevencionByFolio(folio)
                 .orElseThrow(() -> new InvalidRequestException(
@@ -50,16 +55,13 @@ public class PlazoPrevencionService {
         LocalDate inicio         = fechaInicio.toLocalDate();
         LocalDate busquedaHasta  = inicio.plusDays(30);
 
-        // ✅ 3. Días inhábiles del rango
         List<DiaInhabil> inhabiles = diaInhabilPort.findByRangoFechas(inicio, busquedaHasta);
         Set<LocalDate> fechasInhabiles = inhabiles.stream()
                 .map(DiaInhabil::getFecha)
                 .collect(Collectors.toSet());
 
-        // ✅ 4. Fecha límite
         LocalDate fechaLimite = sumarDiasHabiles(inicio, DIAS_HABILES_PLAZO, fechasInhabiles);
 
-        // ✅ 5. Días restantes desde hoy
         LocalDate hoy = LocalDate.now();
         List<DiaInhabil> inhabilesRestantes = diaInhabilPort.findByRangoFechas(hoy, fechaLimite);
         Set<LocalDate> fechasInhabilesRestantes = inhabilesRestantes.stream()
@@ -67,32 +69,30 @@ public class PlazoPrevencionService {
                 .collect(Collectors.toSet());
 
         int diasRestantes = contarDiasHabiles(hoy, fechaLimite, fechasInhabilesRestantes);
-        boolean vencido   = hoy.isAfter(fechaLimite);
+        boolean vencido = !hoy.isBefore(fechaLimite);
 
-        // ✅ 6. Si venció pero no se ha bloqueado aún — cierra automáticamente
-        if (vencido) {
-            try {
-                expedienteRepository.cerrarExpedienteVencido(folio);
-            } catch (Exception e) {
-                // No interrumpe el flujo — el scheduler lo cerrará después
-            }
+         if (vencido) {
+        try {
+            cerrarExpedienteVencidoEnNuevaTransaccion(folio);
+        } catch (Exception e) {
+            log.error("[PlazoPrevencion] Error al cerrar expediente vencido {}: {}",
+                    folio, e.getMessage(), e);
+        }
         }
 
         String semaforo = calcularSemaforo(diasRestantes, vencido);
 
-        // ✅ 7. Retorno normal
         return PlazoPrevencion.builder()
         .folioExpediente(folio)
-        .fechaInicio(fechaInicio)                              
-        .fechaLimite(fechaLimite.atStartOfDay())               
+        .fechaInicio(fechaInicio)
+        .fechaLimite(fechaLimite.atStartOfDay())
         .diasHabilesRestantes(vencido ? 0 : diasRestantes)
         .semaforoEstado(semaforo)
         .vencido(vencido)
         .build();
     }
 
-    private LocalDate sumarDiasHabiles(LocalDate desde, int dias,
-                                        Set<LocalDate> inhabiles) {
+    private LocalDate sumarDiasHabiles(LocalDate desde, int dias, Set<LocalDate> inhabiles) {
         LocalDate fecha = desde;
         int contados = 0;
         while (contados < dias) {
@@ -102,8 +102,7 @@ public class PlazoPrevencionService {
         return fecha;
     }
 
-    private int contarDiasHabiles(LocalDate desde, LocalDate hasta,
-                                   Set<LocalDate> inhabiles) {
+    private int contarDiasHabiles(LocalDate desde, LocalDate hasta, Set<LocalDate> inhabiles) {
         int count = 0;
         LocalDate fecha = desde.plusDays(1);
         while (!fecha.isAfter(hasta)) {
@@ -124,4 +123,12 @@ public class PlazoPrevencionService {
         if (diasRestantes <= 1) return "AMARILLO";
         return "VERDE";
     }
+
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
+public void cerrarExpedienteVencidoEnNuevaTransaccion(String folio) {
+    expedienteRepository.cerrarExpedienteVencido(folio);
+    quejaJpaRepository.findIdExpedienteByFolio(folio)
+        .ifPresent(idExpediente ->
+            quejaJpaRepository.actualizarEstatusQueja(idExpediente, EstatusQuejaIds.CERRADA));
+}
 }

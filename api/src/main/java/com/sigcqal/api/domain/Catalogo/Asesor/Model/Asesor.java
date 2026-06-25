@@ -11,4 +11,10 @@ public class Asesor {
     private String especialidad;
     private Integer cargaActual;
     private LocalDateTime ultimaAsignacionAt;
+    private Boolean activo;
+    private String  apellidoPaterno;  
+    private String  apellidoMaterno;    
+    private String   telefono;
+    private String  correo;
+    private String  rfc;    
 }

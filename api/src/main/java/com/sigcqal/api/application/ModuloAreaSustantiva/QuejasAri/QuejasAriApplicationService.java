@@ -1,8 +1,10 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.QuejasAri;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,13 +31,18 @@ import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Port.QuejaRepositoryPor
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-    import java.time.LocalDate;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Service
 public class QuejasAriApplicationService {
 
+    
     @Autowired
     private ConstanciaInternaRemisionJpaRepository cirJpaRepository;
     @Autowired
@@ -247,5 +254,40 @@ public QuejasAriContextoDTO obtenerContextoPorFolio(String folio) {
         .idQueja(queja.getIdQueja().longValue())
         .idCir(idCir)
         .build();
+}
+
+public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
+
+public Optional<ArchivoDescarga> obtenerArchivoPorFolio(String folio) {
+    Integer idExpediente = quejaJpaRepository.findIdExpedienteByFolio(folio).orElse(null);
+    if (idExpediente == null) return Optional.empty();
+
+    var quejaOpt = quejaJpaRepository.findByExpediente_Id(idExpediente);
+    if (quejaOpt.isEmpty()) return Optional.empty();
+
+    Long idQueja = quejaOpt.get().getIdQueja().longValue();
+    List<QuejasAri> lista = repositoryPort.findByIdQueja(idQueja);
+    if (lista == null || lista.isEmpty()) return Optional.empty();
+
+    QuejasAri ultimo = lista.stream()
+        .max(Comparator.comparing(QuejasAri::getIdAri))
+        .orElse(null);
+    if (ultimo == null || ultimo.getRutaPdfAri() == null || ultimo.getRutaPdfAri().isBlank()) {
+        return Optional.empty();
+    }
+
+    String nombreArchivo = extraerNombreArchivo(ultimo.getRutaPdfAri());
+    try {
+        Path filePath = Paths.get("uploads/quejas-ari/").resolve(nombreArchivo);
+        byte[] contenido = Files.exists(filePath) ? Files.readAllBytes(filePath) : new byte[0];
+        return Optional.of(new ArchivoDescarga(nombreArchivo, contenido));
+    } catch (IOException e) {
+        return Optional.empty();
+    }
+}
+
+private String extraerNombreArchivo(String url) {
+    if (url == null || url.isEmpty()) return "";
+    return url.substring(url.lastIndexOf('/') + 1);
 }
 }

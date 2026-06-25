@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDTO {
-    private Long id;
-    private Long idPersona;
-    private List<Long> idRoles;
-    private Long idArea;
-    private String nombreArea;
-    private String usuarioLogin;
-    private String correoElectronico;
+    private Long         id;
+    private Long         idPersona;
+    private List<Long>   idRoles;
+    private Long         idArea;
+    private String       nombreArea;
+    private String       usuarioLogin;
+    private String       correoElectronico;
+    private Boolean      activo;          
 }

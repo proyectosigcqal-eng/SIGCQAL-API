@@ -20,19 +20,23 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "usuarios" , schema = "catalogos")
-@Data 
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "usuarios", schema = "catalogos")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = "usuarioRoles") 
 public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "id_persona")
@@ -58,7 +62,8 @@ public class UsuarioEntity {
     private Boolean activo;
     
     @JsonIgnore
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, 
+               cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsuarioRolEntity> usuarioRoles = new HashSet<>();
     
 }

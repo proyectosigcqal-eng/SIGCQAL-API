@@ -1,7 +1,6 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.ContestacionAutoridad.Controller;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,30 +42,4 @@ public ResponseEntity<ContestacionAutoridadResponseDTO> guardar(
     );
 }
 
-
-@PostMapping("/generar-acci")
-public ResponseEntity<Map<String, String>> generarACCI(
-        @RequestParam("folioAcci")            String folioAcci,
-        @RequestParam("expediente")           String expediente,
-        @RequestParam("contribuyente")        String contribuyente,
-        @RequestParam(value = "autoridadFiscal",      required = false) String autoridadFiscal,
-        @RequestParam("numOficioRecibido")    String numOficioRecibido,
-        @RequestParam(value = "fechaOficio",          required = false) String fechaOficio,
-        @RequestParam("fechaRecepcion")       String fechaRecepcion,
-        @RequestParam("encargadoDependencia") String encargadoDependencia,
-        @RequestParam("dependencia")          String dependencia,
-        @RequestParam(value = "fechaProveido",        required = false) String fechaProveido,
-        @RequestParam("documentosAnexos")     String documentosAnexos,
-        @RequestParam("titularRequerido")     String titularRequerido,
-        @RequestParam("motivosRequerimiento") String motivosRequerimiento,
-        @RequestParam(value = "inicialesAsesor", required = false) String inicialesAsesor
-) {
-    String rutaDocx = service.generarACCI(
-        folioAcci, expediente, contribuyente, autoridadFiscal,
-        numOficioRecibido, fechaOficio, fechaRecepcion, encargadoDependencia,
-        dependencia, fechaProveido, documentosAnexos, titularRequerido,
-        motivosRequerimiento, inicialesAsesor
-    );
-    return ResponseEntity.ok(Map.of("url", rutaDocx));
-}
 }
