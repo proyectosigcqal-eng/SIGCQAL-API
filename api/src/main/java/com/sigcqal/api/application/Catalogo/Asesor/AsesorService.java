@@ -21,9 +21,13 @@ public class AsesorService {
     private final AsesorRepositoryPort repositoryPort;
     private final PersonaRepositoryPort personaRepositoryPort;
 
-    public List<AsesorDTO> obtenerAsesores() {
-        return repositoryPort.findAll().stream().map(this::mapToResponse).toList();
-    }
+   public List<AsesorDTO> obtenerAsesores() {
+    return repositoryPort.findAll()
+            .stream()
+            .filter(a -> Boolean.TRUE.equals(a.getActivo())) // ✅ solo activos
+            .map(this::mapToResponse)
+            .toList();
+}
 
    private AsesorDTO mapToResponse(Asesor domain) {
     AsesorDTO dto = new AsesorDTO();
@@ -117,4 +121,11 @@ public AsesorDTO actualizarAsesor(Long id, AsesorAdminRequestDTO request) {
 public void darBajaAsesor(Long id) {
     repositoryPort.darBaja(id);
 }
+public List<AsesorDTO> obtenerTodos() {
+    return repositoryPort.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .toList();
+}
+
 }

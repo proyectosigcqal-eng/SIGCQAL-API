@@ -44,4 +44,11 @@ public class BandejaAsesoriaResponseDto {
 
     @JsonProperty("tiene_ficha")
     private Boolean tieneFicha;
+
+    @JsonProperty("fecha_cir")           private String fechaCir;
+@JsonProperty("fecha_ari")           private String fechaAri;
+@JsonProperty("fecha_oficio")        private String fechaOficio;
+@JsonProperty("fecha_contestacion")  private String fechaContestacion;
+@JsonProperty("fecha_acci")          private String fechaAcci;
+@JsonProperty("fecha_resolucion")    private String fechaResolucion;
 }

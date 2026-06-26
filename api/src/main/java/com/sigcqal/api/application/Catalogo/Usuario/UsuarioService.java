@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
+import com.sigcqal.api.domain.Catalogo.Asesor.Model.Asesor;
+import com.sigcqal.api.domain.Catalogo.Asesor.Port.AsesorRepositoryPort;
 import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 import com.sigcqal.api.domain.Catalogo.Persona.Port.PersonaRepositoryPort;
 import com.sigcqal.api.domain.Catalogo.Usuario.Model.Usuario;
@@ -20,10 +22,15 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioService {
     private final UsuarioRepositoryPort repositoryPort;
     private final PersonaRepositoryPort  personaRepositoryPort;
+    private final AsesorRepositoryPort asesorRepositoryPort;
 
-    public List<UsuarioDTO> obtenerUsuarios() {
-        return repositoryPort.findAll().stream().map(this::mapToResponse).toList();
-    }
+ public List<UsuarioDTO> obtenerUsuarios() {
+    return repositoryPort.findAll()
+            .stream()
+            .filter(u -> Boolean.TRUE.equals(u.getActivo())) // ✅ solo activos
+            .map(this::mapToResponse)
+            .toList();
+}
 
     public UsuarioDTO obtenerUsuario(Long id) {
         if (id == null || id <= 0) {
@@ -77,9 +84,49 @@ public class UsuarioService {
 
 public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
     repositoryPort.actualizarRoles(idUsuario, idRoles);
-}
 
+    if (idRoles != null && idRoles.contains(2L)) {
+        Usuario usuario = repositoryPort.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // ✅ Log para confirmar
+        System.out.println(">>> idPersona del usuario: " + usuario.getIdPersona());
+
+        // ✅ Guard — no intentar crear asesor si idPersona es null
+        if (usuario.getIdPersona() == null) {
+            throw new RuntimeException(
+                "El usuario " + idUsuario + " no tiene idPersona asociado.");
+        }
+
+        if (!asesorRepositoryPort.findByIdPersona(usuario.getIdPersona()).isPresent()) {
+            Asesor asesor = new Asesor();
+            asesor.setIdPersona(usuario.getIdPersona());
+            asesor.setEspecialidad(null);
+            asesor.setCargaActual(0);
+            asesor.setActivo(true);
+            asesorRepositoryPort.save(asesor);
+        }
+    }
+
+    // ✅ Solo dar de baja si NO tiene rol asesor Y existe registro
+    if (idRoles != null && !idRoles.contains(2L)) {
+        Usuario usuario = repositoryPort.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (usuario.getIdPersona() != null) {
+            asesorRepositoryPort.findByIdPersona(usuario.getIdPersona())
+                    .ifPresent(a -> asesorRepositoryPort.darBaja(a.getIdAsesor()));
+        }
+    }
+}
 public void darBajaUsuario(Long idUsuario) {
     repositoryPort.darBaja(idUsuario);
+}
+
+public List<UsuarioDTO> obtenerTodos() {
+    return repositoryPort.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .toList();
 }
 }

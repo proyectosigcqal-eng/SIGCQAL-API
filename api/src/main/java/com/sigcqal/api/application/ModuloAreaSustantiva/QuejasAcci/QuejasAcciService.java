@@ -135,7 +135,8 @@ private Long resolverIdOficioAutoridad(QuejasAcciRequestDTO request) {
     public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
 
 public Optional<ArchivoDescarga> obtenerArchivoPorFolio(String folio) {
-    Integer idExpediente = quejaJpaRepository.findIdExpedienteByFolio(folio).orElse(null);
+    Integer idExpediente = quejaJpaRepository
+            .findIdExpedienteByFolio(folio).orElse(null);
     if (idExpediente == null) return Optional.empty();
 
     var quejaOpt = quejaJpaRepository.findByExpediente_Id(idExpediente);
@@ -146,22 +147,34 @@ public Optional<ArchivoDescarga> obtenerArchivoPorFolio(String folio) {
     if (lista == null || lista.isEmpty()) return Optional.empty();
 
     QuejasAcci ultimo = lista.stream()
-        .max(Comparator.comparing(QuejasAcci::getId))
-        .orElse(null);
-    if (ultimo == null || ultimo.getRutaPdfAcci() == null || ultimo.getRutaPdfAcci().isBlank()) {
+            .max(Comparator.comparing(QuejasAcci::getId))
+            .orElse(null);
+
+    if (ultimo == null
+            || ultimo.getRutaPdfAcci() == null
+            || ultimo.getRutaPdfAcci().isBlank()) {
         return Optional.empty();
     }
 
     String nombreArchivo = extraerNombreArchivo(ultimo.getRutaPdfAcci());
+
     try {
-        Path filePath = Paths.get("uploads/expedientes/").resolve(nombreArchivo);
-        byte[] contenido = Files.exists(filePath) ? Files.readAllBytes(filePath) : new byte[0];
+        // ← Usa ruta absoluta igual que FileUploadAdapter
+        Path root      = Paths.get(".").toAbsolutePath().normalize();
+        Path filePath  = root.resolve("uploads/expedientes/").resolve(nombreArchivo);
+
+        if (!Files.exists(filePath)) {
+            // El archivo físico no existe — devuelve empty en lugar de array vacío
+            return Optional.empty();
+        }
+
+        byte[] contenido = Files.readAllBytes(filePath);
         return Optional.of(new ArchivoDescarga(nombreArchivo, contenido));
+
     } catch (IOException e) {
         return Optional.empty();
     }
 }
-
 private String extraerNombreArchivo(String url) {
     if (url == null || url.isEmpty()) return "";
     return url.substring(url.lastIndexOf('/') + 1);

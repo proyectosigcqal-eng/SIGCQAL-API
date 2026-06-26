@@ -13,15 +13,16 @@ public interface AsesorTurnadoRepository
     // Trae asesores ordenados por carga actual ASC y última asignación ASC
     // → el que tiene menos carga y fue asignado hace más tiempo va primero (Round Robin)
     @Query(value = """
-        SELECT a.id_asesores,
-               CONCAT(p.nombre, ' ', p.apellido_paterno) AS nombre_completo,
-               a.carga_actual,
-               a.ultima_asignacion_at
-        FROM sustantiva.asesores a
-        JOIN catalogos.personas p ON p.id_persona = a.id_persona
-        ORDER BY a.carga_actual ASC, a.ultima_asignacion_at ASC NULLS FIRST
-        """, nativeQuery = true)
-    List<Object[]> findAsesoresOrdenadosRaw();
+    SELECT a.id_asesores,
+           CONCAT(p.nombre, ' ', p.apellido_paterno) AS nombre_completo,
+           a.carga_actual,
+           a.ultima_asignacion_at
+    FROM sustantiva.asesores a
+    JOIN catalogos.personas p ON p.id_persona = a.id_persona
+    WHERE a.activo = true                              
+    ORDER BY a.carga_actual ASC, a.ultima_asignacion_at ASC NULLS FIRST
+    """, nativeQuery = true)
+List<Object[]> findAsesoresOrdenadosRaw();
 
     // Incrementa carga y actualiza timestamp de última asignación
     @Modifying

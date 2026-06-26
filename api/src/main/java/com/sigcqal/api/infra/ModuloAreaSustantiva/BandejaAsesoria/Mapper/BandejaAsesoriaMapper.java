@@ -28,6 +28,12 @@ public class BandejaAsesoriaMapper {
         .tieneAcci(row[15] != null ? (Boolean) row[15] : false)
         .tieneResolucion(row[16] != null ? (Boolean) row[16] : false)
         .checklistCompleto(row[17] != null ? (Boolean) row[17] : false)
+        .fechaCir(row[18] != null ? row[18].toString() : null)
+        .fechaAri(row[19] != null ? row[19].toString() : null)
+        .fechaOficio(row[20] != null ? row[20].toString() : null)
+        .fechaContestacion(row[21] != null ? row[21].toString() : null)
+        .fechaAcci(row[22] != null ? row[22].toString() : null)
+        .fechaResolucion(row[23] != null ? row[23].toString() : null)
         .build();
 }
     public BandejaAsesoriaResponseDto toDto(TramiteBandeja tramite) {
@@ -55,7 +61,13 @@ public class BandejaAsesoriaMapper {
         .tieneResolucion(tramite.getTieneResolucion())
         .bloqueado(tramite.getBloqueado())
         .checklistCompleto(tramite.getChecklistCompleto())
+        .fechaCir(tramite.getFechaCir())
+        .fechaAri(tramite.getFechaAri())
+        .fechaOficio(tramite.getFechaOficio())
+        .fechaContestacion(tramite.getFechaContestacion())
+        .fechaAcci(tramite.getFechaAcci())
+        .fechaResolucion(tramite.getFechaResolucion())
         .build();
-}
+    }
 
 }

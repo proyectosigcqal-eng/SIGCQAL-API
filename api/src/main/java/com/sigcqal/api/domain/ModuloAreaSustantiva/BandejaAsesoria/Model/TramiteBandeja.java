@@ -1,5 +1,7 @@
 package com.sigcqal.api.domain.ModuloAreaSustantiva.BandejaAsesoria.Model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +31,10 @@ public class TramiteBandeja {
     private Boolean tieneResolucion;
     private Boolean bloqueado;
     private Boolean checklistCompleto;
+    private String fechaCir;
+private String fechaAri;
+private String fechaOficio;
+private String fechaContestacion;
+private String fechaAcci;
+ private String fechaResolucion;
 }

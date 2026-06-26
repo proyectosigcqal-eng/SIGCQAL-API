@@ -1,5 +1,7 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.ContestacionAutoridad;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,7 @@ public class ContestacionAutoridadService {
         contestacion.setObservaciones(observaciones);
         contestacion.setDecision(decision);
         contestacion.setRutaPdfInforme(rutaPdf);
+        contestacion.setFechaRegistro(LocalDateTime.now());
 
         ContestacionAutoridad saved = port.guardar(contestacion);
 

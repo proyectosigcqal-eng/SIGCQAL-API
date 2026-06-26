@@ -42,7 +42,36 @@ public interface BandejaAsesoriaRepository extends JpaRepository<ExpedienteEntit
     AND COALESCE(qj.requisito_actos_fiscales, false) = true
     AND COALESCE(qj.requisito_narrativa_clara, false) = true
     AND COALESCE(qj.requisito_competencia_cedecon, false) = true
-) AS checklist_completo
+) AS checklist_completo,
+(SELECT c.fecha_emision
+   FROM sustantiva.quejas_cir c
+   WHERE c.id_queja = qj.id_queja
+   ORDER BY c.id_cir DESC LIMIT 1)                         AS fecha_cir,           
+
+(SELECT a.fecha_acuerdo
+   FROM sustantiva.quejas_ari a
+   WHERE a.id_queja = qj.id_queja
+   ORDER BY a.id_ari DESC LIMIT 1)                         AS fecha_ari,           
+
+(SELECT o.fecha_generacion
+   FROM sustantiva.oficio_notificacion o
+   WHERE o.folio_expediente = e.folio_gobierno
+   ORDER BY o.id_oficio_notificacion DESC LIMIT 1)         AS fecha_oficio,         
+
+(SELECT r.fecha_registro
+   FROM sustantiva.quejas_respuestas_autoridad r
+   WHERE r.id_queja = qj.id_queja
+   ORDER BY r.id_respuesta_autoridad DESC LIMIT 1)         AS fecha_contestacion,  
+
+(SELECT ac.fecha_emision_acci
+   FROM sustantiva.quejas_acci ac
+   WHERE ac.id_queja = qj.id_queja
+   ORDER BY ac.id_acci DESC LIMIT 1)                       AS fecha_acci,           
+
+(SELECT rf.fecha_emision
+   FROM sustantiva.resolucion_final rf
+   WHERE rf.id_expediente = e.id_expediente
+   ORDER BY rf.id_resolucion_final DESC LIMIT 1)           AS fecha_resolucion     
 FROM sustantiva.expedientes e
 LEFT JOIN sustantiva.contribuyentes c ON c.id_contribuyentes = e.id_contribuyente
 LEFT JOIN catalogos.personas p ON p.id_persona = c.id_persona
