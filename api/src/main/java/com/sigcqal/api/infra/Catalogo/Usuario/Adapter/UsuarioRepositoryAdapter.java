@@ -44,31 +44,31 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
         return mapper.toDomain(jpaRepository.save(entity));
     }
 
-    @Override
-    @Transactional
-    public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
-        UsuarioEntity entity = jpaRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + idUsuario));
+   @Override
+@Transactional
+public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
+    UsuarioEntity entity = jpaRepository.findById(idUsuario)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + idUsuario));
 
-        // Limpia roles existentes y asigna los nuevos
-        entity.getUsuarioRoles().clear();
+    // ✅ Limpia y hace flush para que el DELETE llegue a BD antes del INSERT
+    entity.getUsuarioRoles().clear();
+    jpaRepository.saveAndFlush(entity);  // ← flush fuerza el DELETE inmediato
 
-        if (idRoles != null) {
-            Set<UsuarioRolEntity> nuevosRoles = idRoles.stream().map(idRol -> {
-                UsuarioRolEntity ur = new UsuarioRolEntity();
-                RolEntity rol = new RolEntity();
-                rol.setId(idRol);
-                ur.setRol(rol);
-                ur.setUsuario(entity);
-                ur.setFechaAsignacion(LocalDateTime.now());
-                return ur;
-            }).collect(Collectors.toSet());
+    if (idRoles != null && !idRoles.isEmpty()) {
+        Set<UsuarioRolEntity> nuevosRoles = idRoles.stream().map(idRol -> {
+            UsuarioRolEntity ur = new UsuarioRolEntity();
+            RolEntity rol = new RolEntity();
+            rol.setId(idRol);
+            ur.setRol(rol);
+            ur.setUsuario(entity);
+            ur.setFechaAsignacion(LocalDateTime.now());
+            return ur;
+        }).collect(Collectors.toSet());
 
-            entity.getUsuarioRoles().addAll(nuevosRoles);
-        }
-
-        jpaRepository.save(entity);
+        entity.getUsuarioRoles().addAll(nuevosRoles);
+        jpaRepository.save(entity);  // ← ahora sí inserta los nuevos
     }
+}
 
     @Override
     @Transactional

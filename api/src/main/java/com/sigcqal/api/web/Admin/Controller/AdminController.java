@@ -66,4 +66,15 @@ public class AdminController {
         asesorService.darBajaAsesor(id);
         return ResponseEntity.noContent().build();
     }
+
+    // AdminController.java — agrega estos GET
+@GetMapping("/asesores")
+public ResponseEntity<List<AsesorDTO>> listarTodosAsesores() {
+    return ResponseEntity.ok(asesorService.obtenerTodos()); // sin filtro activo
+}
+
+@GetMapping("/usuarios")  
+public ResponseEntity<List<UsuarioDTO>> listarTodosUsuarios() {
+    return ResponseEntity.ok(usuarioService.obtenerTodos()); // sin filtro activo
+}
 }

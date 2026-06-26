@@ -23,24 +23,14 @@ public class QuejasAcciAdapter implements QuejasAcciRepositoryPort {
         return mapper.toDomain(repository.save(mapper.toEntity(acci)));
     }
 
-    public Optional<QuejasAcci> findById(Integer id) {
-        return repository.findById(id).map(mapper::toDomain);
-    }
-
-    public List<QuejasAcci> findByIdQueja(Integer idQueja) {
-        return repository.findByQueja_IdQueja(idQueja)
-                .stream().map(mapper::toDomain).collect(Collectors.toList());
-    }
-
     @Override
     public Optional<QuejasAcci> findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return repository.findById(id.intValue()).map(mapper::toDomain);
     }
 
     @Override
     public List<QuejasAcci> findByIdQueja(Long idQueja) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByIdQueja'");
+        return repository.findByQueja_IdQueja(idQueja.intValue())
+                .stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 }

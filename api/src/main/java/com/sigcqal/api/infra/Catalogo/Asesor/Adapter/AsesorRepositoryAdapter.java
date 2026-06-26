@@ -56,4 +56,13 @@ public void darBaja(Long id) {
     entity.setActivo(false);  // ✅ baja lógica correcta
     jpaRepository.save(entity);
 }
+@Override
+public List<Asesor> findAllActivos() {
+    return jpaRepository.findByActivoTrue()
+            .stream().map(mapper::toDomain).toList();
+}
+@Override
+public Optional<Asesor> findByIdPersona(Long idPersona) {
+    return jpaRepository.findByIdPersona(idPersona).map(mapper::toDomain);
+}
 }
