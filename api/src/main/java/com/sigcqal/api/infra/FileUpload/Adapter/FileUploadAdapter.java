@@ -18,6 +18,7 @@ public class FileUploadAdapter implements FileUploadPort {
     private final String carpetaDestinoExpedientes = "uploads/expedientes/";
     private final String carpetaDestinoConstancias = "uploads/constancias/";
     private final String carpetaDestinoQuejasAri = "uploads/quejas-ari/";
+    private final String carpetaDestinoRLCir = "uploads/RLCir/";
 
    @Override
 public String guardarArchivo(byte[] contenido, String nombreArchivo) {
@@ -114,6 +115,28 @@ public String guardarArchivoConstancia(byte[] contenido, String nombreArchivo) {
             System.out.println("Archivo ARI guardado físicamente en: " + ficheroFinal.toAbsolutePath());
             
             return "/api/files/quejas-ari/" + nombreArchivo; 
+        } catch (IOException e) {
+            e.printStackTrace(); 
+            throw new RuntimeException("Error físico al escribir el archivo ARI en disco: " + e.getMessage(), e);
+        }
+    }
+
+
+    @Override
+    public String guardarArchivoRLCir(byte[] contenido, String nombreArchivo) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path directorioDestino = root.resolve(carpetaDestinoRLCir);
+            
+            if (!Files.exists(directorioDestino)) {
+                Files.createDirectories(directorioDestino);
+            }
+            
+            Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+            Files.write(ficheroFinal, contenido);
+            System.out.println("Archivo ARI guardado físicamente en: " + ficheroFinal.toAbsolutePath());
+            
+            return "/api/files/RLCir/" + nombreArchivo; 
         } catch (IOException e) {
             e.printStackTrace(); 
             throw new RuntimeException("Error físico al escribir el archivo ARI en disco: " + e.getMessage(), e);
