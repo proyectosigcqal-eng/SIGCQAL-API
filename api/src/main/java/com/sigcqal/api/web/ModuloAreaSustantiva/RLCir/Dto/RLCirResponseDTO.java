@@ -20,4 +20,5 @@ public class RLCirResponseDTO {
     // Campos enriquecidos para la vista
     private String folioGobierno;
     private String nombreContribuyente;
+    private String identificacionOficial;
 }

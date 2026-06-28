@@ -18,6 +18,8 @@ public class DetalleAsesoriaResponseDTO {
 
     private String contribuyente;
 
+    private String identificacionOficial;
+
     @JsonProperty("folio_asesoria")
     private String folioAsesoria;
 

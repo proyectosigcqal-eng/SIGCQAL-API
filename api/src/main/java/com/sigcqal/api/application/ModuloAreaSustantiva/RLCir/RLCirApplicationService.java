@@ -64,10 +64,11 @@ public class RLCirApplicationService {
                 Map.entry("{{ARTICULOS}}", nvl(rlCir.getArticulos(), "")),
                 Map.entry("{{OBSERVACIONES}}", nvl(rlCir.getObservaciones(), "")),
                 Map.entry("{{DIRECTOR}}", nvl(rlCir.getDirector(), "")),
-                Map.entry("{{FOLIO_GOBIERNO}}", nvl(request.getFolioGobierno(), "[FOLIO]")),
+                Map.entry("{{FOLIO}}", nvl(request.getFolioGobierno(), "[FOLIO NULO]")),
                 Map.entry("{{CONTRIBUYENTE}}", nvl(request.getNombreContribuyente(), "[CONTRIBUYENTE]")),
                 Map.entry("{{REMITENTE}}", nvl(request.getNombreAsesorRemitente(), "[REMITENTE]")),
-                Map.entry("{{RECIBE}}", nvl(request.getNombreAsesorRecibe(), "[RECIBE]"))
+                Map.entry("{{RECIBE}}", nvl(request.getNombreAsesorRecibe(), "[RECIBE]")),
+                Map.entry("{{IDENTIFICACION}}", nvl(request.getIdentificacionOficial(), "[IDENTIFICACIÓN NULA]"))
             );
 
             // Supongamos que tu plantilla base se llama plantilla_rl_cir.docx
