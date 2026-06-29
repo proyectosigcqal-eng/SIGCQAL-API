@@ -46,9 +46,4 @@ public class PersonaAdapter implements PersonaRepositoryPort {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void deleteById(Long id) {
-            repository.deleteById(id);
-        }
-
 }

@@ -10,6 +10,5 @@ public interface PersonaRepositoryPort {
     Optional<Persona> findById(Long id);
     Optional<Persona> findByRfc(String rfc);
     List<Persona> findAll();
-    void deleteById(Long id);
 
 }
