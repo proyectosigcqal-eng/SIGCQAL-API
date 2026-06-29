@@ -89,5 +89,12 @@ public class PersonaService {
         return mapper.toResponse(port.save(existente));
     }
 
+    // Método para uso interno de otros servicios (dominio puro)
+    @Transactional
+    public Persona guardarPersonaDeDominio(Persona persona) {
+        // Usamos el port para guardar el modelo de dominio directamente
+        Persona personaGuardada = port.save(persona);
+        return personaGuardada;
+    }
 
 }
