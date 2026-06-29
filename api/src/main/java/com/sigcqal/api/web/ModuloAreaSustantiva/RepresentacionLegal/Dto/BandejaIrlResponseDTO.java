@@ -15,4 +15,5 @@ public class BandejaIrlResponseDTO {
     private String estatus;
     private LocalDateTime fechaCreacion;
     private Boolean esEvolucion;
+    private Integer idEstatus;
 }

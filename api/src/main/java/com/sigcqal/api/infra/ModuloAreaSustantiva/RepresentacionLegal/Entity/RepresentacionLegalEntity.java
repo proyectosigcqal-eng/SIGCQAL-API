@@ -3,7 +3,6 @@ package com.sigcqal.api.infra.ModuloAreaSustantiva.RepresentacionLegal.Entity;
 import java.time.LocalDateTime;
 
 import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
-import com.sigcqal.api.infra.ModuloAreaSustantiva.Queja.Entity.QuejaEntity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,6 +29,9 @@ public class RepresentacionLegalEntity {
     /** Para IRL Evolución — NULL para Directo */
     @Column(name = "id_queja_origen")
     private Integer idQuejaOrigen;
+
+    @Column(name = "id_estatus")
+    private Integer idEstatus;
 
     @Column(name = "es_evolucion", nullable = false)
     private Boolean esEvolucion = false;
