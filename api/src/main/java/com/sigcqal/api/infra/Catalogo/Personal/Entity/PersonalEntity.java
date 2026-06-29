@@ -20,10 +20,10 @@ public class PersonalEntity {
 
     // Relación ManyToOne: Muchas personas pueden estar en la tabla personal
     // (o OneToOne si la regla es estrictamente una persona por cada registro de personal)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_persona", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_persona")
     private PersonaEntity persona;
-
+    
     @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
