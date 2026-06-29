@@ -7,6 +7,7 @@ import com.sigcqal.api.application.Catalogo.Persona.PersonaService; // Asumiendo
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sigcqal.api.domain.Catalogo.Persona.Port.PersonaRepositoryPort;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ public class PersonalService {
 
     private final PersonalRepositoryPort personalRepository;
     private final PersonaService personaService;
+    private final PersonaRepositoryPort personaRepositoryPort;
 
     @Transactional
     public Personal registerPersonal(Personal personal) {
@@ -58,12 +60,19 @@ public class PersonalService {
     }
 
     // ELIMINAR
-    @Transactional
-    public void deletePersonal(Long id) {
-        // Antes de eliminar, podrías verificar si existe
-        if (!personalRepository.findById(id).isPresent()) {
-            throw new RuntimeException("No se puede eliminar, el registro no existe");
+        @Transactional
+        public void deletePersonal(Long id) {
+            // 1. Buscamos el personal para obtener el ID de la persona asociada
+            Personal personal = personalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Personal no encontrado"));
+
+            Long personaId = personal.getPersona().getId();
+
+            // 2. Borramos primero el Personal
+            personalRepository.deleteById(id);
+
+            // 3. Borramos después la Persona
+            // Necesitas inyectar el PersonaRepositoryPort o usar un método del PersonaService
+            personaRepositoryPort.deleteById(personaId);
         }
-        personalRepository.deleteById(id);
-    }
 }
