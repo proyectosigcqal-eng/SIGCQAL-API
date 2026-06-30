@@ -128,4 +128,9 @@ public List<AsesorDTO> obtenerTodos() {
             .toList();
 }
 
+public AsesorDTO findById(Long id) {
+    return repositoryPort.findById(id)
+            .map(this::mapToResponse)
+            .orElseThrow(() -> new ResourceNotFoundException("Asesor", id));
+}
 }

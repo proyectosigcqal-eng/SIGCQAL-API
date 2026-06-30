@@ -38,6 +38,8 @@ public class RolEntity {
 
     @Column(name = "descripcion")
     private String descripcion;
+    @Column(name = "activo")
+private Boolean activo = true;
 
     @JsonIgnore
     @OneToMany(mappedBy = "rol", fetch = FetchType.LAZY)

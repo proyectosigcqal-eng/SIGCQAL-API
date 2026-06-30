@@ -1,7 +1,9 @@
 package com.sigcqal.api.infra.Catalogo.Usuario.Entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -60,10 +62,10 @@ public class UsuarioEntity {
 
     @Column(name = "activo")
     private Boolean activo;
-    
-    @JsonIgnore
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, 
-               cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UsuarioRolEntity> usuarioRoles = new HashSet<>();
+
+@JsonIgnore
+@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, 
+           cascade = CascadeType.ALL, orphanRemoval = true)
+private List<UsuarioRolEntity> usuarioRoles = new ArrayList<>(); 
     
 }

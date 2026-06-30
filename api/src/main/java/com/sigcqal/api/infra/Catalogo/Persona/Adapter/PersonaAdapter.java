@@ -51,4 +51,12 @@ public class PersonaAdapter implements PersonaRepositoryPort {
             repository.deleteById(id);
         }
 
+    @Override
+    public List<Persona> buscarPorNombreORfc(String texto) {
+        return repository.buscarPorNombreORfc(texto)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
 }
