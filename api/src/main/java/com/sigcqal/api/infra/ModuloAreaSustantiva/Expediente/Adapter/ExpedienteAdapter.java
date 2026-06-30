@@ -61,5 +61,13 @@ public Optional<ExpedienteEntity> findEntityByFolio(String folio) {
     return repository.findByFolioGobierno(folio);
 }
 
+@Override
+    public Optional<Expediente> buscarPorId(Long id) {
+        // Buscamos la entidad en la base de datos (usando id.intValue() siguiendo tu lógica de existsById)
+        Optional<ExpedienteEntity> entityOptional = repository.findById(id.intValue());
+        
+        // Si existe, la mapeamos al dominio; si no, devuelve un Optional vacío de manera limpia
+        return entityOptional.map(entity -> mapper.toDomain(entity));
+    }
   
 }

@@ -19,6 +19,7 @@ public class FileUploadAdapter implements FileUploadPort {
     private final String carpetaDestinoConstancias = "uploads/constancias/";
     private final String carpetaDestinoQuejasAri = "uploads/quejas-ari/";
     private final String carpetaDestinoRLCir = "uploads/RLCir/";
+    private final String carpetaDestinoQuejaRlCir = "uploads/QuejaRlCir/";
 
    @Override
 public String guardarArchivo(byte[] contenido, String nombreArchivo) {
@@ -140,6 +141,28 @@ public String guardarArchivoConstancia(byte[] contenido, String nombreArchivo) {
         } catch (IOException e) {
             e.printStackTrace(); 
             throw new RuntimeException("Error físico al escribir el archivo ARI en disco: " + e.getMessage(), e);
+        }
+    }
+
+
+    @Override
+    public String guardarArchivoQuejaRlCir(byte[] contenido, String nombreArchivo) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path directorioDestino = root.resolve(carpetaDestinoQuejaRlCir);
+            
+            if (!Files.exists(directorioDestino)) {
+                Files.createDirectories(directorioDestino);
+            }
+            
+            Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+            Files.write(ficheroFinal, contenido);
+            System.out.println("Archivo Queja RLCir guardado físicamente en: " + ficheroFinal.toAbsolutePath());
+            
+            return "/api/files/QuejaRlCir/" + nombreArchivo; 
+        } catch (IOException e) {
+            e.printStackTrace(); 
+            throw new RuntimeException("Error físico al escribir el archivo Queja RLCir en disco: " + e.getMessage(), e);
         }
     }
 }

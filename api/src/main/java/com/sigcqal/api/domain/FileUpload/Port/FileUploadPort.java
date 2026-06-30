@@ -8,4 +8,5 @@ public interface FileUploadPort {
 
     String guardarArchivoQuejaAri(byte[] contenido, String nombreArchivo);
     String guardarArchivoRLCir(byte[] contenido, String nombreArchivo);
+    String guardarArchivoQuejaRlCir(byte[] contenido, String nombreArchivo);
 }

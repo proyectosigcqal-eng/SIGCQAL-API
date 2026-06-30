@@ -117,4 +117,10 @@ public AsesorDTO actualizarAsesor(Long id, AsesorAdminRequestDTO request) {
 public void darBajaAsesor(Long id) {
     repositoryPort.darBaja(id);
 }
+
+public AsesorDTO findById(Long id) {
+    return repositoryPort.findById(id)
+            .map(this::mapToResponse)
+            .orElseThrow(() -> new ResourceNotFoundException("Asesor", id));
+}
 }

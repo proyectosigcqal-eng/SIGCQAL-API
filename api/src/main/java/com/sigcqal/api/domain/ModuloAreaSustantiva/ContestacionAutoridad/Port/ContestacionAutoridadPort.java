@@ -7,4 +7,5 @@ import com.sigcqal.api.domain.ModuloAreaSustantiva.ContestacionAutoridad.Model.C
 public interface ContestacionAutoridadPort {
     ContestacionAutoridad guardar(ContestacionAutoridad contestacion);
     Optional<ContestacionAutoridad> findByFolio(String folio);
+    Optional<ContestacionAutoridad> buscarPorId(Integer id);
 }
