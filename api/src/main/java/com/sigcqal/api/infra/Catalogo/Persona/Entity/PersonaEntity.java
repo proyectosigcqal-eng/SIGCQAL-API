@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 import lombok.Data;
 
 @Entity
@@ -22,7 +23,8 @@ public class PersonaEntity {
     @Column(name = "id_persona")
     private Long id;
 
-    @ManyToOne
+    // QUITA el orphanRemoval, déjalo así:
+    @ManyToOne(cascade = CascadeType.ALL) 
     @JoinColumn(name = "id_direccion")
     private DireccionEntity direccion;
 

@@ -1,6 +1,7 @@
 package com.sigcqal.api.domain.Catalogo.Personal.Port;
 
 import com.sigcqal.api.domain.Catalogo.Personal.Model.Personal;
+import com.sigcqal.api.domain.Catalogo.Direccion.Model.Direccion;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ public interface PersonalRepositoryPort {
     
     // Método para crear o actualizar
     Personal save(Personal personal);
+    Personal save(Personal personal, Direccion direccion);
     
     // Método para listar todo
     List<Personal> findAll();

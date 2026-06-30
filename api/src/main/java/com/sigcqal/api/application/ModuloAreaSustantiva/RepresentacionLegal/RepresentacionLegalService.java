@@ -17,23 +17,16 @@ public class RepresentacionLegalService {
 
     private final RepresentacionLegalJpaRepository repository;
 
-    /**
-     * Devuelve la bandeja filtrada por tipo (Directo / Evolución)
-     * y opcionalmente por búsqueda.
-     */
-    public List<BandejaIrlResponseDTO> obtenerBandeja(Boolean esEvolucion, String search) {
+    public List<BandejaIrlResponseDTO> obtenerBandeja(Boolean esEvolucion, String search, Integer idEstatus) {
         String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
-
-        List<Object[]> rows = repository.findBandeja(esEvolucion, searchParam);
-
+        List<Object[]> rows = repository.findBandeja(esEvolucion, searchParam, idEstatus);
         return rows.stream().map(this::mapearFila).toList();
     }
 
     /**
-     * Mapea Object[] (orden fijo del native query) al DTO.
-     *
-     * Índices: 0=id, 1=folio_gobierno, 2=contribuyente, 3=asesor,
-     * 4=municipio, 5=estatus, 6=fecha_creacion, 7=es_evolucion
+     * Índices: 0 id, 1 folio_gobierno, 2 contribuyente, 3 asesor,
+     * 4 municipio, 5 estatus, 6 fecha_creacion,
+     * 7 es_evolucion, 8 id_estatus
      */
     private BandejaIrlResponseDTO mapearFila(Object[] row) {
         BandejaIrlResponseDTO dto = new BandejaIrlResponseDTO();
@@ -45,10 +38,9 @@ public class RepresentacionLegalService {
         dto.setEstatus(toString(row[5]));
         dto.setFechaCreacion(toLocalDateTime(row[6]));
         dto.setEsEvolucion(toBoolean(row[7]));
+        dto.setIdEstatus(toInteger(row[8]));
         return dto;
     }
-
-    // ── Helpers para Object[] → tipos seguros ──
 
     private Integer toInteger(Object val) {
         if (val == null)

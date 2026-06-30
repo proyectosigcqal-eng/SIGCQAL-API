@@ -1,0 +1,9 @@
+package com.sigcqal.api.application.ModuloAreaSustantiva.NotificacionSentenciaCumplida;
+
+import com.sigcqal.api.web.ModuloAreaSustantiva.NotificacionSentenciaCumplida.Dto.NotificacionSentenciaCumplidaRequestDTO;
+import com.sigcqal.api.web.ModuloAreaSustantiva.NotificacionSentenciaCumplida.Dto.NotificacionSentenciaCumplidaResponseDTO;
+
+public interface GuardarNotificacionSentenciaCumplidaUseCase {
+
+    NotificacionSentenciaCumplidaResponseDTO ejecutar(NotificacionSentenciaCumplidaRequestDTO request);
+}

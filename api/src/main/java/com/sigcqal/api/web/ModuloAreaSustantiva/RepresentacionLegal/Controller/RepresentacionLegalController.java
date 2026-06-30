@@ -18,16 +18,11 @@ public class RepresentacionLegalController {
 
     private final RepresentacionLegalService service;
 
-    /**
-     * GET /api/v1/representacion-legal/bandeja
-     *
-     * @param esEvolucion false = IRL Asignación Directa, true = IRL Evolución
-     * @param search      búsqueda por folio o nombre de contribuyente
-     */
     @GetMapping("/bandeja")
     public ResponseEntity<List<BandejaIrlResponseDTO>> bandeja(
             @RequestParam(name = "es_evolucion") Boolean esEvolucion,
-            @RequestParam(required = false) String search) {
-        return ResponseEntity.ok(service.obtenerBandeja(esEvolucion, search));
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Integer id_estatus) {
+        return ResponseEntity.ok(service.obtenerBandeja(esEvolucion, search, id_estatus));
     }
 }
