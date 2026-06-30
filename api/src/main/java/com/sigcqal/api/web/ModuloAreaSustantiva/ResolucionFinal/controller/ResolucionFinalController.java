@@ -1,4 +1,4 @@
-package com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.Controller;
+package com.sigcqal.api.web.ModuloAreaSustantiva.ResolucionFinal.controller;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/modulo-area-sustantiva/resolucion-final")
 @RequiredArgsConstructor
-public class ResolucionFinalcontroller {
+public class ResolucionFinalController {
 
     private final ResolucionFinalService service;
 
