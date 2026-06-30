@@ -21,11 +21,12 @@ public class SemaforoJudicialService {
 
     /**
      * Calcula el semáforo judicial de 15 días hábiles.
-     * Regla: el plazo inicia D+1 del primer acto de aplicación (fecha de pago).
+     * Regla: el plazo inicia D+1 de la fecha base recibida (actualmente,
+     * la fecha de generación de la demanda — ver IrlDemandaAmparoService.obtenerSemaforo()).
      * Descuenta sábados, domingos y días inhábiles de catalogos.dias_inhabiles.
      */
-    public SemaforoJudicialDTO calcular(LocalDate fechaPrimerPago) {
-        LocalDate inicio = fechaPrimerPago.plusDays(1);
+    public SemaforoJudicialDTO calcular(LocalDate fechaBase) {
+        LocalDate inicio = fechaBase.plusDays(1);
 
         // Margen de búsqueda generoso: 15 días hábiles nunca superan 30 corridos
         // salvo períodos vacacionales largos — usamos 60 días como techo seguro
@@ -40,7 +41,7 @@ public class SemaforoJudicialService {
                 : contarDiasHabiles(hoy, fechaLimite, inhabiles);
 
         return SemaforoJudicialDTO.builder()
-                .fechaPrimerPago(fechaPrimerPago)
+                .fechaPrimerPago(fechaBase) // nombre desactualizado: ahora es fecha de generación, no de pago
                 .fechaInicioPlazo(inicio)
                 .fechaLimite(fechaLimite)
                 .diasHabilesRestantes(diasRestantes)

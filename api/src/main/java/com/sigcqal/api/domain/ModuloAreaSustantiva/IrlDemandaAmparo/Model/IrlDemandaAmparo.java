@@ -13,6 +13,8 @@ public class IrlDemandaAmparo {
     private Integer idDemandaAmparo;
     private Integer idExpediente;
     private Integer idRepresentacionLegal;
+    private Integer idRlCir;
+private Integer idQuejaRlCir;
 
     private String nombreQuejoso;
     private String calleQuejoso;

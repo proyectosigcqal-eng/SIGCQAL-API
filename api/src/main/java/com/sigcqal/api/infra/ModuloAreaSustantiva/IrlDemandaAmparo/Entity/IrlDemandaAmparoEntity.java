@@ -20,6 +20,12 @@ public class IrlDemandaAmparoEntity {
     @Column(name = "id_expediente", nullable = false)
     private Integer idExpediente;
 
+            @Column(name = "id_rl_cir")
+        private Integer idRlCir;
+
+        @Column(name = "id_queja_rl_cir")
+        private Integer idQuejaRlCir;
+
     @Column(name = "id_representacion_legal", nullable = false)
     private Integer idRepresentacionLegal;
 

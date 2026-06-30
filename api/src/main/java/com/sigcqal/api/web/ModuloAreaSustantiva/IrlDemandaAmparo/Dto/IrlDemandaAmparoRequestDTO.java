@@ -9,6 +9,8 @@ import java.time.LocalDate;
 public class IrlDemandaAmparoRequestDTO {
     private Integer    idExpediente;
     private Integer    idRepresentacionLegal;
+    private Integer idRlCir;
+private Integer idQuejaRlCir;
     private String folioExpediente; 
     private String     autoridadReclamadaMunicipio;
     private BigDecimal superficieTerreno;
@@ -26,6 +28,8 @@ public class IrlDemandaAmparoRequestDTO {
 private String numRecibo1;
 private String numRecibo2;
 private String domicilioAutoridad;
+private String clavePredial;  
+private String numCuenta; 
 
 }
 

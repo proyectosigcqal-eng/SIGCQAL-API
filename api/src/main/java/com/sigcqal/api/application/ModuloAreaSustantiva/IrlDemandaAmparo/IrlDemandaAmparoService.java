@@ -58,13 +58,21 @@ public class IrlDemandaAmparoService {
 
     IrlDemandaAmparo domain = IrlDemandaAmparo.builder()
             .idExpediente(idExpediente)
-            .idRepresentacionLegal(null)  // ← null forzado, correcto
+            .idRepresentacionLegal(null)
+.idRlCir(req.getIdRlCir())           // viene del request o null
+.idQuejaRlCir(req.getIdQuejaRlCir()) // ← null forzado, correcto
             .autoridadReclamadaMunicipio(req.getAutoridadReclamadaMunicipio())
             .superficieTerreno(req.getSuperficieTerreno())
             .superficieConstruccion(req.getSuperficieConstruccion())
             .tipoConstruccion(req.getTipoConstruccion())
             .zonificacion(req.getZonificacion())
             .folioReciboPago(req.getFolioReciboPago())
+            .folioReciboPago2(req.getFolioReciboPago2())    // ← faltaba
+            .numRecibo1(req.getNumRecibo1())                 // ← faltaba
+            .numRecibo2(req.getNumRecibo2())                 // ← faltaba
+            .clavePredial(req.getClavePredial())             // ← faltaba
+            .numCuenta(req.getNumCuenta())                   // ← faltaba
+            .domicilioAutoridad(req.getDomicilioAutoridad())
             .montoPago(req.getMontoPago())
             .fechaPrimerPago(req.getFechaPrimerPago())
             .incluyeMultasHistoricas(req.getIncluyeMultasHistoricas())
@@ -205,54 +213,59 @@ public class IrlDemandaAmparoService {
     }
 
     // 2.3.2 — Construye variables para el docx, inyectando multas solo si aplica
-   private Map<String, String> construirVariables(IrlDemandaAmparo d) {
+  private Map<String, String> construirVariables(IrlDemandaAmparo d) {
     Map<String, String> v = new LinkedHashMap<>();
-    // Datos del quejoso — vienen del expediente (precargados)
-    v.put("{{NOMBRE_QUEJOSO}}",       nvl(d.getNombreQuejoso()));
-    v.put("{{CALLE_QUEJOSO}}",        nvl(d.getCalleQuejoso()));
-    v.put("{{COLONIA_QUEJOSO}}",      nvl(d.getColoniaQuejoso()));
-    v.put("{{NUM_CALLE_QUEJOSO}}",   nvl(d.getNumCalleQuejoso()));
-v.put("{{CP_QUEJOSO}}",          nvl(d.getCpQuejoso()));
+
+    // Datos del quejoso (vienen de enriquecer() via JOIN con domicilio)
+    v.put("{{NOMBRE_QUEJOSO}}",        nvl(d.getNombreQuejoso()));
+    v.put("{{CALLE_QUEJOSO}}",         nvl(d.getCalleQuejoso()));
+    v.put("{{NUM_CALLE_QUEJOSO}}",     nvl(d.getNumCalleQuejoso()));
+    v.put("{{COLONIA_QUEJOSO}}",       nvl(d.getColoniaQuejoso()));
+    v.put("{{CP_QUEJOSO}}",            nvl(d.getCpQuejoso()));
+
     // Autoridad reclamada
-    v.put("{{MUNICIPIO_AUTORIDAD}}", nvl(d.getAutoridadReclamadaMunicipio()));
-    // Datos del predio / catastro
+    v.put("{{MUNICIPIO_AUTORIDAD}}",   nvl(d.getAutoridadReclamadaMunicipio()));
+    v.put("{{DOMICILIO_AUTORIDAD}}",   nvl(d.getDomicilioAutoridad()));
+
+    // Catastro / predio
     v.put("{{SUPERFICIE_TERRENO}}",      nvl(d.getSuperficieTerreno()));
     v.put("{{SUPERFICIE_CONSTRUCCION}}", nvl(d.getSuperficieConstruccion()));
     v.put("{{ZONIFICACION}}",            nvl(d.getZonificacion()));
     v.put("{{TIPO_CONSTRUCCION}}",       nvl(d.getTipoConstruccion()));
-    // Actos de aplicación
-    v.put("{{FOLIO_RECIBO_1}}",     nvl(d.getFolioReciboPago()));
-    v.put("{{FOLIO_RECIBO_2}}",     "");   // segundo folio si aplica, de momento vacío
-    v.put("{{NUM_RECIBO_1}}",       "");
-    v.put("{{NUM_RECIBO_2}}",       "");
-    v.put("{{CLAVE_PREDIAL}}",      nvl(d.getClavePredial()));
-    v.put("{{NUM_CUENTA}}",         nvl(d.getNumCuenta()));
-    v.put("{{FECHA_PRIMER_PAGO}}",  nvl(d.getFechaPrimerPago()));
-    v.put("{{FOLIO_RECIBO_1}}",      nvl(d.getFolioReciboPago()));
-v.put("{{FOLIO_RECIBO_2}}",      nvl(d.getFolioReciboPago2()));
-v.put("{{NUM_RECIBO_1}}",        nvl(d.getNumRecibo1()));
-v.put("{{NUM_RECIBO_2}}",        nvl(d.getNumRecibo2()));
-v.put("{{CLAVE_PREDIAL}}",       nvl(d.getClavePredial()));
-v.put("{{NUM_CUENTA}}",          nvl(d.getNumCuenta()));
-v.put("{{DOMICILIO_AUTORIDAD}}", nvl(d.getDomicilioAutoridad()));
-    // Ejercicios fiscales — se calculan a partir de la fecha de pago
+
+    // Actos de aplicación / recibos (un solo bloque, sin duplicados)
+    v.put("{{FOLIO_RECIBO_1}}",  nvl(d.getFolioReciboPago()));
+    v.put("{{FOLIO_RECIBO_2}}",  nvl(d.getFolioReciboPago2()));
+    v.put("{{NUM_RECIBO_1}}",    nvl(d.getNumRecibo1()));
+    v.put("{{NUM_RECIBO_2}}",    nvl(d.getNumRecibo2()));
+    v.put("{{CLAVE_PREDIAL}}",   nvl(d.getClavePredial()));
+    v.put("{{NUM_CUENTA}}",      nvl(d.getNumCuenta()));
+    v.put("{{FECHA_PRIMER_PAGO}}", nvl(d.getFechaPrimerPago()));
+
+    // Ejercicios fiscales calculados desde la fecha de pago
     int anoPago = d.getFechaPrimerPago() != null ? d.getFechaPrimerPago().getYear() : 0;
     v.put("{{EJ_FISCAL_ANTERIOR}}", anoPago > 0 ? String.valueOf(anoPago - 1) : "");
     v.put("{{EJ_FISCAL_ACTUAL}}",   anoPago > 0 ? String.valueOf(anoPago)     : "");
-    // Decretos (fijos — se actualizan anualmente)
+
+    // Decretos fijos (actualizar anualmente)
     v.put("{{FECHA_PUBLICACION_DECRETO_ANTERIOR}}", "30 de diciembre de 2023");
     v.put("{{FECHA_PUBLICACION_DECRETO_ACTUAL}}",   "28 de diciembre de 2024");
-    // Transcripción de ley (rich text del asesor)
+
+    // Transcripción de ley
     v.put("{{TRANSCRIPCION_LEY}}", nvl(d.getTranscripcionLeyIngresos()));
     v.put("{{FECHA_ACTUAL}}",      generadorDocumentoService.fechaActual());
+
     // Multas históricas (condicional)
     if (Boolean.TRUE.equals(d.getIncluyeMultasHistoricas())) {
-        v.put("{{ANIOS_MULTAS_HISTORICAS}}", nvl(d.getAniosMultasHistoricas()));
-        v.put("{{ARGUMENTACION_FALTA_NOTIFICACION}}", nvl(d.getArgumentacionFaltaNotificacion()));
+        v.put("{{ANIOS_MULTAS_HISTORICAS}}",
+              nvl(d.getAniosMultasHistoricas()));
+        v.put("{{ARGUMENTACION_FALTA_NOTIFICACION}}",
+              nvl(d.getArgumentacionFaltaNotificacion()));
     } else {
         v.put("{{ANIOS_MULTAS_HISTORICAS}}", "");
         v.put("{{ARGUMENTACION_FALTA_NOTIFICACION}}", "");
     }
+
     return v;
 }
     private String nvl(Object v) {
