@@ -20,6 +20,7 @@ public class AudienciaEsperaMapper {
                 .fechaNotificacionOficio(domain.getFechaNotificacionOficio())
                 .fechaHoraAudienciaProg(domain.getFechaHoraAudienciaProg())
                 .observaciones(domain.getObservaciones())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
@@ -35,6 +36,7 @@ public class AudienciaEsperaMapper {
                 .fechaNotificacionOficio(entity.getFechaNotificacionOficio())
                 .fechaHoraAudienciaProg(entity.getFechaHoraAudienciaProg())
                 .observaciones(entity.getObservaciones())
+                .rutaPdfOficio(entity.getRutaPdfOficio())
                 .fechaRegistro(entity.getFechaRegistro())
                 .build();
     }
@@ -50,6 +52,7 @@ public class AudienciaEsperaMapper {
                 .fechaNotificacionOficio(domain.getFechaNotificacionOficio())
                 .fechaHoraAudienciaProg(domain.getFechaHoraAudienciaProg())
                 .observaciones(domain.getObservaciones())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }

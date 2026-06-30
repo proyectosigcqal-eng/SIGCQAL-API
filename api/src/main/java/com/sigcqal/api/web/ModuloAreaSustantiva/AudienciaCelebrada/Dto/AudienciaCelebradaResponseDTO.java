@@ -2,6 +2,8 @@ package com.sigcqal.api.web.ModuloAreaSustantiva.AudienciaCelebrada.Dto;
 
 import java.time.LocalDateTime;
 
+import com.sigcqal.api.web.ModuloAreaSustantiva.DemandaAmparo.Dto.EncabezadoHitoAmparoDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +22,7 @@ public class AudienciaCelebradaResponseDTO {
     private String salaOModalidad;
     private String resultadoAudiencia;
     private Boolean asistioAutoridad;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
+    private EncabezadoHitoAmparoDto encabezado;
 }

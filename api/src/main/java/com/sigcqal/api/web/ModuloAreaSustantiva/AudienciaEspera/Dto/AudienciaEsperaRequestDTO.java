@@ -28,4 +28,7 @@ public class AudienciaEsperaRequestDTO {
 
     @Size(max = 500)
     private String observaciones;
+
+    @Size(max = 500)
+    private String rutaPdfOficio;
 }

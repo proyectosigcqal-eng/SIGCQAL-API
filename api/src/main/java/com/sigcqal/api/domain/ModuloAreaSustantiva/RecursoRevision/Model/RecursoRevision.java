@@ -21,5 +21,6 @@ public class RecursoRevision {
     private String tribunalColegiadoAsig;
     private LocalDate fechaInterposicion;
     private String observacionesSeguimiento;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
 }

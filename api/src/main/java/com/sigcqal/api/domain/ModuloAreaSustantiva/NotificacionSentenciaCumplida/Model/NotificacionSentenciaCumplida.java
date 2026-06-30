@@ -20,5 +20,6 @@ public class NotificacionSentenciaCumplida {
     private String numeroOficioArchivo;
     private LocalDate fechaNotificacionArchivo;
     private String observacionesFinales;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
 }

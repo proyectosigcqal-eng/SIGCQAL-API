@@ -3,6 +3,8 @@ package com.sigcqal.api.web.ModuloAreaSustantiva.SentenciaDictada.Dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.sigcqal.api.web.ModuloAreaSustantiva.DemandaAmparo.Dto.EncabezadoHitoAmparoDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +24,7 @@ public class SentenciaDictadaResponseDTO {
     private String puntosResolutivos;
     private String numeroOficioSentencia;
     private String rutaArchivoSentencia;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
+    private EncabezadoHitoAmparoDto encabezado;
 }

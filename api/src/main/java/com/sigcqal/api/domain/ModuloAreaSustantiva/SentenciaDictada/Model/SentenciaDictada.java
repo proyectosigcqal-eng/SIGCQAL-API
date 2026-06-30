@@ -22,5 +22,6 @@ public class SentenciaDictada {
     private String puntosResolutivos;
     private String numeroOficioSentencia;
     private String rutaArchivoSentencia;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
 }

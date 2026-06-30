@@ -27,4 +27,7 @@ public class SentenciaEjecutoriaRequestDTO {
 
     @Size(max = 500)
     private String requerimientoCumplimiento;
+
+    @Size(max = 500)
+    private String rutaPdfOficio;
 }

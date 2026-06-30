@@ -21,6 +21,7 @@ public class RecursoRevisionMapper {
                 .tribunalColegiadoAsig(domain.getTribunalColegiadoAsig())
                 .fechaInterposicion(domain.getFechaInterposicion())
                 .observacionesSeguimiento(domain.getObservacionesSeguimiento())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
@@ -37,6 +38,7 @@ public class RecursoRevisionMapper {
                 .tribunalColegiadoAsig(entity.getTribunalColegiadoAsig())
                 .fechaInterposicion(entity.getFechaInterposicion())
                 .observacionesSeguimiento(entity.getObservacionesSeguimiento())
+                .rutaPdfOficio(entity.getRutaPdfOficio())
                 .fechaRegistro(entity.getFechaRegistro())
                 .build();
     }
@@ -53,6 +55,7 @@ public class RecursoRevisionMapper {
                 .tribunalColegiadoAsig(domain.getTribunalColegiadoAsig())
                 .fechaInterposicion(domain.getFechaInterposicion())
                 .observacionesSeguimiento(domain.getObservacionesSeguimiento())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }

@@ -32,4 +32,7 @@ public class SentenciaDictadaRequestDTO {
 
     @Size(max = 500)
     private String rutaArchivoSentencia;
+
+    @Size(max = 500)
+    private String rutaPdfOficio;
 }

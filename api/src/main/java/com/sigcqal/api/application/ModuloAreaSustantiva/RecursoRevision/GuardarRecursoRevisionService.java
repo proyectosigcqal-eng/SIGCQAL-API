@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.DemandaAmparo.EncabezadoHitoAmparoResolver;
 import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.RecursoRevision.Model.RecursoRevision;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.RecursoRevision.Port.RecursoRevisionRepositoryPort;
@@ -25,6 +26,7 @@ public class GuardarRecursoRevisionService implements GuardarRecursoRevisionUseC
     private final RecursoRevisionRepositoryPort repositoryPort;
     private final SentenciaDictadaRepositoryPort sentenciaDictadaPort;
     private final RecursoRevisionMapper mapper;
+    private final EncabezadoHitoAmparoResolver encabezadoResolver;
 
     @Override
     @Transactional
@@ -38,10 +40,14 @@ public class GuardarRecursoRevisionService implements GuardarRecursoRevisionUseC
                 .tribunalColegiadoAsig(request.getTribunalColegiadoAsig())
                 .fechaInterposicion(request.getFechaInterposicion())
                 .observacionesSeguimiento(request.getObservacionesSeguimiento())
+                .rutaPdfOficio(request.getRutaPdfOficio())
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 
-        return mapper.toResponse(repositoryPort.save(recursoRevision));
+        RecursoRevision guardado = repositoryPort.save(recursoRevision);
+        RecursoRevisionResponseDTO response = mapper.toResponse(guardado);
+        encabezadoResolver.paraRecursoRevision(guardado).ifPresent(response::setEncabezado);
+        return response;
     }
 
     private void validarPredecesor(Integer idSentencia) {

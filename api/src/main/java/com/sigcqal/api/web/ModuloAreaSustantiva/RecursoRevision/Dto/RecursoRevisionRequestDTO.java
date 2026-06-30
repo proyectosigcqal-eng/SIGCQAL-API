@@ -31,4 +31,7 @@ public class RecursoRevisionRequestDTO {
 
     @Size(max = 500)
     private String observacionesSeguimiento;
+
+    @Size(max = 500)
+    private String rutaPdfOficio;
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.DemandaAmparo.EncabezadoHitoAmparoResolver;
 import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.AudienciaEspera.Model.AudienciaEspera;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.AudienciaEspera.Port.AudienciaEsperaRepositoryPort;
@@ -25,6 +26,7 @@ public class GuardarAudienciaEsperaService implements GuardarAudienciaEsperaUseC
     private final AudienciaEsperaRepositoryPort repositoryPort;
     private final DemandaAmparoRepositoryPort demandaAmparoPort;
     private final AudienciaEsperaMapper mapper;
+    private final EncabezadoHitoAmparoResolver encabezadoResolver;
 
     @Override
     @Transactional
@@ -37,10 +39,14 @@ public class GuardarAudienciaEsperaService implements GuardarAudienciaEsperaUseC
                 .fechaNotificacionOficio(request.getFechaNotificacionOficio())
                 .fechaHoraAudienciaProg(request.getFechaHoraAudienciaProg())
                 .observaciones(request.getObservaciones())
+                .rutaPdfOficio(request.getRutaPdfOficio())
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 
-        return mapper.toResponse(repositoryPort.save(audienciaEspera));
+        AudienciaEspera guardada = repositoryPort.save(audienciaEspera);
+        AudienciaEsperaResponseDTO response = mapper.toResponse(guardada);
+        encabezadoResolver.paraAudienciaEspera(guardada).ifPresent(response::setEncabezado);
+        return response;
     }
 
     private void validarPredecesor(Integer idDemandaAmparo) {

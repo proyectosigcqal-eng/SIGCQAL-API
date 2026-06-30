@@ -30,4 +30,7 @@ public class AudienciaCelebradaRequestDTO {
     private String resultadoAudiencia;
 
     private Boolean asistioAutoridad;
+
+    @Size(max = 500)
+    private String rutaPdfOficio;
 }

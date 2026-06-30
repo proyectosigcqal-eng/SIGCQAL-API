@@ -42,6 +42,9 @@ public class AudienciaEsperaEntity {
     @Column(name = "observaciones", length = 500)
     private String observaciones;
 
+    @Column(name = "ruta_pdf_oficio", length = 500)
+    private String rutaPdfOficio;
+
     @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime fechaRegistro;
 }

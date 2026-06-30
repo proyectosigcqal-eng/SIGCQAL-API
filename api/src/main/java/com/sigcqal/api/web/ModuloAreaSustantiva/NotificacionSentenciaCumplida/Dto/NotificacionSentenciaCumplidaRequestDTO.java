@@ -28,4 +28,7 @@ public class NotificacionSentenciaCumplidaRequestDTO {
 
     @Size(max = 500)
     private String observacionesFinales;
+
+    @Size(max = 500)
+    private String rutaPdfOficio;
 }

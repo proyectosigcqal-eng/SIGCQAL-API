@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.DemandaAmparo.EncabezadoHitoAmparoResolver;
 import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.RecursoRevision.Port.RecursoRevisionRepositoryPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.SentenciaDictada.Port.SentenciaDictadaRepositoryPort;
@@ -28,6 +29,7 @@ public class GuardarSentenciaEjecutoriaService implements GuardarSentenciaEjecut
     private final SentenciaDictadaRepositoryPort sentenciaDictadaPort;
     private final RecursoRevisionRepositoryPort recursoRevisionPort;
     private final SentenciaEjecutoriaMapper mapper;
+    private final EncabezadoHitoAmparoResolver encabezadoResolver;
 
     @Override
     @Transactional
@@ -41,10 +43,14 @@ public class GuardarSentenciaEjecutoriaService implements GuardarSentenciaEjecut
                 .numeroOficioEjecutoria(request.getNumeroOficioEjecutoria())
                 .fechaDeclaracionEjecutoria(request.getFechaDeclaracionEjecutoria())
                 .requerimientoCumplimiento(request.getRequerimientoCumplimiento())
+                .rutaPdfOficio(request.getRutaPdfOficio())
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 
-        return mapper.toResponse(repositoryPort.save(sentenciaEjecutoria));
+        SentenciaEjecutoria guardada = repositoryPort.save(sentenciaEjecutoria);
+        SentenciaEjecutoriaResponseDTO response = mapper.toResponse(guardada);
+        encabezadoResolver.paraSentenciaEjecutoria(guardada).ifPresent(response::setEncabezado);
+        return response;
     }
 
     private void validarPredecesorSentencia(Integer idSentencia) {

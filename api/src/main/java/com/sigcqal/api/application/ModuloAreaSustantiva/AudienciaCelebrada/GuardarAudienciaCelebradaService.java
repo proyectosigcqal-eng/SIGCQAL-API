@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.DemandaAmparo.EncabezadoHitoAmparoResolver;
 import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.AudienciaCelebrada.Model.AudienciaCelebrada;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.AudienciaCelebrada.Port.AudienciaCelebradaRepositoryPort;
@@ -25,6 +26,7 @@ public class GuardarAudienciaCelebradaService implements GuardarAudienciaCelebra
     private final AudienciaCelebradaRepositoryPort repositoryPort;
     private final AudienciaEsperaRepositoryPort audienciaEsperaPort;
     private final AudienciaCelebradaMapper mapper;
+    private final EncabezadoHitoAmparoResolver encabezadoResolver;
 
     @Override
     @Transactional
@@ -38,10 +40,14 @@ public class GuardarAudienciaCelebradaService implements GuardarAudienciaCelebra
                 .salaOModalidad(request.getSalaOModalidad())
                 .resultadoAudiencia(request.getResultadoAudiencia())
                 .asistioAutoridad(request.getAsistioAutoridad())
+                .rutaPdfOficio(request.getRutaPdfOficio())
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 
-        return mapper.toResponse(repositoryPort.save(audienciaCelebrada));
+        AudienciaCelebrada guardada = repositoryPort.save(audienciaCelebrada);
+        AudienciaCelebradaResponseDTO response = mapper.toResponse(guardada);
+        encabezadoResolver.paraAudienciaCelebrada(guardada).ifPresent(response::setEncabezado);
+        return response;
     }
 
     private void validarPredecesor(Integer idAudienciaEspera) {

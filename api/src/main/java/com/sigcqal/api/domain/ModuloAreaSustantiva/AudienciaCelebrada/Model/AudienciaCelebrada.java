@@ -20,5 +20,6 @@ public class AudienciaCelebrada {
     private String salaOModalidad;
     private String resultadoAudiencia;
     private Boolean asistioAutoridad;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
 }

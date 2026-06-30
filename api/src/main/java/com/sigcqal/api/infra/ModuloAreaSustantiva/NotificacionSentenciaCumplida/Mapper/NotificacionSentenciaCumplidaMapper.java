@@ -20,6 +20,7 @@ public class NotificacionSentenciaCumplidaMapper {
                 .numeroOficioArchivo(domain.getNumeroOficioArchivo())
                 .fechaNotificacionArchivo(domain.getFechaNotificacionArchivo())
                 .observacionesFinales(domain.getObservacionesFinales())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
@@ -35,6 +36,7 @@ public class NotificacionSentenciaCumplidaMapper {
                 .numeroOficioArchivo(entity.getNumeroOficioArchivo())
                 .fechaNotificacionArchivo(entity.getFechaNotificacionArchivo())
                 .observacionesFinales(entity.getObservacionesFinales())
+                .rutaPdfOficio(entity.getRutaPdfOficio())
                 .fechaRegistro(entity.getFechaRegistro())
                 .build();
     }
@@ -50,6 +52,7 @@ public class NotificacionSentenciaCumplidaMapper {
                 .numeroOficioArchivo(domain.getNumeroOficioArchivo())
                 .fechaNotificacionArchivo(domain.getFechaNotificacionArchivo())
                 .observacionesFinales(domain.getObservacionesFinales())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }

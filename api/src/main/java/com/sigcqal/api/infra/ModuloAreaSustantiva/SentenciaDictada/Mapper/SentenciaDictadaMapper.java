@@ -22,6 +22,7 @@ public class SentenciaDictadaMapper {
                 .puntosResolutivos(domain.getPuntosResolutivos())
                 .numeroOficioSentencia(domain.getNumeroOficioSentencia())
                 .rutaArchivoSentencia(domain.getRutaArchivoSentencia())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
@@ -39,6 +40,7 @@ public class SentenciaDictadaMapper {
                 .puntosResolutivos(entity.getPuntosResolutivos())
                 .numeroOficioSentencia(entity.getNumeroOficioSentencia())
                 .rutaArchivoSentencia(entity.getRutaArchivoSentencia())
+                .rutaPdfOficio(entity.getRutaPdfOficio())
                 .fechaRegistro(entity.getFechaRegistro())
                 .build();
     }
@@ -56,6 +58,7 @@ public class SentenciaDictadaMapper {
                 .puntosResolutivos(domain.getPuntosResolutivos())
                 .numeroOficioSentencia(domain.getNumeroOficioSentencia())
                 .rutaArchivoSentencia(domain.getRutaArchivoSentencia())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }

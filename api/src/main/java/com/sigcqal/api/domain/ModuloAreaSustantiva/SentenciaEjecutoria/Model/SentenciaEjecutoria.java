@@ -20,5 +20,6 @@ public class SentenciaEjecutoria {
     private String numeroOficioEjecutoria;
     private LocalDate fechaDeclaracionEjecutoria;
     private String requerimientoCumplimiento;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
 }

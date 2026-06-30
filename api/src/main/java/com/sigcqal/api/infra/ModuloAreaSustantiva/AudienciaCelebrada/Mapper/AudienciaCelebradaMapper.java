@@ -21,6 +21,7 @@ public class AudienciaCelebradaMapper {
                 .salaOModalidad(domain.getSalaOModalidad())
                 .resultadoAudiencia(domain.getResultadoAudiencia())
                 .asistioAutoridad(domain.getAsistioAutoridad())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
@@ -37,6 +38,7 @@ public class AudienciaCelebradaMapper {
                 .salaOModalidad(entity.getSalaOModalidad())
                 .resultadoAudiencia(entity.getResultadoAudiencia())
                 .asistioAutoridad(entity.getAsistioAutoridad())
+                .rutaPdfOficio(entity.getRutaPdfOficio())
                 .fechaRegistro(entity.getFechaRegistro())
                 .build();
     }
@@ -53,6 +55,7 @@ public class AudienciaCelebradaMapper {
                 .salaOModalidad(domain.getSalaOModalidad())
                 .resultadoAudiencia(domain.getResultadoAudiencia())
                 .asistioAutoridad(domain.getAsistioAutoridad())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }

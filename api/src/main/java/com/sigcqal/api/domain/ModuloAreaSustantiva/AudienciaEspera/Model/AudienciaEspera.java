@@ -20,5 +20,6 @@ public class AudienciaEspera {
     private LocalDate fechaNotificacionOficio;
     private LocalDateTime fechaHoraAudienciaProg;
     private String observaciones;
+    private String rutaPdfOficio;
     private LocalDateTime fechaRegistro;
 }

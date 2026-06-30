@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.DemandaAmparo.EncabezadoHitoAmparoResolver;
 import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.AudienciaCelebrada.Port.AudienciaCelebradaRepositoryPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.SentenciaDictada.Model.SentenciaDictada;
@@ -25,6 +26,7 @@ public class GuardarSentenciaDictadaService implements GuardarSentenciaDictadaUs
     private final SentenciaDictadaRepositoryPort repositoryPort;
     private final AudienciaCelebradaRepositoryPort audienciaCelebradaPort;
     private final SentenciaDictadaMapper mapper;
+    private final EncabezadoHitoAmparoResolver encabezadoResolver;
 
     @Override
     @Transactional
@@ -39,10 +41,14 @@ public class GuardarSentenciaDictadaService implements GuardarSentenciaDictadaUs
                 .puntosResolutivos(request.getPuntosResolutivos())
                 .numeroOficioSentencia(request.getNumeroOficioSentencia())
                 .rutaArchivoSentencia(request.getRutaArchivoSentencia())
+                .rutaPdfOficio(request.getRutaPdfOficio())
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 
-        return mapper.toResponse(repositoryPort.save(sentenciaDictada));
+        SentenciaDictada guardada = repositoryPort.save(sentenciaDictada);
+        SentenciaDictadaResponseDTO response = mapper.toResponse(guardada);
+        encabezadoResolver.paraSentenciaDictada(guardada).ifPresent(response::setEncabezado);
+        return response;
     }
 
     private void validarPredecesor(Integer idAudienciaCelebrada) {

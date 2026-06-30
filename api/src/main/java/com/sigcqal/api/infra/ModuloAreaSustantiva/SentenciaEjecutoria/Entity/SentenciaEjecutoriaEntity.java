@@ -42,6 +42,9 @@ public class SentenciaEjecutoriaEntity {
     @Column(name = "requerimiento_cumplimiento", length = 500)
     private String requerimientoCumplimiento;
 
+    @Column(name = "ruta_pdf_oficio", length = 500)
+    private String rutaPdfOficio;
+
     @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime fechaRegistro;
 }

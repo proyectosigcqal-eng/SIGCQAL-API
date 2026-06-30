@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.DemandaAmparo.EncabezadoHitoAmparoResolver;
 import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.NotificacionSentenciaCumplida.Model.NotificacionSentenciaCumplida;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.NotificacionSentenciaCumplida.Port.NotificacionSentenciaCumplidaRepositoryPort;
@@ -25,6 +26,7 @@ public class GuardarNotificacionSentenciaCumplidaService implements GuardarNotif
     private final NotificacionSentenciaCumplidaRepositoryPort repositoryPort;
     private final SentenciaEjecutoriaRepositoryPort sentenciaEjecutoriaPort;
     private final NotificacionSentenciaCumplidaMapper mapper;
+    private final EncabezadoHitoAmparoResolver encabezadoResolver;
 
     @Override
     @Transactional
@@ -37,10 +39,14 @@ public class GuardarNotificacionSentenciaCumplidaService implements GuardarNotif
                 .numeroOficioArchivo(request.getNumeroOficioArchivo())
                 .fechaNotificacionArchivo(request.getFechaNotificacionArchivo())
                 .observacionesFinales(request.getObservacionesFinales())
+                .rutaPdfOficio(request.getRutaPdfOficio())
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 
-        return mapper.toResponse(repositoryPort.save(notificacion));
+        NotificacionSentenciaCumplida guardada = repositoryPort.save(notificacion);
+        NotificacionSentenciaCumplidaResponseDTO response = mapper.toResponse(guardada);
+        encabezadoResolver.paraNotificacionSentenciaCumplida(guardada).ifPresent(response::setEncabezado);
+        return response;
     }
 
     private void validarPredecesor(Integer idSentenciaEjecutoria) {

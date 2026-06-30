@@ -20,6 +20,7 @@ public class SentenciaEjecutoriaMapper {
                 .numeroOficioEjecutoria(domain.getNumeroOficioEjecutoria())
                 .fechaDeclaracionEjecutoria(domain.getFechaDeclaracionEjecutoria())
                 .requerimientoCumplimiento(domain.getRequerimientoCumplimiento())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
@@ -35,6 +36,7 @@ public class SentenciaEjecutoriaMapper {
                 .numeroOficioEjecutoria(entity.getNumeroOficioEjecutoria())
                 .fechaDeclaracionEjecutoria(entity.getFechaDeclaracionEjecutoria())
                 .requerimientoCumplimiento(entity.getRequerimientoCumplimiento())
+                .rutaPdfOficio(entity.getRutaPdfOficio())
                 .fechaRegistro(entity.getFechaRegistro())
                 .build();
     }
@@ -50,6 +52,7 @@ public class SentenciaEjecutoriaMapper {
                 .numeroOficioEjecutoria(domain.getNumeroOficioEjecutoria())
                 .fechaDeclaracionEjecutoria(domain.getFechaDeclaracionEjecutoria())
                 .requerimientoCumplimiento(domain.getRequerimientoCumplimiento())
+                .rutaPdfOficio(domain.getRutaPdfOficio())
                 .fechaRegistro(domain.getFechaRegistro())
                 .build();
     }
