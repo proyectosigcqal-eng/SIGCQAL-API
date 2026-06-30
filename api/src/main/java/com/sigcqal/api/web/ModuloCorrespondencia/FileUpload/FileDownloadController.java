@@ -191,5 +191,43 @@ public ResponseEntity<Resource> descargarQuejaAri(@PathVariable String nombre) {
         return ResponseEntity.badRequest().build();
     }
 }
+
+@GetMapping("/queja-rl-cir/{nombre}")
+public ResponseEntity<Resource> descargarQuejaRlCir(@PathVariable String nombre) {
+    try {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        Path archivo = root.resolve("uploads/queja-rl-cir/" + nombre);
+        Resource resource = new UrlResource(archivo.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) {
+            System.out.println(">>> Archivo RL_CIR NO encontrado en: " + archivo);
+            return ResponseEntity.notFound().build();
+        }
+
+        MediaType contentType;
+        if (nombre.endsWith(".pdf")) {
+            contentType = MediaType.APPLICATION_PDF;
+        } else if (nombre.endsWith(".docx")) {
+            contentType = MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            );
+        } else {
+            contentType = MediaType.APPLICATION_OCTET_STREAM;
+        }
+
+        String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
+
+        return ResponseEntity.ok()
+            .contentType(contentType)
+            .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"" + nombre + "\"")
+            .body(resource);
+            
+    } catch (MalformedURLException e) {
+        return ResponseEntity.badRequest().build();
+    }
+}
+
+
+
 }
 

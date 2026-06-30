@@ -188,7 +188,7 @@ public class QuejaRlCirApplicationService {
 
         String nombreArchivo = queja.getRutaPdfQuejaRlCir().substring(queja.getRutaPdfQuejaRlCir().lastIndexOf('/') + 1);
         try {
-            Path filePath = Paths.get("uploads/QuejaRlCir").resolve(nombreArchivo);
+            Path filePath = Paths.get("uploads/queja-rl-cir").resolve(nombreArchivo);
             byte[] contenido = Files.exists(filePath) ? Files.readAllBytes(filePath) : new byte[0];
             return Optional.of(new ArchivoDescarga(nombreArchivo, contenido));
         } catch (IOException e) {
