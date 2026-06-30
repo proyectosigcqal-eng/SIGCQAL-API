@@ -14,5 +14,5 @@ public interface ExpedienteRepositoryPort {
     boolean existsById(Long id);
     Optional<ExpedienteEntity> findEntityByFolio(String folio);
     Optional<Expediente> findById(Integer id);
-    
+    Optional<Expediente> buscarPorId(Long id);
 }

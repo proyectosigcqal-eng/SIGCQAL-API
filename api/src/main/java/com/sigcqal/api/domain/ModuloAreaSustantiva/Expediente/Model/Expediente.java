@@ -27,4 +27,6 @@ public class Expediente {
     private Boolean bloqueado;
     private java.time.LocalDateTime fechaCierreAutomatico;
 
+    private String identificacionOficialContribuyente;
+
 }

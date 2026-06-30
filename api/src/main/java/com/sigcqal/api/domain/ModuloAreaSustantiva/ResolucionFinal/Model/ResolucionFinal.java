@@ -28,5 +28,12 @@ public class ResolucionFinal {
     private String        rutaResolucionFinal;
     private LocalDateTime fechaEmision;
     private Integer       idEstatusExpediente;
+
+    private String numeroOficio;
+    private String folioGobierno;
+    private String nombreContribuyente;
+    private String identificacionOficial;
+    private String numExpedienteOficial;
+    private String numeroCreditoAri;
 }
  

@@ -67,5 +67,12 @@ public Optional<Expediente> findById(Integer id) {
             .map(mapper::toDomain); // Map your entity back to the domain model
 }
 
+    public Optional<Expediente> buscarPorId(Long id) {
+        // Buscamos la entidad en la base de datos (usando id.intValue() siguiendo tu lógica de existsById)
+        Optional<ExpedienteEntity> entityOptional = repository.findById(id.intValue());
+        
+        // Si existe, la mapeamos al dominio; si no, devuelve un Optional vacío de manera limpia
+        return entityOptional.map(entity -> mapper.toDomain(entity));
+    }
   
 }

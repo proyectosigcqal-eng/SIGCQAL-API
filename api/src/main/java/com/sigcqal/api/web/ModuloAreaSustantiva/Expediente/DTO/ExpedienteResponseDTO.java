@@ -17,4 +17,6 @@ public class ExpedienteResponseDTO {
     private Long idEstatusExpediente;
     private String documentoAcreditaPersonalidad;
     private String archivoDocumentoAcreditaPersonalidad;
+
+    private String identificacionOficialContribuyente;
 }

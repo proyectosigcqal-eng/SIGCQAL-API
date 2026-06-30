@@ -79,6 +79,12 @@ public class ExpedienteMapper {
         }
         if (entity.getContribuyente() != null) {
             expediente.setIdContribuyente(entity.getContribuyente().getId());
+            
+            if (entity.getContribuyente().getPersona() != null) {
+                expediente.setIdentificacionOficialContribuyente(
+                    entity.getContribuyente().getPersona().getIdentificacionOficial()
+                );
+            }
         }
         if (entity.getSolicitante() != null) {
             expediente.setIdSolicitante(entity.getSolicitante().getId());
@@ -111,6 +117,8 @@ public class ExpedienteMapper {
         dto.setIdEstatusExpediente(domain.getIdEstatusExpediente());
         dto.setDocumentoAcreditaPersonalidad(domain.getDocumentoAcreditaPersonalidad());
         dto.setArchivoDocumentoAcreditaPersonalidad(domain.getArchivoDocumentoAcreditaPersonalidad());
+
+        dto.setIdentificacionOficialContribuyente(domain.getIdentificacionOficialContribuyente());
         return dto;
     }
 }

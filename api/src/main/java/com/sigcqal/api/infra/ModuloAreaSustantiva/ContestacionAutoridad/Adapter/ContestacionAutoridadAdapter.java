@@ -25,4 +25,9 @@ public class ContestacionAutoridadAdapter implements ContestacionAutoridadPort {
     public Optional<ContestacionAutoridad> findByFolio(String folio) {
         return jpaRepository.findByFolioExpediente(folio).map(mapper::toDomain);
     }
+    @Override
+    public Optional<ContestacionAutoridad> buscarPorId(Integer id) {
+        return jpaRepository.findById(id.longValue())
+                .map(mapper::toDomain);
+    }
 }
