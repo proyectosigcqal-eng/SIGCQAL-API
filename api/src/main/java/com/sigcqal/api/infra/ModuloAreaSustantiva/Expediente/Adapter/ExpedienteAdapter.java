@@ -61,5 +61,11 @@ public Optional<ExpedienteEntity> findEntityByFolio(String folio) {
     return repository.findByFolioGobierno(folio);
 }
 
+@Override
+public Optional<Expediente> findById(Integer id) {
+    return repository.findById(id)
+            .map(mapper::toDomain); // Map your entity back to the domain model
+}
+
   
 }

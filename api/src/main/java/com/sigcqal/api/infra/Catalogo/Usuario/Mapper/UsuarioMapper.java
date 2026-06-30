@@ -60,18 +60,13 @@ public class UsuarioMapper {
             entity.setIdArea(area);
         }
 
-        if (domain.getIdRoles() != null) {
-            Set<UsuarioRolEntity> usuarioRoles = domain.getIdRoles().stream().map(idRol -> {
-                UsuarioRolEntity ur = new UsuarioRolEntity();
-                RolEntity rol = new RolEntity();
-                rol.setId(idRol);
-                ur.setRol(rol);
-                ur.setUsuario(entity);
-                ur.setFechaAsignacion(LocalDateTime.now());
-                return ur;
-            }).collect(Collectors.toSet());
-            entity.setUsuarioRoles(usuarioRoles);
-        }
+        if (entity.getUsuarioRoles() != null) {
+    List<Long> ids = entity.getUsuarioRoles().stream()
+            .filter(ur -> ur.getRol() != null)
+            .map(ur -> ur.getRol().getId())
+            .collect(Collectors.toList());  
+    domain.setIdRoles(ids);
+}
 
         return entity;
     }

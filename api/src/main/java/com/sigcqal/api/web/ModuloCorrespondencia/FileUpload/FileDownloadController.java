@@ -191,5 +191,33 @@ public ResponseEntity<Resource> descargarQuejaAri(@PathVariable String nombre) {
         return ResponseEntity.badRequest().build();
     }
 }
+
+@GetMapping("/amparo/{nombre}")
+public ResponseEntity<Resource> descargarAmparo(@PathVariable String nombre) {
+    try {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        Path archivo = root.resolve("uploads/amparo/" + nombre);
+        Resource resource = new UrlResource(archivo.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        MediaType contentType = nombre.endsWith(".pdf")
+            ? MediaType.APPLICATION_PDF
+            : MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+
+        String disposition = nombre.endsWith(".pdf") ? "inline" : "attachment";
+
+        return ResponseEntity.ok()
+            .contentType(contentType)
+            .header(HttpHeaders.CONTENT_DISPOSITION,
+                disposition + "; filename=\"" + nombre + "\"")
+            .body(resource);
+    } catch (MalformedURLException e) {
+        return ResponseEntity.badRequest().build();
+    }
+}
 }
 
