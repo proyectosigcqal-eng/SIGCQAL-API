@@ -121,7 +121,6 @@ public AsesorDTO actualizarAsesor(Long id, AsesorAdminRequestDTO request) {
 public void darBajaAsesor(Long id) {
     repositoryPort.darBaja(id);
 }
-<<<<<<< HEAD
 public List<AsesorDTO> obtenerTodos() {
     return repositoryPort.findAll()
             .stream()
@@ -129,12 +128,9 @@ public List<AsesorDTO> obtenerTodos() {
             .toList();
 }
 
-=======
-
 public AsesorDTO findById(Long id) {
     return repositoryPort.findById(id)
             .map(this::mapToResponse)
             .orElseThrow(() -> new ResourceNotFoundException("Asesor", id));
 }
->>>>>>> feature/rlcir
 }
