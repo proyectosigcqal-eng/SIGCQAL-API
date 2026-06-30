@@ -13,5 +13,6 @@ public interface ExpedienteRepositoryPort {
     List<Expediente> findAll();
     boolean existsById(Long id);
     Optional<ExpedienteEntity> findEntityByFolio(String folio);
+    Optional<Expediente> findById(Integer id);
     
 }

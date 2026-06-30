@@ -2,6 +2,7 @@ package com.sigcqal.api.application.Catalogo.Usuario;
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
@@ -23,6 +24,7 @@ public class UsuarioService {
     private final UsuarioRepositoryPort repositoryPort;
     private final PersonaRepositoryPort  personaRepositoryPort;
     private final AsesorRepositoryPort asesorRepositoryPort;
+    private final BCryptPasswordEncoder  passwordEncoder;
 
  public List<UsuarioDTO> obtenerUsuarios() {
     return repositoryPort.findAll()
@@ -74,7 +76,7 @@ public class UsuarioService {
     Usuario usuario = new Usuario();
     usuario.setIdPersona(idPersona);
     usuario.setUsuarioLogin(request.getUsuarioLogin());
-    usuario.setPassword(request.getPassword()); // hash en prod
+    usuario.setPassword(passwordEncoder.encode(request.getPassword()));
     usuario.setCorreoElectronico(request.getCorreo());
     usuario.setIdArea(request.getIdArea());
     usuario.setActivo(true);
@@ -89,23 +91,18 @@ public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
         Usuario usuario = repositoryPort.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // ✅ Log para confirmar
-        System.out.println(">>> idPersona del usuario: " + usuario.getIdPersona());
+         if (usuario.getIdPersona() == null) {
+        System.out.println(">>> Usuario " + idUsuario + " sin idPersona, omitiendo creación de asesor");
+    } else if (!asesorRepositoryPort.findByIdPersona(usuario.getIdPersona()).isPresent()) {
+        Asesor asesor = new Asesor();
+        asesor.setIdPersona(usuario.getIdPersona());
+        asesor.setEspecialidad(null);
+        asesor.setCargaActual(0);
+        asesor.setActivo(true);
+        asesorRepositoryPort.save(asesor);
+    }
 
-        // ✅ Guard — no intentar crear asesor si idPersona es null
-        if (usuario.getIdPersona() == null) {
-            throw new RuntimeException(
-                "El usuario " + idUsuario + " no tiene idPersona asociado.");
-        }
-
-        if (!asesorRepositoryPort.findByIdPersona(usuario.getIdPersona()).isPresent()) {
-            Asesor asesor = new Asesor();
-            asesor.setIdPersona(usuario.getIdPersona());
-            asesor.setEspecialidad(null);
-            asesor.setCargaActual(0);
-            asesor.setActivo(true);
-            asesorRepositoryPort.save(asesor);
-        }
+    
     }
 
     // ✅ Solo dar de baja si NO tiene rol asesor Y existe registro

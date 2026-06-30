@@ -50,12 +50,12 @@ public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
     UsuarioEntity entity = jpaRepository.findById(idUsuario)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + idUsuario));
 
-    // ✅ Limpia y hace flush para que el DELETE llegue a BD antes del INSERT
     entity.getUsuarioRoles().clear();
-    jpaRepository.saveAndFlush(entity);  // ← flush fuerza el DELETE inmediato
+    jpaRepository.saveAndFlush(entity);
 
     if (idRoles != null && !idRoles.isEmpty()) {
-        Set<UsuarioRolEntity> nuevosRoles = idRoles.stream().map(idRol -> {
+        // ✅ List en lugar de Set — evita deduplicación por hashCode
+        List<UsuarioRolEntity> nuevosRoles = idRoles.stream().map(idRol -> {
             UsuarioRolEntity ur = new UsuarioRolEntity();
             RolEntity rol = new RolEntity();
             rol.setId(idRol);
@@ -63,10 +63,11 @@ public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
             ur.setUsuario(entity);
             ur.setFechaAsignacion(LocalDateTime.now());
             return ur;
-        }).collect(Collectors.toSet());
+        }).collect(Collectors.toList());  // ✅ toList no deduplica
 
+        System.out.println(">>> nuevosRoles size: " + nuevosRoles.size());
         entity.getUsuarioRoles().addAll(nuevosRoles);
-        jpaRepository.save(entity);  // ← ahora sí inserta los nuevos
+        jpaRepository.save(entity);
     }
 }
 
