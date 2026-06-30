@@ -19,11 +19,10 @@ public class PersonalController {
     private final PersonalService personalService;
 
     @PostMapping
-    public ResponseEntity<PersonalDTO> create(@RequestBody PersonalRequestDTO request) {
-        // Aquí convertirías el DTO a Modelo (puedes usar un mapper aquí)
-        Personal personal = mapToDomain(request);
-        Personal saved = personalService.registerPersonal(personal);
-        return ResponseEntity.ok(mapToResponse(saved));
+   // En tu PersonalController.java
+    public ResponseEntity<Void> create(@RequestBody PersonalRequestDTO request) {
+        personalService.registrarPersonal(request); // Llama al método que definiste
+        return ResponseEntity.ok().build(); // Devuelve 200 OK sin cuerpo o con el creado
     }
 
     @GetMapping
@@ -35,8 +34,7 @@ public class PersonalController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonalDTO> update(@PathVariable Long id, @RequestBody PersonalRequestDTO request) {
-        Personal personal = mapToDomain(request);
-        Personal updated = personalService.updatePersonal(id, personal);
+        Personal updated = personalService.updatePersonal(id, request);
         return ResponseEntity.ok(mapToResponse(updated));
     }
 
