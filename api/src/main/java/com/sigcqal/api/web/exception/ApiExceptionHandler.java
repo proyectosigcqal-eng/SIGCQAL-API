@@ -11,6 +11,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.DuplicateResourceException;
+import com.sigcqal.api.application.exception.HitoSecuenciaVioladaException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,16 @@ public class ApiExceptionHandler {
 
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
         pd.setTitle("Solicitud inválida");
+        return pd;
+    }
+
+    @ExceptionHandler(HitoSecuenciaVioladaException.class)
+    public ProblemDetail handleHitoSecuenciaViolada(HitoSecuenciaVioladaException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        pd.setTitle("Secuencia de hitos violada");
+        pd.setProperty("hitoActual", ex.getHitoActual());
+        pd.setProperty("hitoPredecesor", ex.getHitoPredecesor());
+        pd.setProperty("idPredecesor", ex.getIdPredecesor());
         return pd;
     }
 
