@@ -5,6 +5,7 @@ import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 import com.sigcqal.api.domain.Catalogo.Personal.Model.Personal;
 import com.sigcqal.api.domain.Catalogo.Personal.Port.PersonalRepositoryPort;
 import com.sigcqal.api.web.Catalogo.Personal.Dto.PersonalRequestDTO; // Asumiendo que este es el que ya tienes
+import com.sigcqal.api.domain.Catalogo.Direccion.Port.DireccionRepositoryPort; // Asegúrate de tener este puerto
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class PersonalService {
 
     private final PersonalRepositoryPort personalRepository;
     private final PersonaRepositoryPort personaRepositoryPort;
+    private final DireccionRepositoryPort direccionRepository; // Asegúrate de tener este puerto
 
     @Transactional
         public void registrarPersonal(PersonalRequestDTO dto) {
@@ -55,7 +57,27 @@ public class PersonalService {
 
     // LISTAR
     public List<Personal> getAllPersonal() {
-        return personalRepository.findAll();
+        // Asumiendo que tu repositorio tiene un método findAll()
+        return personalRepository.findAll(); 
+    }
+   
+    public Personal findById(Long id) {
+        Personal personal = personalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Personal no encontrado"));
+
+        Long idDir = personal.getPersona().getIdDireccion();
+        
+        if (idDir != null) {
+            // Buscamos la dirección
+            Optional<Direccion> dirCompleta = direccionRepository.findById(idDir);
+            
+            if (dirCompleta.isPresent()) {
+                personal.getPersona().setDireccion(dirCompleta.get());
+            } else {
+                System.out.println("ADVERTENCIA: Se encontró el ID de dirección " + idDir + " pero no existe en BD.");
+            }
+        }
+        return personal;
     }
 
     // BUSCAR POR ID

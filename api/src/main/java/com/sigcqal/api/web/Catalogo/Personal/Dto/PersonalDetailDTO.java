@@ -1,19 +1,12 @@
-package com.sigcqal.api.domain.Catalogo.Persona.Model;
-import com.sigcqal.api.domain.Catalogo.Direccion.Model.Direccion;
+package com.sigcqal.api.web.Catalogo.Personal.Dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @Builder
-public class Persona {
-    private Long id;
+public class PersonalDetailDTO {
+    private Long idPersonal;
+    private Long idPersona;
     private Long idDireccion;
     private String nombre;
     private String apellidoPaterno;
@@ -28,7 +21,14 @@ public class Persona {
     private String numeroIdFolio;
     private String correo;
     private Long idTipoPersona;
-    private String nomreTipoPersona; 
     private String tipoIdentificacion;
-    private Direccion direccion; // Agregamos la relación con Direccion
+    private Boolean activo;
+
+    // Datos de Dirección (Anidados)
+    private String calle;
+    private String numExt;
+    private String colonia;
+    private String cp;
+    private Integer idMunicipio;
+    private Integer idEstado;
 }
