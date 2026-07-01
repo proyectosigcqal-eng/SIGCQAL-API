@@ -34,6 +34,9 @@ public class BandejaRepresentacionMapper {
             .fechaAudiencia(asString(row[21]))
             .fechaSentencia(asString(row[22]))
             .fechaEjecutoria(asString(row[23]))
+            .fechaRegistro(asString(row[24]))
+            .idDemandaAmparo(asInteger(row[25]))
+            .semaforo(asString(row[26]))
             .build();
     }
 
@@ -67,6 +70,9 @@ public class BandejaRepresentacionMapper {
             .fechaAudiencia(item.getFechaAudiencia())
             .fechaSentencia(item.getFechaSentencia())
             .fechaEjecutoria(item.getFechaEjecutoria())
+            .fechaRegistro(item.getFechaRegistro())
+            .idDemandaAmparo(item.getIdDemandaAmparo())
+            .semaforo(item.getSemaforo())
             .build();
     }
 
@@ -82,5 +88,19 @@ public class BandejaRepresentacionMapper {
             return b;
         }
         return Boolean.parseBoolean(value.toString());
+    }
+
+    private Integer asInteger(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Integer i) {
+            return i;
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

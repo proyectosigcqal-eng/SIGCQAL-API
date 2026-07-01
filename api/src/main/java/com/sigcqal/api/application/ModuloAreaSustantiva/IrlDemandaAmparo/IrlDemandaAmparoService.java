@@ -157,15 +157,11 @@ public class IrlDemandaAmparoService {
 
     // ── SEMÁFORO (SCRUM-2.3.3) ─────────────────────────────────────────
     public SemaforoJudicialDTO obtenerSemaforo(Integer idDemandaAmparo) {
-        IrlDemandaAmparo demanda = port.findById(idDemandaAmparo)
+        port.findById(idDemandaAmparo)
                 .orElseThrow(() -> new RuntimeException(
                         "Demanda de amparo no encontrada: " + idDemandaAmparo));
 
-        if (demanda.getFechaPrimerPago() == null) {
-            throw new InvalidRequestException(
-                    "No hay fecha de primer pago registrada para calcular el semáforo.");
-        }
-        return semaforoJudicialService.calcular(demanda.getFechaPrimerPago());
+        return semaforoJudicialService.calcularSemaforoJudicial(idDemandaAmparo);
     }
 
     // ── BUSCAR ─────────────────────────────────────────────────────────

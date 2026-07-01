@@ -23,8 +23,8 @@ public class PersonaEntity {
     @Column(name = "id_persona")
     private Long id;
 
-    // QUITA el orphanRemoval, déjalo así:
-    @ManyToOne(cascade = CascadeType.ALL) 
+
+    @ManyToOne
     @JoinColumn(name = "id_direccion")
     private DireccionEntity direccion;
 

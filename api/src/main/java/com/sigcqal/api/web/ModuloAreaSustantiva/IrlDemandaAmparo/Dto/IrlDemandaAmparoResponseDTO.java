@@ -1,6 +1,7 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.IrlDemandaAmparo.Dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -28,6 +29,7 @@ public class IrlDemandaAmparoResponseDTO {
     private String     rutaPdfDemandaPresentada;
     private String     rutaPdfAcuseDemanda;
     private LocalDate  fechaPresentacionDemanda;
+    @JsonProperty("fecha_registro")
     private java.time.LocalDateTime fechaRegistro;
     private String numRecibo1;
 private String numRecibo2;
