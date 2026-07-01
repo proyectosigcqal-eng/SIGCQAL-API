@@ -79,4 +79,12 @@ public class BandejaRepresentacionResponseDto {
 
     @JsonProperty("fecha_ejecutoria")
     private String fechaEjecutoria;
+
+    @JsonProperty("fecha_registro")
+    private String fechaRegistro;
+
+    private Integer idDemandaAmparo;
+
+    @JsonProperty("semaforo")
+    private String semaforo;
 }

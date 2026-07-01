@@ -15,7 +15,7 @@ public class BandejaRepresentacionService {
 
     private final BandejaRepresentacionPort bandejaRepresentacionPort;
 
-    public List<RepresentacionBandeja> obtenerBandeja(String search, String estatus) {
+    public List<RepresentacionBandeja> obtenerBandeja( String search, String estatus) {
         return bandejaRepresentacionPort.obtenerBandeja(
             search,
             estatus,

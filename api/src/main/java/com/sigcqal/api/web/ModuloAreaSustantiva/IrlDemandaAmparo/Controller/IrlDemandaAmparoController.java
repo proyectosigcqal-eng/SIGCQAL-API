@@ -39,9 +39,15 @@ public class IrlDemandaAmparoController {
     }
 
     // 2.3.3 — Semáforo judicial
-    @GetMapping("/{id}/semaforo-judicial")
-    public ResponseEntity<SemaforoJudicialDTO> semaforo(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.obtenerSemaforo(id));
+    @GetMapping({"/{id}/semaforo-judicial", "/semaforo-judicial"})
+    public ResponseEntity<SemaforoJudicialDTO> semaforo(
+            @PathVariable(required = false) Integer id,
+            @RequestParam(value = "id", required = false) Integer idQuery) {
+        Integer idDemanda = id != null ? id : idQuery;
+        if (idDemanda == null) {
+            throw new IllegalArgumentException("Se requiere el id de la demanda en la ruta o como query param.");
+        }
+        return ResponseEntity.ok(service.obtenerSemaforo(idDemanda));
     }
 
     // Buscar por ID

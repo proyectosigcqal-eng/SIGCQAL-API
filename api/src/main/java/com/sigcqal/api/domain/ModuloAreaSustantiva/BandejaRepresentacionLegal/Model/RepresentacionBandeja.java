@@ -34,4 +34,7 @@ public class RepresentacionBandeja {
     private String fechaAudiencia;
     private String fechaSentencia;
     private String fechaEjecutoria;
+    private String fechaRegistro;
+    private Integer idDemandaAmparo;
+    private String semaforo;
 }

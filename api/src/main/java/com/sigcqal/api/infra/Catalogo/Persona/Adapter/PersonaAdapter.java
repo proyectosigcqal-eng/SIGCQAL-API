@@ -12,6 +12,8 @@ import com.sigcqal.api.infra.Catalogo.Persona.Entity.PersonaEntity;
 import com.sigcqal.api.infra.Catalogo.Persona.Mapper.PersonaMapper;
 import com.sigcqal.api.infra.Catalogo.Persona.Repository.PersonaJpaRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -20,6 +22,10 @@ public class PersonaAdapter implements PersonaRepositoryPort {
 
     private final PersonaJpaRepository repository;
     private final PersonaMapper mapper;
+    @PersistenceContext
+    private EntityManager em;
+
+    
 
     @Override
     public Persona save(Persona persona) {

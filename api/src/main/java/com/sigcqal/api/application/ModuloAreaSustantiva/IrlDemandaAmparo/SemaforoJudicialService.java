@@ -1,80 +1,106 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.IrlDemandaAmparo;
 
+import com.sigcqal.api.domain.ModuloAreaSustantiva.IrlDemandaAmparo.Model.IrlDemandaAmparo;
+import com.sigcqal.api.domain.ModuloAreaSustantiva.IrlDemandaAmparo.Port.IrlDemandaAmparoRepositoryPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.PeriodoPrevencion.DiaInhabil.Model.DiaInhabil;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.PeriodoPrevencion.DiaInhabil.Port.DiaInhabilRepositoryPort;
 import com.sigcqal.api.web.ModuloAreaSustantiva.IrlDemandaAmparo.Dto.SemaforoJudicialDTO;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class SemaforoJudicialService {
 
-    private final DiaInhabilRepositoryPort diaInhabilPort;
-
     private static final int DIAS_HABILES_PLAZO = 15;
 
-    /**
-     * Calcula el semáforo judicial de 15 días hábiles.
-     * Regla: el plazo inicia D+1 de la fecha base recibida (actualmente,
-     * la fecha de generación de la demanda — ver IrlDemandaAmparoService.obtenerSemaforo()).
-     * Descuenta sábados, domingos y días inhábiles de catalogos.dias_inhabiles.
-     */
-    public SemaforoJudicialDTO calcular(LocalDate fechaBase) {
-        LocalDate inicio = fechaBase.plusDays(1);
+    private final IrlDemandaAmparoRepositoryPort port;
+    private final DiaInhabilRepositoryPort       diaInhabilPort;
 
-        // Margen de búsqueda generoso: 15 días hábiles nunca superan 30 corridos
-        // salvo períodos vacacionales largos — usamos 60 días como techo seguro
-        LocalDate techo = inicio.plusDays(60);
-        Set<LocalDate> inhabiles = cargarInhabiles(inicio, techo);
+    public SemaforoJudicialDTO calcularSemaforoJudicial(Integer idDemandaAmparo) {
 
-        LocalDate fechaLimite = calcularFechaLimite(inicio, inhabiles);
-        LocalDate hoy = LocalDate.now();
+        IrlDemandaAmparo demanda = port.findById(idDemandaAmparo)
+                .orElseThrow(() -> new RuntimeException(
+                        "Demanda de amparo no encontrada: " + idDemandaAmparo));
 
-        boolean vencido = hoy.isAfter(fechaLimite);
-        int diasRestantes = vencido ? 0
-                : contarDiasHabiles(hoy, fechaLimite, inhabiles);
+        LocalDateTime fechaGeneracion = demanda.getFechaGeneracionDemanda();
+
+        if (fechaGeneracion == null) {
+            return SemaforoJudicialDTO.builder()
+                    .diasHabilesRestantes(DIAS_HABILES_PLAZO)
+                    .fechaLimite(null)
+                    .color("GRIS")
+                    .vencido(false)
+                    .mensaje("El semáforo iniciará cuando se genere la demanda.")
+                    .build();
+        }
+
+        LocalDate inicio = fechaGeneracion.toLocalDate();
+        LocalDate hasta  = inicio.plusDays(60);
+
+        List<DiaInhabil> inhabiles = diaInhabilPort.findByRangoFechas(inicio, hasta);
+        Set<LocalDate> fechasInhabiles = inhabiles.stream()
+                .map(DiaInhabil::getFecha)
+                .collect(Collectors.toSet());
+
+        LocalDate fechaLimite   = sumarDiasHabiles(inicio, DIAS_HABILES_PLAZO, fechasInhabiles);
+        LocalDate hoy           = LocalDate.now();
+        boolean   vencido       = !hoy.isBefore(fechaLimite);
+
+        // ✅ Reutiliza el mismo set de inhabiles ya cargado,
+        // evitando que una query diferente devuelva resultados distintos
+        int diasRestantes = vencido ? 0 : contarDiasHabiles(hoy, fechaLimite, fechasInhabiles);
+
+        String estado;
+        String mensaje;
+
+        if (vencido) {
+            estado  = "ROJO";
+            mensaje = "El plazo para interponer la demanda ha vencido.";
+        } else if (diasRestantes <= 3) {
+            estado  = "ROJO";
+            mensaje = diasRestantes == 1
+                    ? "¡Queda 1 día hábil! Presenta la demanda hoy."
+                    : "¡Quedan " + diasRestantes + " días hábiles! Urgente.";
+        } else if (diasRestantes <= 7) {
+            estado  = "AMARILLO";
+            mensaje = "Quedan " + diasRestantes + " días hábiles para presentar la demanda.";
+        } else {
+            estado  = "VERDE";
+            mensaje = "Quedan " + diasRestantes + " días hábiles para presentar la demanda.";
+        }
 
         return SemaforoJudicialDTO.builder()
-                .fechaPrimerPago(fechaBase) // nombre desactualizado: ahora es fecha de generación, no de pago
-                .fechaInicioPlazo(inicio)
-                .fechaLimite(fechaLimite)
                 .diasHabilesRestantes(diasRestantes)
+                .fechaLimite(fechaLimite)
+                .color(estado)
                 .vencido(vencido)
-                .color(determinarColor(diasRestantes, vencido))
-                .mensaje(construirMensaje(diasRestantes, vencido, fechaLimite))
+                .mensaje(mensaje)
                 .build();
     }
 
-    // ── Privados ───────────────────────────────────────────────────────
-
-    private Set<LocalDate> cargarInhabiles(LocalDate desde, LocalDate hasta) {
-        return diaInhabilPort.findByRangoFechas(desde, hasta)
-                .stream()
-                .map(DiaInhabil::getFecha)
-                .collect(Collectors.toSet());
-    }
-
-    private LocalDate calcularFechaLimite(LocalDate inicio,
-                                           Set<LocalDate> inhabiles) {
-        LocalDate fecha = inicio;
-        int contados = 0;
-        while (contados < DIAS_HABILES_PLAZO) {
+    private LocalDate sumarDiasHabiles(LocalDate desde, int dias,
+                                       Set<LocalDate> inhabiles) {
+        LocalDate fecha    = desde;
+        int       contados = 0;
+        while (contados < dias) {
+            fecha = fecha.plusDays(1);
             if (esDiaHabil(fecha, inhabiles)) contados++;
-            if (contados < DIAS_HABILES_PLAZO) fecha = fecha.plusDays(1);
         }
         return fecha;
     }
 
     private int contarDiasHabiles(LocalDate desde, LocalDate hasta,
-                                   Set<LocalDate> inhabiles) {
+                                  Set<LocalDate> inhabiles) {
         int count = 0;
-        LocalDate fecha = desde;
+        LocalDate fecha = desde.plusDays(1); // ✅ excluye hoy, solo cuenta días futuros
         while (!fecha.isAfter(hasta)) {
             if (esDiaHabil(fecha, inhabiles)) count++;
             fecha = fecha.plusDays(1);
@@ -83,21 +109,8 @@ public class SemaforoJudicialService {
     }
 
     private boolean esDiaHabil(LocalDate fecha, Set<LocalDate> inhabiles) {
-        if (fecha.getDayOfWeek() == DayOfWeek.SATURDAY) return false;
-        if (fecha.getDayOfWeek() == DayOfWeek.SUNDAY)   return false;
-        return !inhabiles.contains(fecha);
-    }
-
-    // Verde ≥ 6 | Amarillo 3-5 | Rojo 1-2 | Gris = vencido
-    private String determinarColor(int diasRestantes, boolean vencido) {
-        if (vencido)            return "GRIS";
-        if (diasRestantes >= 6) return "VERDE";
-        if (diasRestantes >= 3) return "AMARILLO";
-        return "ROJO";
-    }
-
-    private String construirMensaje(int dias, boolean vencido, LocalDate limite) {
-        if (vencido) return "Plazo vencido el " + limite;
-        return dias + " día(s) hábil(es) restante(s). Vence: " + limite;
+        return fecha.getDayOfWeek() != DayOfWeek.SATURDAY
+                && fecha.getDayOfWeek() != DayOfWeek.SUNDAY
+                && !inhabiles.contains(fecha);
     }
 }
