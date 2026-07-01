@@ -55,7 +55,6 @@ public class RepresentacionLegalService {
         dto.setDiasRestantes(plazoPrevencionService.calcularDiasHabilesRestantes(fechaCreacion, DIAS_HABILES_PLAZO_IRL));
         dto.setFechaCreacion(fechaCreacion);
         dto.setEsEvolucion(toBoolean(row[7]));
-        dto.setIdEstatus(toInteger(row[8]));
         return dto;
     }
 
