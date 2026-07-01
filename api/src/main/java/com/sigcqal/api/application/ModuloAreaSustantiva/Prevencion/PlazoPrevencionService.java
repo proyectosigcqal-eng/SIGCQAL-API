@@ -92,6 +92,34 @@ public class PlazoPrevencionService {
         .build();
     }
 
+    public int calcularDiasHabilesRestantes(LocalDateTime fechaInicio, int diasHabiles) {
+        if (fechaInicio == null || diasHabiles <= 0) {
+            return 0;
+        }
+
+        LocalDate inicio = fechaInicio.toLocalDate();
+        LocalDate busquedaHasta = inicio.plusDays(Math.max(diasHabiles * 3L, 30L));
+
+        List<DiaInhabil> inhabiles = diaInhabilPort.findByRangoFechas(inicio, busquedaHasta);
+        Set<LocalDate> fechasInhabiles = inhabiles.stream()
+                .map(DiaInhabil::getFecha)
+                .collect(Collectors.toSet());
+
+        LocalDate fechaLimite = sumarDiasHabiles(inicio, diasHabiles, fechasInhabiles);
+        LocalDate hoy = LocalDate.now();
+
+        if (!hoy.isBefore(fechaLimite)) {
+            return 0;
+        }
+
+        List<DiaInhabil> inhabilesRestantes = diaInhabilPort.findByRangoFechas(hoy, fechaLimite);
+        Set<LocalDate> fechasInhabilesRestantes = inhabilesRestantes.stream()
+                .map(DiaInhabil::getFecha)
+                .collect(Collectors.toSet());
+
+        return contarDiasHabiles(hoy, fechaLimite, fechasInhabilesRestantes);
+    }
+
     private LocalDate sumarDiasHabiles(LocalDate desde, int dias, Set<LocalDate> inhabiles) {
         LocalDate fecha = desde;
         int contados = 0;

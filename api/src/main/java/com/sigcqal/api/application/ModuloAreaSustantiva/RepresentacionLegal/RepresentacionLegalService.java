@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.sigcqal.api.application.ModuloAreaSustantiva.Prevencion.PlazoPrevencionService;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.RepresentacionLegal.Repository.RepresentacionLegalJpaRepository;
 import com.sigcqal.api.web.ModuloAreaSustantiva.RepresentacionLegal.Dto.BandejaIrlResponseDTO;
 
@@ -15,17 +16,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RepresentacionLegalService {
 
+    private static final int DIAS_HABILES_PLAZO_IRL = 15;
+
     private final RepresentacionLegalJpaRepository repository;
+    private final PlazoPrevencionService plazoPrevencionService;
 
     /**
      * Devuelve la bandeja filtrada por tipo (Directo / Evolución)
      * y opcionalmente por búsqueda.
      */
-    public List<BandejaIrlResponseDTO> obtenerBandeja(Boolean esEvolucion, String search) {
+    public List<BandejaIrlResponseDTO> obtenerBandeja(Boolean esEvolucion, String search, Integer idEstatus,
+            Integer idAsesor) {
         String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
-
-        List<Object[]> rows = repository.findBandeja(esEvolucion, searchParam);
-
+        List<Object[]> rows = repository.findBandeja(esEvolucion, searchParam, idEstatus, idAsesor);
         return rows.stream().map(this::mapearFila).toList();
     }
 
@@ -33,17 +36,20 @@ public class RepresentacionLegalService {
      * Mapea Object[] (orden fijo del native query) al DTO.
      *
      * Índices: 0=id, 1=folio_gobierno, 2=contribuyente, 3=asesor,
-     * 4=municipio, 5=estatus, 6=fecha_creacion, 7=es_evolucion
+     * 4=municipio, 5=estatus, 6=fecha_creacion, 7=es_evolucion, 8=id_estatus
      */
     private BandejaIrlResponseDTO mapearFila(Object[] row) {
         BandejaIrlResponseDTO dto = new BandejaIrlResponseDTO();
+        LocalDateTime fechaCreacion = toLocalDateTime(row[6]);
         dto.setId(toInteger(row[0]));
         dto.setFolioGobierno(toString(row[1]));
         dto.setContribuyente(toString(row[2]));
         dto.setAsesor(toString(row[3]));
         dto.setMunicipio(toString(row[4]));
         dto.setEstatus(toString(row[5]));
-        dto.setFechaCreacion(toLocalDateTime(row[6]));
+        dto.setIdEstatus(toInteger(row[8]));
+        dto.setDiasRestantes(plazoPrevencionService.calcularDiasHabilesRestantes(fechaCreacion, DIAS_HABILES_PLAZO_IRL));
+        dto.setFechaCreacion(fechaCreacion);
         dto.setEsEvolucion(toBoolean(row[7]));
         return dto;
     }
