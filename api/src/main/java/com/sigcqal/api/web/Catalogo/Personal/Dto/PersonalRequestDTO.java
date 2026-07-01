@@ -21,7 +21,13 @@ public class PersonalRequestDTO implements Serializable {
     private String correo;
     private Long idTipoPersona;
     private String tipoIdentificacion;
-
-    // Datos del Personal
     private Boolean activo;
+
+    // Datos de Dirección (Anidados)
+    private String calle;
+    private String numExt;
+    private String colonia;
+    private String cp;
+    private Integer idMunicipio;
+    private Integer idEstado;
 }

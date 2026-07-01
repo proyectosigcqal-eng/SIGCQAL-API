@@ -3,11 +3,18 @@ package com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.sigcqal.api.infra.ModuloAreaSustantiva.Expediente.Entity.ExpedienteEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.QuejasAri.Entity.QuejasAriEntity;
+import com.sigcqal.api.infra.ModuloAreaSustantiva.ContestacionAutoridad.Entity.ContestacionAutoridadEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,14 +49,17 @@ public class ResolucionFinalEntity {
     @Column(name = "folio_credito", length = 50)
     private String folioCredito;
 
-    @Column(name = "id_expediente", nullable = false)
+    // ✅ Se agrega insertable/updatable = false para evitar duplicidad con el @ManyToOne
+    @Column(name = "id_expediente", nullable = false, insertable = false, updatable = false)
     private Integer idExpediente;
 
-    @Column(name = "id_ari", nullable = false)
+    // ✅ Se agrega insertable/updatable = false
+    @Column(name = "id_ari", nullable = false, insertable = false, updatable = false)
     private Integer idAri;
 
-    @Column(name = "id_queja_respuesta_autoridad", nullable = false)
-    private Integer idQuejaRespuestaAutoridad;
+    // ✅ Cambiado a Long (para que coincida con ContestacionAutoridadEntity) e insertable/updatable = false
+    @Column(name = "id_queja_respuesta_autoridad", nullable = false, insertable = false, updatable = false)
+    private Long idQuejaRespuestaAutoridad;
 
     @Column(name = "id_estatus_queja", nullable = false)
     private Integer idEstatusQueja;
@@ -62,4 +72,20 @@ public class ResolucionFinalEntity {
 
     @Column(name = "id_estatus_expediente", nullable = false)
     private Integer idEstatusExpediente;
-};
+
+    // =======================================================================
+    // RELACIONES MAPEADAS (Estas controlan la escritura en la BD)
+    // =======================================================================
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_expediente", referencedColumnName = "id_expediente")
+    private ExpedienteEntity expediente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_queja_respuesta_autoridad", referencedColumnName = "id_respuesta_autoridad")
+    private ContestacionAutoridadEntity contestacionAutoridad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_ari", referencedColumnName = "id_ari")
+    private QuejasAriEntity quejaAri;
+}

@@ -1,9 +1,10 @@
 package com.sigcqal.api.application.Catalogo.Personal;
 
+import com.sigcqal.api.domain.Catalogo.Direccion.Model.Direccion;
 import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
 import com.sigcqal.api.domain.Catalogo.Personal.Model.Personal;
 import com.sigcqal.api.domain.Catalogo.Personal.Port.PersonalRepositoryPort;
-import com.sigcqal.api.application.Catalogo.Persona.PersonaService; // Asumiendo que este es el que ya tienes
+import com.sigcqal.api.web.Catalogo.Personal.Dto.PersonalRequestDTO; // Asumiendo que este es el que ya tienes
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +18,40 @@ import java.util.Optional;
 public class PersonalService {
 
     private final PersonalRepositoryPort personalRepository;
-    private final PersonaService personaService;
     private final PersonaRepositoryPort personaRepositoryPort;
 
     @Transactional
-    public Personal registerPersonal(Personal personal) {
-        Persona personaGuardada = personaService.guardarPersonaDeDominio(personal.getPersona());
-        personal.setPersona(personaGuardada);
-        return personalRepository.save(personal);
-    }
+        public void registrarPersonal(PersonalRequestDTO dto) {
+            // 1. Mapear DTO a un Modelo de Dominio (Personal)
+            Direccion dirDominio = Direccion.builder()
+            .id(null)
+                .calle(dto.getCalle())
+                .numExt(dto.getNumExt())
+                .colonia(dto.getColonia())
+                .cp(dto.getCp())
+                .idEstado(dto.getIdEstado())
+                .idMunicipio(dto.getIdMunicipio())
+                .build();
+
+
+            Personal personalDominio = Personal.builder()
+                .activo(true)
+                .persona(Persona.builder()
+                    .nombre(dto.getNombre())
+                    .apellidoPaterno(dto.getApellidoPaterno())
+                    .apellidoMaterno(dto.getApellidoMaterno())
+                    .curp(dto.getCurp())
+                    .idDireccion(dto.getIdDireccion())
+                    .correo(dto.getCorreo())
+                    .rfc(dto.getRfc())
+                    .telefono(dto.getTelefono())
+                    .telefonoFijo(dto.getTelefonoFijo())
+                    .build())
+                .build();
+
+            // 2. El puerto ahora acepta el modelo de dominio
+            personalRepository.save(personalDominio, dirDominio); 
+        }
 
     // LISTAR
     public List<Personal> getAllPersonal() {
@@ -39,25 +65,45 @@ public class PersonalService {
 
     // ACTUALIZAR (PUT)
     @Transactional
-    public Personal updatePersonal(Long id, Personal personalActualizado) {
-        // 1. Verificamos si existe el registro de Personal
+    public Personal updatePersonal(Long id, PersonalRequestDTO dto) {
+        // 1. Obtener el Personal existente
         Personal personalExistente = personalRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Personal no encontrado con id: " + id));
+            .orElseThrow(() -> new RuntimeException("No encontrado"));
+            
+        // 2. Mapear los cambios al objeto de dominio (Persona)
+        Persona p = personalExistente.getPersona();
+        p.setNombre(dto.getNombre());
+        p.setApellidoPaterno(dto.getApellidoPaterno());
+        p.setApellidoMaterno(dto.getApellidoMaterno());
+        p.setComunidad(dto.getComunidad());
+        p.setCorreo(dto.getCorreo());
+        p.setCurp(dto.getCurp());
+        p.setIdTipoPersona(dto.getIdTipoPersona());
+        p.setRfc(dto.getRfc());
+        p.setTelefono(dto.getTelefono());
+        p.setTelefonoFijo(dto.getTelefonoFijo());
 
-        // 2. Actualizamos la Persona asociada
-        // Usamos el id de la persona que ya estaba asociada al personal
-        Persona personaAActualizar = personalActualizado.getPersona();
-        personaAActualizar.setId(personalExistente.getPersona().getId());
+        // 3. ACTUALIZAR LA DIRECCIÓN
+        // OJO: Si personalExistente se obtiene desde el repositorio (que devuelve Entidades JPA 
+        // convertidas a dominio por el Mapper), necesitamos asegurarnos de que el Mapper 
+        // incluya la entidad Direccion dentro de la Persona.
         
-        Persona personaActualizada = personaService.guardarPersonaDeDominio(personaAActualizar);
+        // Si tu arquitectura te permite acceder a la entidad de dirección, haz esto:
+        Direccion direccionActualizada = Direccion.builder()
+                .id(p.getIdDireccion()) // Es vital pasar el ID existente
+                .calle(dto.getCalle())
+                .numExt(dto.getNumExt())
+                .colonia(dto.getColonia())
+                .cp(dto.getCp())
+                .idEstado(dto.getIdEstado())
+                .idMunicipio(dto.getIdMunicipio())
+                .build();
+                      // 4. Guardar los cambios finales del personal
+    return personalRepository.save(personalExistente, direccionActualizada);
 
-        // 3. Actualizamos los campos de Personal
-        personalExistente.setPersona(personaActualizada);
-        personalExistente.setActivo(personalActualizado.getActivo());
-        // Puedes agregar más campos si los tuviste en tu modelo
+                }
 
-        return personalRepository.save(personalExistente);
-    }
+
 
     // ELIMINAR
         @Transactional

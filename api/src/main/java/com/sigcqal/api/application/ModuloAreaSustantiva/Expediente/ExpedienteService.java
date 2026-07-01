@@ -150,6 +150,7 @@ public class ExpedienteService {
             .orElseThrow(() -> new RuntimeException("Folio no encontrado: " + folio));
 
    String nombreContribuyente = null;
+   String identificacionOficialContribuyente = null;
 if (entity.getContribuyente() != null 
         && entity.getContribuyente().getPersona() != null) {
     var p = entity.getContribuyente().getPersona();
@@ -158,6 +159,7 @@ if (entity.getContribuyente() != null
         p.getApellidoPaterno() != null ? p.getApellidoPaterno() : "",
         p.getApellidoMaterno() != null ? p.getApellidoMaterno() : ""
     ).trim();
+    identificacionOficialContribuyente = p.getIdentificacionOficial();
 }
 
     // ✅ Nombre del asesor — AsesorEntity solo tiene idPersona, necesitas buscarlo
@@ -201,6 +203,7 @@ if (entity.getAsesor() != null && entity.getAsesor().getIdPersona() != null) {
             .fechaRegistro(entity.getFechaSolicitud() != null
                     ? entity.getFechaSolicitud().toString() : null)
             .contribuyente(nombreContribuyente)
+            .identificacionOficial(identificacionOficialContribuyente)
             .autoridadResponsable(nombreAsesor)
             .estatusActual(estatus)
             .descripcionSintetica(tipoTramite)

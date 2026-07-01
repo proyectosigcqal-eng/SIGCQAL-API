@@ -12,4 +12,7 @@ public interface PersonaRepositoryPort {
     List<Persona> findAll();
     void deleteById(Long id);
 
+    // NUEVO: búsqueda por nombre (cualquiera de las 3 columnas) o RFC
+    List<Persona> buscarPorNombreORfc(String texto);
+
 }

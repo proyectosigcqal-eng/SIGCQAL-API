@@ -21,6 +21,7 @@ public class RepresentacionLegalService {
     private final RepresentacionLegalJpaRepository repository;
     private final PlazoPrevencionService plazoPrevencionService;
 
+
     /**
      * Devuelve la bandeja filtrada por tipo (Directo / Evolución)
      * y opcionalmente por búsqueda.
@@ -29,14 +30,17 @@ public class RepresentacionLegalService {
             Integer idAsesor) {
         String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
         List<Object[]> rows = repository.findBandeja(esEvolucion, searchParam, idEstatus, idAsesor);
+
         return rows.stream().map(this::mapearFila).toList();
     }
 
     /**
+
      * Mapea Object[] (orden fijo del native query) al DTO.
      *
      * Índices: 0=id, 1=folio_gobierno, 2=contribuyente, 3=asesor,
      * 4=municipio, 5=estatus, 6=fecha_creacion, 7=es_evolucion, 8=id_estatus
+
      */
     private BandejaIrlResponseDTO mapearFila(Object[] row) {
         BandejaIrlResponseDTO dto = new BandejaIrlResponseDTO();
@@ -51,10 +55,9 @@ public class RepresentacionLegalService {
         dto.setDiasRestantes(plazoPrevencionService.calcularDiasHabilesRestantes(fechaCreacion, DIAS_HABILES_PLAZO_IRL));
         dto.setFechaCreacion(fechaCreacion);
         dto.setEsEvolucion(toBoolean(row[7]));
+        dto.setIdEstatus(toInteger(row[8]));
         return dto;
     }
-
-    // ── Helpers para Object[] → tipos seguros ──
 
     private Integer toInteger(Object val) {
         if (val == null)

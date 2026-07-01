@@ -11,5 +11,6 @@ import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 @Repository
 public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, Long> {
     Optional<UsuarioEntity> findByIdPersona(Long id);
+    Optional<UsuarioEntity> findByUsuarioLogin(String usuarioLogin); 
 
 }
