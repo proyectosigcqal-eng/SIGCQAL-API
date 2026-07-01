@@ -22,7 +22,10 @@ public class RepresentacionLegalController {
     public ResponseEntity<List<BandejaIrlResponseDTO>> bandeja(
             @RequestParam(name = "es_evolucion") Boolean esEvolucion,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Integer id_estatus) {
-        return ResponseEntity.ok(service.obtenerBandeja(esEvolucion, search, id_estatus));
+
+            @RequestParam(required = false) Integer id_estatus,
+            @RequestParam(required = false) Integer id_asesor) {
+        return ResponseEntity.ok(service.obtenerBandeja(esEvolucion, search, id_estatus, id_asesor));
+
     }
 }

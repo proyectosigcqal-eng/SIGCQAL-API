@@ -13,7 +13,10 @@ public class BandejaIrlResponseDTO {
     private String asesor;
     private String municipio;
     private String estatus;
+    private Integer idEstatus;
+    private Integer diasRestantes;
     private LocalDateTime fechaCreacion;
     private Boolean esEvolucion;
+
     private Integer idEstatus;
 }

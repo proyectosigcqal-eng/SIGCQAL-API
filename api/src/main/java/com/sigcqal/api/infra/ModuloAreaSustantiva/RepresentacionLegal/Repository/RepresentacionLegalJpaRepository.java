@@ -11,6 +11,17 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.RepresentacionLegal.Entity.Rep
 public interface RepresentacionLegalJpaRepository
               extends JpaRepository<RepresentacionLegalEntity, Integer> {
 
+
+       /**
+        * Bandeja IRL — una sola consulta nativa que resuelve el expediente
+        * por cualquiera de los dos caminos (Directo o Evolución) usando
+        * COALESCE sobre id_expediente y resolucion_final.id_expediente.
+        *
+        * Columnas devueltas (orden estricto):
+        * 0 id, 1 folio_gobierno, 2 contribuyente, 3 asesor,
+        * 4 municipio, 5 estatus, 6 fecha_creacion, 7 es_evolucion, 8 id_estatus
+        */
+
        @Query(value = """
                      SELECT rl.id,
                             e.folio_gobierno,
@@ -40,10 +51,16 @@ public interface RepresentacionLegalJpaRepository
                             OR pc.apellido_paterno ILIKE CONCAT('%', ?2, '%')
                             OR pc.apellido_materno ILIKE CONCAT('%', ?2, '%'))
                        AND (?3 IS NULL OR rl.id_estatus = ?3)
+
+                       AND (?4 IS NULL OR e.id_asesor = ?4)
+
                      ORDER BY rl.fecha_creacion DESC
                      """, nativeQuery = true)
        List<Object[]> findBandeja(
                      @Param("esEvolucion") Boolean esEvolucion,
                      @Param("search") String search,
-                     @Param("idEstatus") Integer idEstatus);
+
+                     @Param("idEstatus") Integer idEstatus,
+                     @Param("idAsesor") Integer idAsesor);
+
 }
