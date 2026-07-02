@@ -12,6 +12,9 @@ import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.web.ModuloAreaSustantiva.IrlDemandaAmparo.Dto.IrlDemandaAmparoRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.IrlDemandaAmparo.Dto.IrlDemandaAmparoResponseDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.IrlDemandaAmparo.Dto.SemaforoJudicialDTO;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,8 @@ public class IrlDemandaAmparoService {
     private final SemaforoJudicialService         semaforoJudicialService;
     private final ExpedienteRepositoryPort expedientePort;
     private final IrlDemandaAmparoJpaRepository repository;
+    @PersistenceContext
+private EntityManager entityManager;
 
     private static final String PLANTILLA = "plantilla_demanda_amparo.docx";
 
@@ -41,11 +46,11 @@ public class IrlDemandaAmparoService {
     public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
 
     // ── GUARDAR ────────────────────────────────────────────────────────
-  public IrlDemandaAmparoResponseDTO guardar(IrlDemandaAmparoRequestDTO req) {
+ public IrlDemandaAmparoResponseDTO guardar(IrlDemandaAmparoRequestDTO req) {
 
     validarMultasHistoricas(req);
 
-    // Resolver idExpediente desde folio si no viene directo
+    // 1. Resolver idExpediente
     Integer idExpediente = req.getIdExpediente();
     if (idExpediente == null && req.getFolioExpediente() != null) {
         idExpediente = expedientePort.findByFolio(req.getFolioExpediente())
@@ -57,25 +62,42 @@ public class IrlDemandaAmparoService {
         throw new InvalidRequestException("Se requiere idExpediente o folioExpediente.");
     }
 
-    // idRepresentacionLegal queda null hasta que el otro equipo entregue su flujo
-    // NO usar getIdRepresentanteLegal() del expediente — eso es otra cosa
+    // 2. Resolver idRepresentacionLegal — ya NO es null forzado
+    Integer idRepresentacionLegal = req.getIdRepresentacionLegal();
+
+    if (idRepresentacionLegal == null) {
+        idRepresentacionLegal = buscarIdRepresentacionLegal(idExpediente);
+    }
+
+    if (idRepresentacionLegal == null) {
+        idRepresentacionLegal = crearRepresentacionLegalPlaceholder(idExpediente);
+    }
+
+    if (idRepresentacionLegal == null) {
+        throw new InvalidRequestException(
+            "No se pudo resolver ni crear representación legal para expediente: "
+            + idExpediente);
+    }
+
+    final Integer idExpedienteResuelto         = idExpediente;
+    final Integer idRepresentacionLegalResuelto = idRepresentacionLegal;
 
     IrlDemandaAmparo domain = IrlDemandaAmparo.builder()
-            .idExpediente(idExpediente)
-            .idRepresentacionLegal(null)
-.idRlCir(req.getIdRlCir())           // viene del request o null
-.idQuejaRlCir(req.getIdQuejaRlCir()) // ← null forzado, correcto
+            .idExpediente(idExpedienteResuelto)
+            .idRepresentacionLegal(idRepresentacionLegalResuelto) // ← ya no es null
+            .idRlCir(req.getIdRlCir())
+            .idQuejaRlCir(req.getIdQuejaRlCir())
             .autoridadReclamadaMunicipio(req.getAutoridadReclamadaMunicipio())
             .superficieTerreno(req.getSuperficieTerreno())
             .superficieConstruccion(req.getSuperficieConstruccion())
             .tipoConstruccion(req.getTipoConstruccion())
             .zonificacion(req.getZonificacion())
             .folioReciboPago(req.getFolioReciboPago())
-            .folioReciboPago2(req.getFolioReciboPago2())    // ← faltaba
-            .numRecibo1(req.getNumRecibo1())                 // ← faltaba
-            .numRecibo2(req.getNumRecibo2())                 // ← faltaba
-            .clavePredial(req.getClavePredial())             // ← faltaba
-            .numCuenta(req.getNumCuenta())                   // ← faltaba
+            .folioReciboPago2(req.getFolioReciboPago2())
+            .numRecibo1(req.getNumRecibo1())
+            .numRecibo2(req.getNumRecibo2())
+            .clavePredial(req.getClavePredial())
+            .numCuenta(req.getNumCuenta())
             .domicilioAutoridad(req.getDomicilioAutoridad())
             .montoPago(req.getMontoPago())
             .fechaPrimerPago(req.getFechaPrimerPago())
@@ -89,7 +111,6 @@ public class IrlDemandaAmparoService {
             .transcripcionLeyIngresos(req.getTranscripcionLeyIngresos())
             .fechaRegistro(LocalDateTime.now())
             .ultimaActualizacion(LocalDateTime.now())
-          
             .build();
 
     return toResponseDTO(port.save(domain));
@@ -320,4 +341,46 @@ public class IrlDemandaAmparoService {
                 .fechaRegistro(d.getFechaRegistro())
                 .build();
     }
+
+    private Integer buscarIdRepresentacionLegal(Integer idExpediente) {
+    try {
+        Object resultado = entityManager.createNativeQuery("""
+                SELECT id
+                FROM sustantiva.representacion_legal
+                WHERE id_expediente = :idExpediente
+                ORDER BY id DESC
+                LIMIT 1
+                """)
+                .setParameter("idExpediente", idExpediente)
+                .getSingleResult();
+
+        return resultado != null ? ((Number) resultado).intValue() : null;
+    } catch (Exception e) {
+        log.warn("[IrlDemandaAmparo] No hay representación legal para expediente {}", idExpediente);
+        return null;
+    }
+}
+
+    private Integer crearRepresentacionLegalPlaceholder(Integer idExpediente) {
+    try {
+        Object resultado = entityManager.createNativeQuery("""
+                INSERT INTO sustantiva.representacion_legal
+                    (id_expediente, es_evolucion, fecha_creacion)
+                VALUES
+                    (:idExpediente, false, NOW())
+                RETURNING id
+                """)
+                .setParameter("idExpediente", idExpediente)
+                .getSingleResult();
+
+        Integer id = resultado != null ? ((Number) resultado).intValue() : null;
+        log.info("[IrlDemandaAmparo] Placeholder representación legal creado: id={} expediente={}", 
+                 id, idExpediente);
+        return id;
+
+    } catch (Exception e) {
+        log.error("[IrlDemandaAmparo] Error creando placeholder: {}", e.getMessage());
+        return null;
+    }
+}
 }

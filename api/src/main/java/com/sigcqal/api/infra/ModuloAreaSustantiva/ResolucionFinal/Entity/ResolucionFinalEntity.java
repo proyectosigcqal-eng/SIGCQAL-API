@@ -82,10 +82,10 @@ public class ResolucionFinalEntity {
     private ExpedienteEntity expediente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_queja_respuesta_autoridad", referencedColumnName = "id_respuesta_autoridad")
+    @JoinColumn(name = "id_queja_respuesta_autoridad", referencedColumnName = "id_respuesta_autoridad", nullable = true)
     private ContestacionAutoridadEntity contestacionAutoridad;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ari", referencedColumnName = "id_ari")
+    @JoinColumn(name = "id_ari", referencedColumnName = "id_ari", nullable = true)
     private QuejasAriEntity quejaAri;
 }
