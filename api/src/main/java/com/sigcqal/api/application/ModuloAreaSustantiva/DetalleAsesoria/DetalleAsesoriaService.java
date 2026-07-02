@@ -126,7 +126,7 @@ public class DetalleAsesoriaService {
                 // Sin esto quedaban en null y el front caía al fallback ('[fecha
                 // pendiente]', cadena vacía), que es justo lo que se ve en tu captura.
                 .nombreAsesor(str(projection.getNombreAsesor()))
-                .rfcAsesor(str(projection.getRfcAsesor())) // necesita el cambio de query de abajo
+                .rfcAsesor(str(projection.getRfc())) // necesita el cambio de query de abajo
                 .fechaSolicitud(projection.getFechaSolicitud() != null
                         ? projection.getFechaSolicitud().toString() : null)
                         // OJO: sin toFecha() — el front hace fechaInput.split('T')[0].split('-'),
