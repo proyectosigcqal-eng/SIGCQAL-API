@@ -32,7 +32,8 @@ public interface DetalleAsesoriaRepository
                          p.curp,
                          p.telefono,
                          p.correo,
-                         CONCAT(pas.nombre,' ',pas.apellido_paterno) AS nombre_asesor
+                         CONCAT(pas.nombre,' ',pas.apellido_paterno) AS nombre_asesor,
+                         pas.rfc                                    AS rfc_asesor
                      FROM sustantiva.expedientes e
                      LEFT JOIN sustantiva.contribuyentes c
                             ON c.id_contribuyentes = e.id_contribuyente

@@ -20,4 +20,5 @@ public interface DetalleAsesoria {
     String getTelefono();
     String getCorreo();
     String getNombreAsesor();
+    String getRfcAsesor();
 }
