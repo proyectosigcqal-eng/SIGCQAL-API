@@ -2,6 +2,8 @@ package com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO;
 
 import java.time.LocalDateTime;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ExpedienteRequestDTO {
 
+    @NotBlank(message = "Folio de gobierno es requerido")
+    @Schema(
+            description = "Folio de gobierno ingresado manualmente por el usuario (formato: AAAA-NNNNN o similar)",
+            example = "2406-00125")
     private String folioGobierno;
     private LocalDateTime fechaSolicitud;
     private Long idMunicipio;

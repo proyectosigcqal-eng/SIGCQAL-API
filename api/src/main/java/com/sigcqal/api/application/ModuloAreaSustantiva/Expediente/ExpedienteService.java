@@ -1,13 +1,12 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.Expediente;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.Turnado.TurnadoService;
+import com.sigcqal.api.application.exception.DuplicateResourceException;
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.Catalogo.Persona.Port.PersonaRepositoryPort;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -39,7 +38,13 @@ public class ExpedienteService {
     // -----------------------------------------------------------------------
     @Transactional
     public ExpedienteResponseDTO guardar(ExpedienteRequestDTO request) {
-        String folioGenerado = generarFolioAutomatico();
+        String folioGenerado = request.getFolioGobierno().trim();
+
+        if (port.existsByFolio(folioGenerado)) {
+            throw new DuplicateResourceException(
+                    "El folio " + folioGenerado + " ya existe en el sistema. "
+                            + "Ingrese un folio único.");
+        }
 
         Expediente expediente = Expediente.builder()
                 .folioGobierno(folioGenerado)
@@ -120,28 +125,6 @@ public class ExpedienteService {
                     "Fue cerrado automáticamente por vencimiento del plazo " +
                     "de prevención y no admite modificaciones.");
         }
-    }
-
-    private String generarFolioAutomatico() {
-        LocalDate now    = LocalDate.now();
-        String yy        = String.valueOf(now.getYear()).substring(2);
-        String mm        = String.format("%02d", now.getMonthValue());
-        String prefix    = yy + mm;
-        int    nextSeq   = 1;
-
-        Optional<Expediente> last = port.findTopByFolioPrefix(prefix);
-        if (last.isPresent()
-                && last.get().getFolioGobierno() != null
-                && last.get().getFolioGobierno().length() > prefix.length()) {
-            try {
-                nextSeq = Integer.parseInt(
-                        last.get().getFolioGobierno()
-                            .substring(prefix.length())) + 1;
-            } catch (NumberFormatException e) {
-                nextSeq = 1;
-            }
-        }
-        return prefix + String.format("%05d", nextSeq);
     }
 
   public DetalleAsesoriaResponseDTO obtenerDetalleCompletoPorFolio(String folio) {
