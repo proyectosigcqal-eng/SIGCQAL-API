@@ -199,4 +199,15 @@ Optional<Integer> findIdExpedienteByIdQueja(@Param("idQueja") Long idQueja);
     LIMIT 1
     """, nativeQuery = true)
 Optional<Long> findIdOficioAutoridadByFolio(@Param("folio") String folio);
+
+@Query(value = """
+    SELECT r.id_respuesta_autoridad 
+    FROM sustantiva.quejas_respuestas_autoridad r
+    JOIN sustantiva.quejas q ON q.id_queja = r.id_queja
+    WHERE q.id_expediente = :idExpediente
+    ORDER BY r.id_respuesta_autoridad DESC
+    LIMIT 1
+    """, nativeQuery = true)
+Optional<Integer> findPrimerIdRespuestaAutoridad(
+    @Param("idExpediente") Integer idExpediente);
 }
