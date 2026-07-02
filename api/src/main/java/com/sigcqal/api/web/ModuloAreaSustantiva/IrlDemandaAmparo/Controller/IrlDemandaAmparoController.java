@@ -29,6 +29,19 @@ public class IrlDemandaAmparoController {
         return ResponseEntity.ok(service.generarDemanda(id));
     }
 
+    // Descargar el DOCX de la demanda (se genera al vuelo con los datos actuales)
+    @GetMapping("/{id}/descargar")
+    public ResponseEntity<byte[]> descargarPorId(@PathVariable Integer id) {
+        return service.obtenerArchivoPorId(id)
+            .map(archivo -> ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + archivo.nombreArchivo() + "\"")
+                .body(archivo.contenido()))
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     // 2.3.4 — Cargar PDF demanda presentada + acuse
     @PostMapping("/{id}/cargar-demanda")
     public ResponseEntity<IrlDemandaAmparoResponseDTO> cargarDemanda(

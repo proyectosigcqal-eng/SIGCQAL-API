@@ -1,90 +1,97 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.BandejaRepresentacionLegal.Dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sigcqal.api.web.ModuloAreaSustantiva.BandejaAsesoria.Dto.UltimaModificacionDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO de bandeja IRL.
+ *
+ * Los nombres de campo deben coincidir EXACTAMENTE con lo que lee adaptarItem()
+ * en bandejaIrlService.js. Si un campo llega null, el botón correspondiente
+ * no aparece en el frontend.
+ *
+ * Mapa campo → botón que habilita:
+ *   idRlCir          → DESCARGAR CIR
+ *   idQuejaRlCir     → DESCARGAR CIR QUEJA
+ *   idDemandaAmparo  → DESCARGAR DEMANDA + semáforo judicial
+ *   tieneCir         → (flag derivado de idRlCir)
+ *   tieneDemanda     → label VER DEMANDA vs REGISTRAR DEMANDA
+ *   tieneAudiencia   → botón DATOS AUDIENCIA
+ *   tieneSentencia   → botón DATOS SENTENCIA
+ *   tieneEjecutoria  → botón DATOS EJECUTORIA
+ *   tieneCumplimiento → botón DATOS CUMPLIMIENTO
+ *   esEvolucion      → filtro IRL Directa vs IRL Evolución
+ *   folioGobierno    → folio mostrado en tabla y usado en rutas de navegación
+ *   estatus          → lógica de calcularAccionesIrl
+ */
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class BandejaRepresentacionResponseDto {
 
-    private String folio;
+    // ── Identificadores ──────────────────────────────────────────────────────
+    /** id de representacion_legal — usado como key de React y en rutas */
+    private Integer idRepresentacionLegal;
 
-    @JsonProperty("id_expediente")
-    private String idExpediente;
+    /** id del expediente — usado en navegación */
+    private Integer idExpediente;  // ojo: era String en el dominio, se convierte aquí
 
-    @JsonProperty("municipio_procedencia")
-    private String municipioProcedencia;
+    // ── Datos del expediente ─────────────────────────────────────────────────
+    /**
+     * folioGobierno — el frontend lo busca por ESTE nombre exacto en adaptarItem:
+     *   obtenerValor(item, ['folio', 'folioGobierno', ...])
+     * Mapear desde domain.getFolio()
+     */
+    private String folioGobierno;
 
     private String contribuyente;
+    private String asesor;
+    private String municipio;          // frontend busca 'municipio' o 'municipioProcedencia'
 
-    @JsonProperty("tipo_acto")
-    private String tipoActo;
+    /**
+     * estatus — el frontend busca 'estatus' o 'estatusPrincipal'.
+     * calcularAccionesIrl() hace estUp = item.estatus.toUpperCase()
+     * Mapear desde domain.getEstatusPrincipal()
+     */
+    private String estatus;
 
-    @JsonProperty("estatus_principal")
-    private String estatusPrincipal;
+    private String  estatusSecundario;
+    private Boolean esEvolucion;       // ← NUEVO: filtra IRL Directa vs Evolución
+    private String  fechaRegistro;     // frontend busca fechaRegistro o fechaCreacion
+    private String  semaforo;
 
-    @JsonProperty("estatus_secundario")
-    private String estatusSecundario;
+    // ── IDs de hitos para botones de descarga ────────────────────────────────
+    /** ID del CIR generado — if(idRlCir) habilita DESCARGAR CIR */
+    private Integer idRlCir;
 
-    @JsonProperty("ultima_modificacion")
-    private UltimaModificacionDto ultimaModificacion;
+    /** ID del CIR queja — if(idQuejaRlCir) habilita DESCARGAR CIR QUEJA */
+    private Integer idQuejaRlCir;
 
-    @JsonProperty("bloqueado")
-    private Boolean bloqueado;
-
-    @JsonProperty("tiene_ficha")
-    private Boolean tieneFicha;
-
-    @JsonProperty("tiene_cir")
-    private Boolean tieneCir;
-
-    @JsonProperty("tiene_demanda")
-    private Boolean tieneDemanda;
-
-    @JsonProperty("tiene_oficio")
-    private Boolean tieneOficio;
-
-    @JsonProperty("tiene_audiencia")
-    private Boolean tieneAudiencia;
-
-    @JsonProperty("tiene_sentencia")
-    private Boolean tieneSentencia;
-
-    @JsonProperty("tiene_ejecutoria")
-    private Boolean tieneEjecutoria;
-
-    @JsonProperty("tiene_cumplimiento")
-    private Boolean tieneCumplimiento;
-
-    @JsonProperty("fecha_cir")
-    private String fechaCir;
-
-    @JsonProperty("fecha_demanda")
-    private String fechaDemanda;
-
-    @JsonProperty("fecha_oficio")
-    private String fechaOficio;
-
-    @JsonProperty("fecha_audiencia")
-    private String fechaAudiencia;
-
-    @JsonProperty("fecha_sentencia")
-    private String fechaSentencia;
-
-    @JsonProperty("fecha_ejecutoria")
-    private String fechaEjecutoria;
-
-    @JsonProperty("fecha_registro")
-    private String fechaRegistro;
-
+    /** ID de la demanda de amparo — if(idDemandaAmparo) habilita DESCARGAR DEMANDA */
     private Integer idDemandaAmparo;
 
-    @JsonProperty("semaforo")
-    private String semaforo;
+    // ── Flags de hitos para botones de modal/detalle ─────────────────────────
+    private Boolean tieneFicha;
+    private Boolean tieneCir;
+    private Boolean tieneDemanda;
+    private Boolean tieneOficio;
+    private Boolean tieneAudiencia;
+    private Boolean tieneSentencia;
+    private Boolean tieneEjecutoria;
+    private Boolean tieneCumplimiento;
+
+    // ── Fechas de hitos ───────────────────────────────────────────────────────
+    private String fechaCir;
+    private String fechaDemanda;
+    private String fechaOficio;
+    private String fechaAudiencia;
+    private String fechaSentencia;
+    private String fechaEjecutoria;
+
+    // ── Última modificación (estructura anidada) ──────────────────────────────
+    private UltimaModificacionDto ultimaModificacion;
 }

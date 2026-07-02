@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,6 +36,9 @@ public class IrlDemandaAmparoService {
     private final IrlDemandaAmparoJpaRepository repository;
 
     private static final String PLANTILLA = "plantilla_demanda_amparo.docx";
+
+    // DTO simple para exponer el archivo generado al controller (nombre + bytes)
+    public record ArchivoDescarga(String nombreArchivo, byte[] contenido) {}
 
     // ── GUARDAR ────────────────────────────────────────────────────────
   public IrlDemandaAmparoResponseDTO guardar(IrlDemandaAmparoRequestDTO req) {
@@ -99,9 +103,7 @@ public class IrlDemandaAmparoService {
                      
 
           try {
-        Map<String, String> variables = construirVariables(demanda);
-        byte[] bytes = generadorDocumentoService
-                .generarDesPlantilla(PLANTILLA, variables);
+        byte[] bytes = generarBytesDocx(demanda);
 
         String nombreArchivo = "AMPARO_" + idDemandaAmparo
                 + "_" + System.currentTimeMillis() + ".docx";
@@ -120,6 +122,34 @@ public class IrlDemandaAmparoService {
                 "Error al generar la demanda de amparo: " + e.getMessage(), e);
     }
 }
+
+    // ── DESCARGAR DOCX ───────────────────────────────────────────────────
+    // NOTA: regenera el docx al vuelo (no relee rutaPdfDemandaGenerada), por
+    // lo que {{FECHA_ACTUAL}} reflejará la fecha de la descarga, no la de la
+    // generación original. Si se necesita servir exactamente el archivo ya
+    // generado, cambiar esto por una lectura desde FileUploadPort usando
+    // demanda.getRutaPdfDemandaGenerada().
+    public Optional<ArchivoDescarga> obtenerArchivoPorId(Integer idDemandaAmparo) {
+        return port.findByIdEnriquecido(idDemandaAmparo)
+            .map(demanda -> {
+                try {
+                    byte[] bytes = generarBytesDocx(demanda);
+                    String nombreArchivo = "AMPARO_" + idDemandaAmparo + ".docx";
+                    return new ArchivoDescarga(nombreArchivo, bytes);
+                } catch (Exception e) {
+                    log.error("[IrlDemandaAmparo] Error generando docx para descarga, id {}: {}",
+                            idDemandaAmparo, e.getMessage());
+                    throw new RuntimeException(
+                            "Error al generar el archivo para descarga: " + e.getMessage(), e);
+                }
+            });
+    }
+
+    private byte[] generarBytesDocx(IrlDemandaAmparo demanda) throws Exception {
+        Map<String, String> variables = construirVariables(demanda);
+        return generadorDocumentoService.generarDesPlantilla(PLANTILLA, variables);
+    }
+
     // ── CARGAR DEMANDA PRESENTADA (SCRUM-2.3.4) ───────────────────────
     public IrlDemandaAmparoResponseDTO cargarDemandaPresentada(
             Integer idDemandaAmparo,

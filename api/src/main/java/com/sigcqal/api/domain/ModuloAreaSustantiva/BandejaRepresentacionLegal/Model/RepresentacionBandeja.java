@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RepresentacionBandeja {
-    private String folio;
-    private String idExpediente;
-    private String municipioProcedencia;
-    private String contribuyente;
-    private String tipoActo;
-    private String estatusPrincipal;
-    private String estatusSecundario;
-    private String ultimaModificacionDescripcion;
-    private String ultimaModificacionTimestamp;
+    private String  folio;
+    private String  idExpediente;
+    private String  municipioProcedencia;
+    private String  contribuyente;
+    private String  tipoActo;
+    private String  estatusPrincipal;
+    private String  estatusSecundario;
+    private String  ultimaModificacionDescripcion;
+    private String  ultimaModificacionTimestamp;
     private Boolean bloqueado;
     private Boolean tieneFicha;
     private Boolean tieneCir;
@@ -28,13 +28,27 @@ public class RepresentacionBandeja {
     private Boolean tieneSentencia;
     private Boolean tieneEjecutoria;
     private Boolean tieneCumplimiento;
-    private String fechaCir;
-    private String fechaDemanda;
-    private String fechaOficio;
-    private String fechaAudiencia;
-    private String fechaSentencia;
-    private String fechaEjecutoria;
-    private String fechaRegistro;
+    private String  fechaCir;
+    private String  fechaDemanda;
+    private String  fechaOficio;
+    private String  fechaAudiencia;
+    private String  fechaSentencia;
+    private String  fechaEjecutoria;
+    private String  fechaRegistro;
     private Integer idDemandaAmparo;
-    private String semaforo;
+    private String  semaforo;
+
+    // ── Campos que faltaban ──────────────────────────────────────────────────
+
+    /** Posición 27 en el array de la query — ID del registro representacion_legal */
+    private Integer idRepresentacionLegal;
+
+    /** Posición 28 — ID del CIR generado (habilita botón DESCARGAR CIR) */
+    private Integer idRlCir;
+
+    /** Posición 29 — ID del CIR queja (habilita botón DESCARGAR CIR QUEJA) */
+    private Integer idQuejaRlCir;
+
+    /** Posición 30 — indica si es IRL Evolución o Asignación Directa */
+    private Boolean esEvolucion;
 }
