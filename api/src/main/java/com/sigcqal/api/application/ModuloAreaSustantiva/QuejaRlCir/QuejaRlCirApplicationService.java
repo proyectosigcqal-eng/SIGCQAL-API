@@ -101,9 +101,11 @@ public class QuejaRlCirApplicationService {
             QuejasAri quejaAri = quejaAriPort.buscarPorId(resolucion.getIdAri().longValue())
                 .orElseThrow(() -> new RuntimeException("No se encontró el registro Queja ARI vinculado"));
 
-            ContestacionAutoridad respuestaAutoridad = contestacionAutoridadPort.buscarPorId(resolucion.getIdQuejaRespuestaAutoridad())
-                .orElseThrow(() -> new RuntimeException("No se encontró la Contestación de la Autoridad vinculada"));
-
+            ContestacionAutoridad respuestaAutoridad = null;
+            if (resolucion.getIdQuejaRespuestaAutoridad() != null) {
+                respuestaAutoridad = contestacionAutoridadPort.buscarPorId(resolucion.getIdQuejaRespuestaAutoridad())
+                    .orElse(null);
+            }
 
             // 5. SOLUCIÓN OPTIMIZADA: Delegar la resolución del nombre al ExpedienteService mediante su Folio
             String nombreContribuyente = "[CONTRIBUYENTE NO ENCONTRADO]";
@@ -134,7 +136,7 @@ public class QuejaRlCirApplicationService {
                 
                 Map.entry("{{FOLIO_GOBIERNO}}", nvl(expediente.getFolioGobierno(), "[FOLIO NULO]")),
                 Map.entry("{{CONTRIBUYENTE}}", nvl(nombreContribuyente, "[CONTRIBUYENTE NULO]")),
-                Map.entry("{{NUMERO_OFICIO}}", nvl(respuestaAutoridad.getNumeroOficio(), "[NÚM OFICIO NULO]")),
+                Map.entry("{{NUMERO_OFICIO}}", nvl(respuestaAutoridad != null ? respuestaAutoridad.getNumeroOficio() : null, "[NÚM OFICIO NULO]")),
                 Map.entry("{{MULTAS_CREDITO}}", nvl(quejaAri.getMultasCredito(), "0.00")),
                 Map.entry("{{NUM_EXPEDIENTE_OFICIAL}}", nvl(quejaAri.getNumExpedienteOficial(), "[EXPEDIENTE NULO]")),
                 

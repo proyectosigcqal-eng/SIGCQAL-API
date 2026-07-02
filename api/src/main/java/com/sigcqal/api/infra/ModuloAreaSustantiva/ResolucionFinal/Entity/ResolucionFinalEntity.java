@@ -58,7 +58,7 @@ public class ResolucionFinalEntity {
     private Integer idAri;
 
     // ✅ Cambiado a Long (para que coincida con ContestacionAutoridadEntity) e insertable/updatable = false
-    @Column(name = "id_queja_respuesta_autoridad", nullable = false, insertable = false, updatable = false)
+    @Column(name = "id_queja_respuesta_autoridad", nullable = true, insertable = false, updatable = false)
     private Long idQuejaRespuestaAutoridad;
 
     @Column(name = "id_estatus_queja", nullable = false)
