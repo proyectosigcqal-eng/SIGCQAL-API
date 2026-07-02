@@ -1,9 +1,11 @@
 package com.sigcqal.api.web.ModuloAreaSustantiva.BandejaRepresentacionLegal.Controller;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.BandejaRepresentacionLegal.BandejaRepresentacionService;
+import com.sigcqal.api.application.ModuloAreaSustantiva.BandejaRepresentacionLegal.DetalleIrlService;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BandejaRepresentacionLegal.Model.RepresentacionBandeja;
 import com.sigcqal.api.infra.ModuloAreaSustantiva.BandejaRepresentacionLegal.Mapper.BandejaRepresentacionMapper;
 import com.sigcqal.api.web.ModuloAreaSustantiva.BandejaRepresentacionLegal.Dto.BandejaRepresentacionResponseDto;
+import com.sigcqal.api.web.ModuloAreaSustantiva.BandejaRepresentacionLegal.Dto.DetalleIrlResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +20,18 @@ import java.util.stream.Collectors;
 public class BandejaRepresentacionController {
 
     private final BandejaRepresentacionService service;
-    private final BandejaRepresentacionMapper mapper;
+    private final BandejaRepresentacionMapper  mapper;
+    private final DetalleIrlService            detalleIrlService;  // ← inyectar
 
     @GetMapping("/bandeja-representacion-legal")
     public ResponseEntity<List<BandejaRepresentacionResponseDto>> obtenerBandeja(
-        @RequestParam(required = false, defaultValue = "") String search,
-        @RequestParam(required = false, defaultValue = "") String estatus
+        @RequestParam(required = false)                          Boolean esEvolucion,
+        @RequestParam(required = false, defaultValue = "")      String  search,
+        @RequestParam(required = false, defaultValue = "")      String  estatus
     ) {
         List<RepresentacionBandeja> bandeja = service.obtenerBandeja(
-            search.isEmpty() ? null : search,
+            esEvolucion,
+            search.isEmpty()  ? null : search,
             estatus.isEmpty() ? null : estatus
         );
 
@@ -35,5 +40,13 @@ public class BandejaRepresentacionController {
             .collect(Collectors.toList());
 
         return ResponseEntity.ok(response);
+    }
+
+    // ── NUEVO: detalle de etapas judiciales por folio ────────────────────
+    @GetMapping("/bandeja-representacion-legal/detalle-irl/{folio}")
+    public ResponseEntity<DetalleIrlResponseDto> obtenerDetalleIrl(
+        @PathVariable String folio
+    ) {
+        return ResponseEntity.ok(detalleIrlService.obtenerDetalle(folio));
     }
 }
