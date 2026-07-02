@@ -2,15 +2,19 @@ package com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoMemorandum.Controll
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.SeguimientoMemorandum.SeguimientoMemorandumService;
 import com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoMemorandum.Dto.SeguimientoMemorandumRequestDTO;
@@ -26,10 +30,19 @@ public class SeguimientoMemorandumController {
 
     private final SeguimientoMemorandumService service;
 
-    @PostMapping("/guardar")
+    @PostMapping(value = "/guardar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SeguimientoMemorandumResponseDTO> guardar(
-            @RequestBody SeguimientoMemorandumRequestDTO request) {
+            @ModelAttribute SeguimientoMemorandumRequestDTO request) {
         return ResponseEntity.ok(service.guardar(request));
+    }
+
+    @PostMapping(value = "/{idSeguimientoMemorandum}/adjunto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SeguimientoMemorandumResponseDTO> subirAdjunto(
+            @PathVariable Long idSeguimientoMemorandum,
+            @RequestParam(value = "archivo", required = false) MultipartFile archivo,
+            @RequestParam(value = "archivoAdjunto", required = false) MultipartFile archivoAdjunto) {
+        MultipartFile file = (archivo != null && !archivo.isEmpty()) ? archivo : archivoAdjunto;
+        return ResponseEntity.ok(service.guardarAdjunto(idSeguimientoMemorandum, file));
     }
 
     @GetMapping("/listar")
@@ -42,11 +55,12 @@ public class SeguimientoMemorandumController {
             @PathVariable Long idMemo) {
         return ResponseEntity.ok(service.listarPorMemorandumId(idMemo));
     }
- @PutMapping("/concluir/{idSeguimiento}")
-public ResponseEntity<Void> concluir(
-        @PathVariable Long idSeguimiento,
-        @RequestBody SeguimientoMemorandumRequestDTO request) {
-    service.concluir(idSeguimiento, request);
-    return ResponseEntity.ok().build();
-}
+
+    @PutMapping("/concluir/{idSeguimiento}")
+    public ResponseEntity<Void> concluir(
+            @PathVariable Long idSeguimiento,
+            @RequestBody SeguimientoMemorandumRequestDTO request) {
+        service.concluir(idSeguimiento, request);
+        return ResponseEntity.ok().build();
+    }
 }

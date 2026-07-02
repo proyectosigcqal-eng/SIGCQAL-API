@@ -1,5 +1,7 @@
 package com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoMemorandum.Dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -12,9 +14,10 @@ public class SeguimientoMemorandumRequestDTO {
     private String respuestaSeguimientoMemorandum;
     private String fechaResolucion;
     private String horaResolucion;
-    private String archivoAdjunto;
+
+    /** PDF opcional; se almacena bajo /api/files/seguimiento-memorandum/{folioFormateado}.pdf */
+    private MultipartFile archivoAdjunto;
 
     private Long idUsuario;
     private Long idEstatus;
 }
-

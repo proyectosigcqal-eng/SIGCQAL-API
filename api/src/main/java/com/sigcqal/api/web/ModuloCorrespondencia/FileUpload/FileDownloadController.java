@@ -58,6 +58,12 @@ public class FileDownloadController {
         return servirArchivo(root.resolve("uploads/memorandums/" + nombre), nombre);
     }
 
+    @GetMapping("/seguimiento-memorandum/{nombre}")
+    public ResponseEntity<Resource> descargarSeguimientoMemorandum(@PathVariable String nombre) {
+        Path root = Paths.get(".").toAbsolutePath().normalize();
+        return servirArchivo(root.resolve("uploads/seguimiento-memorandum/" + nombre), nombre);
+    }
+
     @GetMapping("/oficios/{nombre}")
     public ResponseEntity<Resource> descargarOficio(@PathVariable String nombre) {
         Path root = Paths.get(".").toAbsolutePath().normalize();

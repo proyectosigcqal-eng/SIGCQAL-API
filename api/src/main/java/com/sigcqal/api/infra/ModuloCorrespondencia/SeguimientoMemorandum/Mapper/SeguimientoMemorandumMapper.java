@@ -99,11 +99,28 @@ public class SeguimientoMemorandumMapper {
         domain.getFechaResolucion() != null ? domain.getFechaResolucion().toString() : null);
         dto.setHoraResolucion(
         domain.getHoraResolucion() != null ? domain.getHoraResolucion().toString() : null);
-        dto.setArchivoAdjunto(domain.getArchivoAdjunto());
+        dto.setArchivoAdjunto(normalizarUrlArchivo(domain.getArchivoAdjunto()));
         dto.setIdUsuario(domain.getIdUsuario());
         dto.setIdEstatus(domain.getIdEstatus());
         dto.setFechaRegistro(
         domain.getFechaRegistro() != null ? domain.getFechaRegistro().toString() : null);
         return dto;
+    }
+
+    /**
+     * Rutas de adjuntos servibles bajo GET /api/files/seguimiento-memorandum/{nombre}.
+     * Registros legacy pueden tener solo el nombre de archivo.
+     */
+    private String normalizarUrlArchivo(String archivoAdjunto) {
+        if (archivoAdjunto == null || archivoAdjunto.isBlank()) {
+            return archivoAdjunto;
+        }
+        if (archivoAdjunto.startsWith("/api/files/")) {
+            return archivoAdjunto;
+        }
+        String nombre = archivoAdjunto.contains("/")
+                ? archivoAdjunto.substring(archivoAdjunto.lastIndexOf('/') + 1)
+                : archivoAdjunto;
+        return "/api/files/seguimiento-memorandum/" + nombre;
     }
 }

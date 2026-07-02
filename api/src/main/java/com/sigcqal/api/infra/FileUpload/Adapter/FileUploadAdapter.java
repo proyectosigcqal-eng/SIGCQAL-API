@@ -21,6 +21,7 @@ public class FileUploadAdapter implements FileUploadPort {
     private final String carpetaDestinoAmparo = "uploads/amparo/";
     private final String carpetaDestinoRLCir = "uploads/RLCir/";
     private final String carpetaDestinoQuejaRlCir = "uploads/queja-rl-cir/";
+    private final String carpetaDestinoSeguimientoMemorandum = "uploads/seguimiento-memorandum/";
 
 
    @Override
@@ -182,6 +183,27 @@ public String guardarArchivoAmparo(byte[] contenido, String nombreArchivo) {
         } catch (IOException e) {
             e.printStackTrace(); 
             throw new RuntimeException("Error físico al escribir el archivo Queja RLCir en disco: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String guardarArchivoSeguimientoMemorandum(byte[] contenido, String nombreArchivo) {
+        try {
+            Path root = Paths.get(".").toAbsolutePath().normalize();
+            Path directorioDestino = root.resolve(carpetaDestinoSeguimientoMemorandum);
+            if (!Files.exists(directorioDestino)) {
+                Files.createDirectories(directorioDestino);
+            }
+
+            Path ficheroFinal = directorioDestino.resolve(nombreArchivo);
+            Files.write(ficheroFinal, contenido);
+            System.out.println("Adjunto seguimiento memorandum guardado en: " + ficheroFinal.toAbsolutePath());
+
+            return "/api/files/seguimiento-memorandum/" + nombreArchivo;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FileStorageException(
+                "Error de E/S al guardar adjunto de seguimiento memorandum: " + e.getMessage(), e);
         }
     }
 }
