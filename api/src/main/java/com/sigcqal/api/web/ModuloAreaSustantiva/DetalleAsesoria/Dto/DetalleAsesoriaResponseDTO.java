@@ -80,4 +80,20 @@ public class DetalleAsesoriaResponseDTO {
         @JsonProperty("datosContribuyente")
         private java.util.Map<String, String> datosContribuyente;
     }
+
+    // En DetalleAsesoriaResponseDTO — agrega estos campos
+@JsonProperty("nombre_asesor")
+private String nombreAsesor;
+
+@JsonProperty("rfc_asesor")
+private String rfcAsesor;
+
+@JsonProperty("nombre_representante")
+private String nombreRepresentante;
+
+@JsonProperty("identificacion_contribuyente")  // RFC o número de identificación
+private String identificacionContribuyente;
+
+@JsonProperty("fecha_solicitud")
+private String fechaSolicitud;
 }

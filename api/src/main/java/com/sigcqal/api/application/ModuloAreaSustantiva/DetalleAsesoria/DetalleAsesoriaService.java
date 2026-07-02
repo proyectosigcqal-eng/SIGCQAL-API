@@ -121,6 +121,25 @@ public class DetalleAsesoriaService {
                 .progresoPorcentaje(progreso)
                 .analisisLegal(analisis)
                 .bitacora(bitacora)
+                // ── NUEVO: estos 5 campos ya existen en el DTO (con su @JsonProperty
+                // snake_case) y el front ya los lee bien — solo faltaba setearlos aquí.
+                // Sin esto quedaban en null y el front caía al fallback ('[fecha
+                // pendiente]', cadena vacía), que es justo lo que se ve en tu captura.
+                .nombreAsesor(str(projection.getNombreAsesor()))
+                .rfcAsesor(str(projection.getRfcAsesor())) // necesita el cambio de query de abajo
+                .fechaSolicitud(projection.getFechaSolicitud() != null
+                        ? projection.getFechaSolicitud().toString() : null)
+                        // OJO: sin toFecha() — el front hace fechaInput.split('T')[0].split('-'),
+                        // necesita formato ISO con guiones (2026-07-01), no con diagonales
+                .nombreRepresentante(nombreCompleto)
+                        // ← asumo que es el mismo contribuyente; si "representante" es alguien
+                        // distinto en tu modelo (otra persona que presenta el trámite), dime
+                        // de dónde sale y lo ajusto
+                .identificacionContribuyente(str(projection.getCurp()))
+                        // ← el texto dice "credencial para votar": el INE trae CURP impreso,
+                        // no RFC, así que uso CURP por default. Si esto debe ser la "clave de
+                        // elector" (la que capturas en tu servicio de OCR de INE), dime en
+                        // qué tabla vive y lo cambio por eso.
                 .build();
     }
 
