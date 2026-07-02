@@ -23,7 +23,7 @@ public class ExpedienteEntity {
     @Column(name = "id_expediente")
     private Integer id;
 
-    @Column(name = "folio_gobierno")
+    @Column(name = "folio_gobierno", nullable = false, unique = true, length = 50)
     private String folioGobierno;
 
     @Column(name = "fecha_solicitud")
