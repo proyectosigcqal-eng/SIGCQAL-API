@@ -19,6 +19,7 @@ import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAseso
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteResponseDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,7 +32,7 @@ public class ExpedienteController {
 
     @PostMapping
     public ResponseEntity<ExpedienteResponseDTO> guardar(
-            @RequestBody ExpedienteRequestDTO request) {
+            @Valid @RequestBody ExpedienteRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(request));
     }
 
