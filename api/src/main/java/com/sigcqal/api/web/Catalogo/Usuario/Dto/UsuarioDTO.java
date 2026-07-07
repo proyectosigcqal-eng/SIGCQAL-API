@@ -16,6 +16,7 @@ public class UsuarioDTO {
     private Long         idArea;
     private String       nombreArea;
     private String       usuarioLogin;
+    private String       nombreCompleto;
     private String       correoElectronico;
     private Boolean      activo;          
 }

@@ -53,8 +53,22 @@ public class UsuarioService {
         dto.setIdArea(dom.getIdArea());
         dto.setNombreArea(dom.getNombreArea());
         dto.setUsuarioLogin(dom.getUsuarioLogin());
+
+        if (dom.getIdPersona() != null) {
+            personaRepositoryPort.findById(dom.getIdPersona()).ifPresent((persona) -> {
+                String nombreCompleto =
+                        (persona.getNombre() == null ? "" : persona.getNombre().trim())
+                                + " " + (persona.getApellidoPaterno() == null ? "" : persona.getApellidoPaterno().trim())
+                                + " " + (persona.getApellidoMaterno() == null ? "" : persona.getApellidoMaterno().trim());
+                nombreCompleto = nombreCompleto.trim().replaceAll("\\s+", " ");
+                if (!nombreCompleto.isEmpty()) {
+                    dto.setNombreCompleto(nombreCompleto);
+                }
+            });
+        }
+
         dto.setCorreoElectronico(dom.getCorreoElectronico());
-        dto.setActivo(dom.getActivo()); 
+        dto.setActivo(dom.getActivo());
         return dto;
     }
 
