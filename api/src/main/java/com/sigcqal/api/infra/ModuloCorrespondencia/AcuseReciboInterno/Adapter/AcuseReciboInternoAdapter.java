@@ -61,4 +61,12 @@ public List<AcuseReciboInterno> findByIdMemorandum(Long idMemorandum) {
             .map(mapper::toDomain)
             .collect(Collectors.toList());
 }
+
+@Override
+public List<AcuseReciboInterno> findAll() {
+    return repository.findAll()
+        .stream()
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
+}
 }

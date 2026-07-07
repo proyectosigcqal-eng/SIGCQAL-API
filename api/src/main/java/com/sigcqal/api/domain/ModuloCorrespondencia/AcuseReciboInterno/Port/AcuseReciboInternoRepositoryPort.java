@@ -20,4 +20,7 @@ public interface AcuseReciboInternoRepositoryPort {
      List<AcuseReciboInterno> findByIdMemorandum(@Param("idMemorandum") Long idMemorandum);
 
 List<AcuseReciboInterno> findByArea(Long idArea);
+
+// ← agregar esto
+    List<AcuseReciboInterno> findAll();
 }

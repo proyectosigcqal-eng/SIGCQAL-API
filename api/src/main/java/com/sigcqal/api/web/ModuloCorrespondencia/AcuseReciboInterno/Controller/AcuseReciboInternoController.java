@@ -23,7 +23,10 @@ public class AcuseReciboInternoController {
     public ResponseEntity<List<AcuseReciboInternoResponseDTO>> listar(@PathVariable Long idUsuario) {
         return ResponseEntity.ok(service.listarPorUsuario(idUsuario));
     }
-
+@GetMapping("/todos")
+public ResponseEntity<List<AcuseReciboInternoResponseDTO>> listarTodos() {
+    return ResponseEntity.ok(service.listarTodos());
+}
     // 🔹 DETALLE
     @GetMapping("/{idAcuse}")
     public ResponseEntity<AcuseReciboInternoResponseDTO> detalle(@PathVariable Long idAcuse) {

@@ -112,5 +112,10 @@ public List<AcuseReciboInternoResponseDTO> listarPorMemorandum(Long idMemorandum
         .map(mapper::toResponse) 
         .collect(Collectors.toList());
 }
-
+public List<AcuseReciboInternoResponseDTO> listarTodos() {
+    return repository.findAll()
+        .stream()
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
 }
