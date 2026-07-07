@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
+import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Port.AcuseOficioRepositoryPort;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Oficio.Model.Oficio;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Oficio.Port.OficioRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Oficio.Mapper.OficioMapper;
@@ -34,6 +35,9 @@ public class OficioService {
 
     @Autowired
 private GeneradorDocumentoService generadorDocumentoService;
+
+@Autowired
+    private AcuseOficioRepositoryPort acuseOficioRepositoryPort;
 
   
     @Transactional
@@ -120,19 +124,35 @@ public OficioResponseDTO buscarPorId(Long id) {
         return nuevoFolio;
     }
 
-      @Transactional
+ @Transactional
     public void finalizarAsignacion(Long idOficio, byte[] archivoPdf, Long idArea) {
+        // 1. Buscamos el oficio
         Oficio oficio = repositoryPort.buscarPorId(idOficio)
             .orElseThrow(() -> new EntityNotFoundException("Oficio no encontrado"));
 
+        // 2. Guardamos el PDF
         String nombreArchivo = "OFICIO_" + idOficio + "_FIRMADO.pdf";
         String urlArchivo = fileUploadPort.guardarArchivo(archivoPdf, nombreArchivo);
 
+        // 3. Actualizamos el oficio
         oficio.setUrlSolicitudMemorandum(urlArchivo);
         oficio.setIdArea(idArea);
         
         repositoryPort.save(oficio);
-    }
 
+        // 4. NUEVO: Creamos el Acuse de Oficio pendiente de revisión
+        // (Asegúrate de importar tu clase de dominio AcuseOficio)
+        com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio acuse = 
+            new com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio();
+        
+        acuse.setIdOficio(idOficio);
+        acuse.setEsDelArea(true); // FUNDAMENTAL para que tu query del frontend lo encuentre
+        
+        // Nota: NO seteamos usuarioRevisor, fechaAceptacion ni horaAceptacion 
+        // porque apenas está "pendiente". Se llenarán cuando alguien lo revise.
+
+        // 5. Guardamos el acuse en la base de datos
+        acuseOficioRepositoryPort.save(acuse); 
+    }
 
 }

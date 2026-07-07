@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Model.AcuseCorrespondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Port.AcuseCorrespondenciaRepositoryPort;
+import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Model.AcuseReciboInterno;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseCorrespondencia.Mapper.AcuseCorrespondenciaMapper;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseCorrespondencia.Repository.AcuseCorrespondenciaJpaRepository;
 
@@ -47,4 +48,12 @@ public class AcuseCorrespondenciaAdapter implements AcuseCorrespondenciaReposito
             .map(mapper::toDomain)
             .collect(Collectors.toList());
     }
+
+    @Override
+public List<AcuseCorrespondencia> findAll() {
+    return repository.findAll()
+        .stream()
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
+}
 }

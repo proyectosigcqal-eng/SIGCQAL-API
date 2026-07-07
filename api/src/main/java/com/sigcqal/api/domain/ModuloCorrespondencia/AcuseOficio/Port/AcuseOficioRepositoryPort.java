@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio;
 
+
 public interface AcuseOficioRepositoryPort {
 
     Optional<AcuseOficio> findById(Long id);
@@ -14,4 +15,5 @@ public interface AcuseOficioRepositoryPort {
 
     boolean existePorOficio(Long idOficio);
     List<AcuseOficio> findByIdOficio(Long idOficio);
+     List<AcuseOficio> findAll();
 }

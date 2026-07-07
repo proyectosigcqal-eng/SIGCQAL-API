@@ -28,11 +28,28 @@ public class AcuseOficioMapper {
             domain.setObservaciones(oficio.getObservaciones());
             domain.setUrlMemorandumGenerado(oficio.getUrlMemorandumGenerado());
             
-            if (oficio.getFechaEmision() != null) domain.setFechaEmision(oficio.getFechaEmision().toString());
-            if (oficio.getCorrespondencia() != null) domain.setIdCorrespondencia(oficio.getCorrespondencia().getId());
-            //if (oficio.getPlantilla() != null) domain.setIdPlantilla(oficio.getPlantilla().getId());
-            if (oficio.getUsuarioEmisor() != null) domain.setIdUsuarioEmisor(oficio.getUsuarioEmisor().getId());
-            if (oficio.getUsuarioFirmante() != null) domain.setIdUsuarioFirmante(oficio.getUsuarioFirmante().getId());
+            if (oficio.getFechaEmision() != null) {
+                domain.setFechaEmision(oficio.getFechaEmision().toString());
+            }
+
+            if (oficio.getCorrespondencia() != null) {
+                domain.setIdCorrespondencia(oficio.getCorrespondencia().getId());
+                
+                // NUEVO: Extracción de datos de correspondencia hacia el dominio
+                domain.setFolioUnicoCorrespondencia(oficio.getCorrespondencia().getFolioUnico());
+                domain.setAsuntoCorrespondencia(oficio.getCorrespondencia().getAsunto());
+            }
+            
+            if (oficio.getUsuarioEmisor() != null) {
+                domain.setIdUsuarioEmisor(oficio.getUsuarioEmisor().getId());
+                
+                
+               
+            }
+            
+            if (oficio.getUsuarioFirmante() != null) {
+                domain.setIdUsuarioFirmante(oficio.getUsuarioFirmante().getId());
+            }
             
             if (oficio.getArea() != null) {
                 domain.setIdArea(oficio.getArea().getId());
@@ -79,6 +96,12 @@ public class AcuseOficioMapper {
         dto.setIdUsuarioRevisor(d.getIdUsuarioRevisor());
         dto.setIdOficio(d.getIdOficio());
         dto.setIdCorrespondencia(d.getIdCorrespondencia());
+        
+        // NUEVO: Se envían las nuevas propiedades mapeadas desde el dominio al DTO final
+        dto.setFolioUnicoCorrespondencia(d.getFolioUnicoCorrespondencia());
+        dto.setAsuntoCorrespondencia(d.getAsuntoCorrespondencia());
+        dto.setNombreUsuarioEmisor(d.getNombreUsuarioEmisor());
+
         dto.setNumOficio(d.getNumMemo()); 
         dto.setInstruccionSeguimiento(d.getInstruccionSeguimiento());
         dto.setFechaEmision(d.getFechaEmision());

@@ -32,4 +32,9 @@ public class AcuseOficio {
     private Long idArea;
     private String nombreArea; // Se llenará con area.getNombre()
     private Long idUsuarioFirmante;
+
+    // NUEVO: Campos agregados para corregir las columnas vacías (-) en la vista
+    private String folioUnicoCorrespondencia;
+    private String asuntoCorrespondencia;
+    private String nombreUsuarioEmisor;
 }

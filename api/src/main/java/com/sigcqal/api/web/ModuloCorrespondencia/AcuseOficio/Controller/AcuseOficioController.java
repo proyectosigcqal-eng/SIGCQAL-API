@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.sigcqal.api.application.ModuloCorrespondencia.AcuseOficio.AcuseOficioService;
 import com.sigcqal.api.web.ModuloCorrespondencia.AcuseOficio.Dto.*;
+import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.AcuseReciboInternoResponseDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoOficio.Dto.SeguimientoOficioRequestDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,11 @@ public class AcuseOficioController {
     public ResponseEntity<AcuseOficioResponseDTO> crear(@RequestBody AcuseOficioRequestDTO request) {
         return ResponseEntity.ok(service.crearAcuseAutomatico(request));
     }
+
+    @GetMapping("/todos")
+public ResponseEntity<List<AcuseOficioResponseDTO>> listarTodos() {
+    return ResponseEntity.ok(service.listarTodos());
+}
 
     @GetMapping("/area/{idArea}")
     public ResponseEntity<List<AcuseOficioResponseDTO>> listarPorArea(@PathVariable Long idArea) {

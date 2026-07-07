@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Port.AcuseOficioRepositoryPort;
+import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Model.AcuseReciboInterno;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseOficio.Mapper.AcuseOficioMapper;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseOficio.Repository.AcuseOficioJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,12 @@ public List<AcuseOficio> findByIdOficio(Long idOficio) {
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
+}
+@Override
+public List<AcuseOficio> findAll() {
+    return repository.findAllConRelaciones()
+        .stream()
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
 }
 }

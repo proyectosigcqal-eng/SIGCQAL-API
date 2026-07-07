@@ -11,6 +11,7 @@ import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Model.A
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Port.AcuseCorrespondenciaRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseCorrespondencia.Mapper.AcuseCorrespondenciaMapper;
 import com.sigcqal.api.web.ModuloCorrespondencia.AcuseCorrespondencia.Dto.*;
+import com.sigcqal.api.web.ModuloCorrespondencia.AcuseOficio.Dto.AcuseOficioResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,4 +50,11 @@ public class AcuseCorrespondenciaService {
         .map(mapper::toResponse)
         .collect(Collectors.toList());
     }
+
+    public List<AcuseCorrespondenciaResponseDTO> listarTodos() {
+    return repository.findAll()
+        .stream()
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
 }

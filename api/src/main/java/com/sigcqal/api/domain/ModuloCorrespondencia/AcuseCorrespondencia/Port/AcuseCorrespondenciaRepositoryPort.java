@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Model.AcuseCorrespondencia;
 
+
 public interface AcuseCorrespondenciaRepositoryPort {
 
     AcuseCorrespondencia save(AcuseCorrespondencia acuse);
@@ -14,4 +15,6 @@ public interface AcuseCorrespondenciaRepositoryPort {
     List<AcuseCorrespondencia> findByArea(Long idArea);
 
     List<AcuseCorrespondencia> findByCorrespondencia(Long idCorrespondencia);
+
+    List<AcuseCorrespondencia> findAll();
 }

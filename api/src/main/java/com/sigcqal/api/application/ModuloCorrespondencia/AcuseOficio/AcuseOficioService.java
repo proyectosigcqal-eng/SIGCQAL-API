@@ -81,5 +81,10 @@ public List<AcuseOficioResponseDTO> listarPorOficio(Long idOficio) {
             .map(mapper::toResponse)
             .collect(Collectors.toList());
 }
-
+public List<AcuseOficioResponseDTO> listarTodos() {
+    return repository.findAll()
+        .stream()
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
 }

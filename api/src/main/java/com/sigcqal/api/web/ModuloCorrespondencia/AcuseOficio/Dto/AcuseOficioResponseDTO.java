@@ -26,4 +26,9 @@ public class AcuseOficioResponseDTO {
     private Long idArea;
     private String nombreArea;
     private Long idUsuarioFirmante;
+
+    // NUEVO: Campos necesarios para poblar la tabla en el frontend
+    private String folioUnicoCorrespondencia;
+    private String asuntoCorrespondencia;
+    private String nombreUsuarioEmisor;
 }
