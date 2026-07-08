@@ -79,4 +79,11 @@ public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
         entity.setActivo(false);
         jpaRepository.save(entity);
     }
+
+    // En UsuarioAdapter
+@Override
+public Optional<Usuario> findByUsuarioLogin(String login) {
+    return jpaRepository.findByUsuarioLogin(login)
+            .map(mapper::toDomain);
+}
 }

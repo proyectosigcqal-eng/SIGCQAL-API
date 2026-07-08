@@ -11,4 +11,5 @@ public interface UsuarioRepositoryPort {
      Usuario save(Usuario usuario);
     void actualizarRoles(Long idUsuario, List<Long> idRoles);
     void darBaja(Long idUsuario);
+    Optional<Usuario> findByUsuarioLogin(String login);
 }
