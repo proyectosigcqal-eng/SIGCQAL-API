@@ -24,7 +24,7 @@ public class PersonaEntity {
     private Long id;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_direccion")
     private DireccionEntity direccion;
 
