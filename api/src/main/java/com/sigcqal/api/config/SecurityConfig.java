@@ -1,43 +1,78 @@
 package com.sigcqal.api.config;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.sigcqal.api.security.JwtAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    private final JwtAuthenticationFilter jwtFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, Environment env) throws Exception {
-        boolean prod = Arrays.asList(env.getActiveProfiles()).contains("prod");
-
-        http
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
             .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .headers(headers -> {
-                if (prod) {
-                    headers.frameOptions(frame -> frame.sameOrigin());
-                } else {
-                    // Dev: permitir iframe cross-origin desde Vite (localhost:5173)
-                    headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
-                    headers.contentSecurityPolicy(csp -> csp.policyDirectives(
-                        "frame-ancestors 'self' http://localhost:5173 http://127.0.0.1:5173"));
-                }
-            });
+            .cors(Customizer.withDefaults())  // ← usa el bean corsConfigurationSource()
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/files/**").permitAll()
+                .requestMatchers("/catalogos/areas/**")
+                    .hasAnyRole("Administrador", "Administrador_Correspondencia")
+                .requestMatchers("/api/admin/**").hasRole("Administrador")
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
 
-        return http.build();
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://38.19.36.163:8181",
+            "http://38.19.36.163"
+        ));
+
+        config.setAllowedMethods(List.of(
+            "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+        ));
+
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
