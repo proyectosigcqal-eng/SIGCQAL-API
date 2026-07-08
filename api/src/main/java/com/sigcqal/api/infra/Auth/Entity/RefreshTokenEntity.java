@@ -2,6 +2,8 @@ package com.sigcqal.api.infra.Auth.Entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.sigcqal.api.infra.Catalogo.Usuario.Entity.UsuarioEntity;
 
 import jakarta.persistence.Column;
@@ -31,7 +33,10 @@ public class RefreshTokenEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UsuarioEntity user;
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
     private Boolean revoked = false;
-
+    @CreationTimestamp
+@Column(name = "created_at", updatable = false)
+private LocalDateTime createdAt;
 }
