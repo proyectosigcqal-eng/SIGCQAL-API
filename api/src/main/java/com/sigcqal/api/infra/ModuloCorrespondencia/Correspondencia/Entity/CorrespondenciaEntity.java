@@ -79,7 +79,7 @@ public class CorrespondenciaEntity {
     @Column(name = "id_tipo_correspondencia")
     private Integer idTipoCorrespondencia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_correspondencia",insertable = false, updatable = false)
     private TipoCorrespondenciaEntity tipoCorrespondencia;
 }
