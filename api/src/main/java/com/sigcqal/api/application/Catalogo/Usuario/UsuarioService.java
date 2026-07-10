@@ -66,31 +66,56 @@ public class UsuarioService {
     }
 
     // ── ESCRITURA (sobrescriben readOnly con @Transactional propio) ──────────
-
-    @Transactional // ✅ adaptado del externo
-    public UsuarioDTO crearUsuario(UsuarioAdminRequestDTO request) {
-        if (request.getNombre() == null || request.getUsuarioLogin() == null
-                || request.getPassword() == null) {
-            throw new InvalidRequestException("Nombre, usuario y contraseña son obligatorios.");
-        }
-
-        Persona persona = new Persona();
-        persona.setNombre(request.getNombre());
-        persona.setApellidoPaterno(request.getApellidoPaterno());
-        persona.setApellidoMaterno(request.getApellidoMaterno());
-        persona.setCorreo(request.getCorreo());
-        Long idPersona = personaRepositoryPort.save(persona).getId();
-
-        Usuario usuario = new Usuario();
-        usuario.setIdPersona(idPersona);
-        usuario.setUsuarioLogin(request.getUsuarioLogin());
-        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
-        usuario.setCorreoElectronico(request.getCorreo());
-        usuario.setIdArea(request.getIdArea());
-        usuario.setActivo(true);
-
-        return mapToResponse(repositoryPort.save(usuario));
+@Transactional
+public UsuarioDTO crearUsuario(UsuarioAdminRequestDTO request) {
+    if (request.getNombre() == null || request.getUsuarioLogin() == null
+            || request.getPassword() == null) {
+        throw new InvalidRequestException("Nombre, usuario y contraseña son obligatorios.");
     }
+
+    // ← FIX bug 3: si el usuario ya existe (activo o inactivo), reactivarlo
+    // en lugar de crear uno duplicado que rompe el constraint unique de usuario_login
+    return repositoryPort.findByUsuarioLogin(request.getUsuarioLogin())
+        .map(usuarioExistente -> {
+            // Reactivar usuario existente
+            usuarioExistente.setActivo(true);
+            usuarioExistente.setPassword(passwordEncoder.encode(request.getPassword()));
+            if (request.getIdArea() != null) usuarioExistente.setIdArea(request.getIdArea());
+            if (request.getCorreo() != null) usuarioExistente.setCorreoElectronico(request.getCorreo());
+
+            // Actualizar persona si existe
+            if (usuarioExistente.getIdPersona() != null) {
+                personaRepositoryPort.findById(usuarioExistente.getIdPersona()).ifPresent(persona -> {
+                    if (request.getNombre()          != null) persona.setNombre(request.getNombre());
+                    if (request.getApellidoPaterno() != null) persona.setApellidoPaterno(request.getApellidoPaterno());
+                    if (request.getApellidoMaterno() != null) persona.setApellidoMaterno(request.getApellidoMaterno());
+                    if (request.getCorreo()          != null) persona.setCorreo(request.getCorreo());
+                    personaRepositoryPort.save(persona);
+                });
+            }
+
+            return mapToResponse(repositoryPort.save(usuarioExistente));
+        })
+        .orElseGet(() -> {
+            // Flujo normal: usuario nuevo
+            Persona persona = new Persona();
+            persona.setNombre(request.getNombre());
+            persona.setApellidoPaterno(request.getApellidoPaterno());
+            persona.setApellidoMaterno(request.getApellidoMaterno());
+            persona.setCorreo(request.getCorreo());
+            Long idPersona = personaRepositoryPort.save(persona).getId();
+
+            Usuario usuario = new Usuario();
+            usuario.setIdPersona(idPersona);
+            usuario.setUsuarioLogin(request.getUsuarioLogin());
+            usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+            usuario.setCorreoElectronico(request.getCorreo());
+            usuario.setIdArea(request.getIdArea()); // ← un solo idArea (Long), no lista
+            usuario.setActivo(true);
+
+            return mapToResponse(repositoryPort.save(usuario));
+        });
+}
 
     @Transactional // ✅ adaptado del externo
     public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
