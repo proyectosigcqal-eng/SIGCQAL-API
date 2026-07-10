@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -40,6 +40,7 @@ import com.sigcqal.api.web.Catalogo.Asesor.Dto.AsesorDTO;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ContestacionAutoridad.Model.ContestacionAutoridad;
 
 @Service
+@Transactional(readOnly = true)
 public class QuejaRlCirApplicationService {
 
     @Autowired

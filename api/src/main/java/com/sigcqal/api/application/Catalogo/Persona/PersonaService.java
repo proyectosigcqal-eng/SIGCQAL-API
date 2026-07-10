@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
@@ -12,11 +13,11 @@ import com.sigcqal.api.infra.Catalogo.Persona.Mapper.PersonaMapper;
 import com.sigcqal.api.web.Catalogo.Persona.Dto.PersonaDTO;
 import com.sigcqal.api.web.Catalogo.Persona.Dto.PersonaRequestDTO;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PersonaService {
 
     private final PersonaRepositoryPort port;

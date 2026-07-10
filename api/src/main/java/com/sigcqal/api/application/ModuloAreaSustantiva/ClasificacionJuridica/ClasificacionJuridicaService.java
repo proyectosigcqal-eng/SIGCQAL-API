@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.ClasificacionJuridica.Model.ClasificacionJuridica;
@@ -13,11 +14,11 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.ClasificacionJuridica.Mapper.C
 import com.sigcqal.api.web.ModuloAreaSustantiva.ClasificacionJuridica.DTO.ClasificacionJuridicaRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ClasificacionJuridica.DTO.ClasificacionJuridicaResponseDTO;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ClasificacionJuridicaService {
 
     private final ClasificacionJuridicaRepositoryPort port;

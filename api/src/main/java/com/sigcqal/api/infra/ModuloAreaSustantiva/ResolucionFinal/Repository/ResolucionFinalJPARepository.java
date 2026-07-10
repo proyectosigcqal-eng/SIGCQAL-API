@@ -1,6 +1,7 @@
 package com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,38 @@ import com.sigcqal.api.infra.ModuloAreaSustantiva.ResolucionFinal.Entity.Resoluc
 public interface ResolucionFinalJPARepository extends JpaRepository<ResolucionFinalEntity, Integer> {
 
     List<ResolucionFinalEntity> findByIdExpediente(Integer idExpediente);
+
+    @Query("""
+        SELECT r FROM ResolucionFinalEntity r
+        LEFT JOIN FETCH r.expediente e
+        LEFT JOIN FETCH e.contribuyente c
+        LEFT JOIN FETCH c.persona
+        LEFT JOIN FETCH r.contestacionAutoridad
+        LEFT JOIN FETCH r.quejaAri
+        """)
+    List<ResolucionFinalEntity> findAllConRelaciones();
+
+    @Query("""
+        SELECT r FROM ResolucionFinalEntity r
+        LEFT JOIN FETCH r.expediente e
+        LEFT JOIN FETCH e.contribuyente c
+        LEFT JOIN FETCH c.persona
+        LEFT JOIN FETCH r.contestacionAutoridad
+        LEFT JOIN FETCH r.quejaAri
+        WHERE r.idResolucionFinal = :id
+        """)
+    Optional<ResolucionFinalEntity> findByIdConRelaciones(@Param("id") Integer id);
+
+    @Query("""
+        SELECT r FROM ResolucionFinalEntity r
+        LEFT JOIN FETCH r.expediente e
+        LEFT JOIN FETCH e.contribuyente c
+        LEFT JOIN FETCH c.persona
+        LEFT JOIN FETCH r.contestacionAutoridad
+        LEFT JOIN FETCH r.quejaAri
+        WHERE r.idExpediente = :idExpediente
+        """)
+    List<ResolucionFinalEntity> findByIdExpedienteConRelaciones(@Param("idExpediente") Integer idExpediente);
 
     boolean existsByIdExpediente(Integer idExpediente);
 

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
@@ -16,9 +17,8 @@ import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.Corres
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
 
-import jakarta.transaction.Transactional;
-
 @Service
+@Transactional(readOnly = true)
 public class RegistrarCorrespondenciaService {
     private static final Long ESTATUS_REGISTRADO_ID = 1L;
 

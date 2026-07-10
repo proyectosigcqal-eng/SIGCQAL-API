@@ -29,11 +29,11 @@ public class OficioContestacionExternaAdapter implements OficioContestacionExter
 
     @Override
     public Optional<OficioContestacionExterna> buscarPorCorrespondencia(Long idCorrespondencia) {
-        return repository.findByCorrespondencia_Id(idCorrespondencia).map(mapper::toDomain);
+        return repository.findByCorrespondencia_IdConRelaciones(idCorrespondencia).map(mapper::toDomain);
     }
 
     @Override
     public List<OficioContestacionExterna> listarTodos() {
-        return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        return repository.findAllConRelaciones().stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 }

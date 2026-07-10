@@ -29,7 +29,7 @@ public class SeguimientoCorrespondenciaAdapter implements ISeguimientoCorrespond
 
     @Override
     public List<SeguimientoCorrespondencia> listarTodos() {
-        return repository.findAll()
+        return repository.findAllConRelaciones()
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class SeguimientoCorrespondenciaAdapter implements ISeguimientoCorrespond
 
     @Override
     public List<SeguimientoCorrespondencia> listarPorCorrespondenciaId(Integer idCorrespondencia) {
-        return repository.findByCorrespondencia_IdCorrespondencia(idCorrespondencia.longValue())
+        return repository.findByCorrespondencia_IdConRelaciones(idCorrespondencia.longValue())
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -45,7 +45,7 @@ public class SeguimientoCorrespondenciaAdapter implements ISeguimientoCorrespond
 
 @Override
 public Optional<SeguimientoCorrespondencia> buscarPorId(Long idSeguimiento) {
-    return repository.findById(idSeguimiento.intValue()) // ← convertir Long a Integer
+    return repository.findByIdConRelaciones(idSeguimiento.intValue())
             .map(mapper::toDomain);
 }
 @Override

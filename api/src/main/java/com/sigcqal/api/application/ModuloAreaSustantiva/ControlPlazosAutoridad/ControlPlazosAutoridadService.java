@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ControlPlazosAutoridadService {
 
     private static final int PLAZO_DIAS_HABILES = 5;

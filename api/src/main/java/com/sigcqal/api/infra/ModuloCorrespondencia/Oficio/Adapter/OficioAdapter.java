@@ -37,7 +37,7 @@ public class OficioAdapter implements OficioRepositoryPort {
 
     @Override
     public List<Oficio> findAll() {
-    List<OficioEntity> entities = jpaRepository.findAll();
+    List<OficioEntity> entities = jpaRepository.findAllConRelaciones();
     return entities.stream()
                    .map(mapper::toDomain)
                    .collect(Collectors.toList());
@@ -45,7 +45,7 @@ public class OficioAdapter implements OficioRepositoryPort {
 
 @Override
 public List<Oficio> findByArea(Long idArea) {
-    List<OficioEntity> entities = jpaRepository.findByAreaId(idArea);
+    List<OficioEntity> entities = jpaRepository.findByAreaIdConRelaciones(idArea);
     return entities.stream()
                    .map(mapper::toDomain)
                    .collect(Collectors.toList());

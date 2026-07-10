@@ -32,12 +32,12 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
 
     @Override
     public Optional<Correspondencia> findById(Long id) {
-        return jpaRepository.findById(id).map(mapper::toDomain);
+        return jpaRepository.findByIdConRelaciones(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Correspondencia> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+        return jpaRepository.findAllConRelaciones().stream().map(mapper::toDomain).toList();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
 
     @Override
     public List<Correspondencia> findByIdArea(Long idArea) {
-    return jpaRepository.findByArea_Id(idArea)
+    return jpaRepository.findByArea_IdConRelaciones(idArea)
             .stream()
             .map(mapper::toDomain)
             .toList();
@@ -77,7 +77,7 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
 
     @Override
     public List<Correspondencia> findByIdAreaWithoutAcuse(Long idArea) {
-        return jpaRepository.findByArea_IdAndWithoutAcuse(idArea)
+        return jpaRepository.findByArea_IdAndWithoutAcuseConRelaciones(idArea)
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
@@ -85,7 +85,7 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
 
         @Override
     public List<Correspondencia> findByTipo(String descripcion) {
-        return jpaRepository.findByTipoDescripcion(descripcion)
+        return jpaRepository.findByTipoDescripcionConRelaciones(descripcion)
                 .stream()
                 .map(mapper::toDomain)
                 .toList();

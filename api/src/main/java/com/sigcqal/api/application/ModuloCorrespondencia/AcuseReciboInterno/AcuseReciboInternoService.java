@@ -5,23 +5,21 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Port.AcuseReciboInternoRepositoryPort;
-import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Model.AcuseReciboInterno;
+import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseReciboInterno.Port.AcuseReciboInternoRepositoryPort;
+import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Mapper.AcuseReciboInternoMapper;
+import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.AcuseReciboInternoRequestDTO;
+import com.sigcqal.api.web.ModuloCorrespondencia.AcuseReciboInterno.Dto.AcuseReciboInternoResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
-import jakarta.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.sigcqal.api.infra.ModuloCorrespondencia.AcuseReciboInterno.Mapper.AcuseReciboInternoMapper;
-
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AcuseReciboInternoService {
 
     @Autowired
@@ -29,21 +27,20 @@ public class AcuseReciboInternoService {
 
     @Autowired
     private AcuseReciboInternoMapper mapper;
-    // LISTA DE MEMOS
+
     public List<AcuseReciboInternoResponseDTO> listarPorUsuario(Long idUsuario) {
         List<AcuseReciboInternoResponseDTO> lista = repository.findByUsuario(idUsuario)
             .stream()
             .map(mapper::toResponse)
             .collect(Collectors.toList());
 
-    if (lista.isEmpty()) {
-        throw new RuntimeException("No se encontraron acuses de recibo para el usuario con ID: " + idUsuario);
+        if (lista.isEmpty()) {
+            throw new RuntimeException("No se encontraron acuses de recibo para el usuario con ID: " + idUsuario);
+        }
+
+        return lista;
     }
 
-    return lista;
-    }
-
-    // DETALLE
     public AcuseReciboInternoResponseDTO obtenerDetalle(Long idAcuse) {
         var acuse = repository.findById(idAcuse)
                 .orElseThrow(() -> new RuntimeException("Acuse no encontrado"));
@@ -51,71 +48,62 @@ public class AcuseReciboInternoService {
         return mapper.toResponse(acuse);
     }
 
-    // RESPONDER
+    @Transactional
     public void responder(AcuseReciboInternoRequestDTO request) {
-    // Creamos una nueva instancia desde cero
-    AcuseReciboInterno acuse = new AcuseReciboInterno();
-    
-    acuse.setEsDelArea(request.getEsDelArea());
-    acuse.setIdMemorandum(request.getIdMemorandum());
-    acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
-    
-    acuse.setFechaAceptacion(LocalDate.now());
-    acuse.setHoraAceptacion(LocalTime.now());
+        AcuseReciboInterno acuse = new AcuseReciboInterno();
 
-    repository.save(acuse);
-}
+        acuse.setEsDelArea(request.getEsDelArea());
+        acuse.setIdMemorandum(request.getIdMemorandum());
+        acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
+        acuse.setFechaAceptacion(LocalDate.now());
+        acuse.setHoraAceptacion(LocalTime.now());
 
-public List<AcuseReciboInternoResponseDTO> listarPorArea(Long idArea) {
-    return repository.findByArea(idArea)
+        repository.save(acuse);
+    }
+
+    public List<AcuseReciboInternoResponseDTO> listarPorArea(Long idArea) {
+        return repository.findByArea(idArea)
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public AcuseReciboInternoResponseDTO crearAcuseAutomatico(AcuseReciboInternoRequestDTO request) {
+        AcuseReciboInterno acuse = new AcuseReciboInterno();
+
+        acuse.setIdMemorandum(request.getIdMemorandum());
+        acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
+        acuse.setEsDelArea(null);
+        acuse.setNumMemo(request.getNumMemo());
+        acuse.setFechaEmision(request.getFechaEmision());
+        acuse.setIdUsuarioEmisor(request.getIdUsuarioEmisor());
+        acuse.setFolioUnico(request.getFolioUnico());
+        acuse.setObservaciones(request.getObservaciones());
+        acuse.setUrlMemorandumGenerado(request.getUrlMemorandumGenerado());
+        acuse.setIdPlantilla(request.getIdPlantilla());
+        acuse.setIdUsuarioFirmante(request.getIdUsuarioFirmante());
+
+        AcuseReciboInterno saved = repository.save(acuse);
+
+        return mapper.toResponse(saved);
+    }
+
+    public boolean existePorMemorandum(Long idMemorandum) {
+        return repository.existePorMemorandum(idMemorandum);
+    }
+
+    public List<AcuseReciboInternoResponseDTO> listarPorMemorandum(Long idMemorandum) {
+        return repository.findByIdMemorandum(idMemorandum)
             .stream()
             .map(mapper::toResponse)
             .collect(Collectors.toList());
+    }
 
-        }
-
-
-@Transactional
-    public AcuseReciboInternoResponseDTO crearAcuseAutomatico(AcuseReciboInternoRequestDTO request) {
-
-    AcuseReciboInterno acuse = new AcuseReciboInterno();
-
-    acuse.setIdMemorandum(request.getIdMemorandum());
-    acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());
-    acuse.setEsDelArea(null);
-
-   
-            //acuse.setIdCorrespondencia(request.getIdCorrespondencia());
-            acuse.setNumMemo(request.getNumMemo());
-            acuse.setFechaEmision(request.getFechaEmision());
-            acuse.setIdUsuarioEmisor(request.getIdUsuarioEmisor());
-            acuse.setFolioUnico(request.getFolioUnico());
-            acuse.setObservaciones(request.getObservaciones());
-            acuse.setUrlMemorandumGenerado(request.getUrlMemorandumGenerado());
-            acuse.setIdPlantilla(request.getIdPlantilla());
-            acuse.setIdUsuarioFirmante(request.getIdUsuarioFirmante());
-
-
-    
-    AcuseReciboInterno saved = repository.save(acuse);
-
-    return mapper.toResponse(saved);
-}
-
-public boolean existePorMemorandum(Long idMemorandum) {
-    return repository.existePorMemorandum(idMemorandum);
-}
-
-public List<AcuseReciboInternoResponseDTO> listarPorMemorandum(Long idMemorandum) {
-    return repository.findByIdMemorandum(idMemorandum)
-        .stream()
-        .map(mapper::toResponse) 
-        .collect(Collectors.toList());
-}
-public List<AcuseReciboInternoResponseDTO> listarTodos() {
-    return repository.findAll()
-        .stream()
-        .map(mapper::toResponse)
-        .collect(Collectors.toList());
-}
+    public List<AcuseReciboInternoResponseDTO> listarTodos() {
+        return repository.findAll()
+            .stream()
+            .map(mapper::toResponse)
+            .collect(Collectors.toList());
+    }
 }

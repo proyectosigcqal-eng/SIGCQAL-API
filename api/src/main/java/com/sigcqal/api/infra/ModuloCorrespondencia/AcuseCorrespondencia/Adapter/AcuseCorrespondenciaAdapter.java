@@ -35,7 +35,7 @@ public class AcuseCorrespondenciaAdapter implements AcuseCorrespondenciaReposito
     @Override
     public List<AcuseCorrespondencia> findByArea(Long idArea) {
         return repository
-                .findByEsDelAreaTrueAndCorrespondencia_Area_Id(idArea)
+                .findByEsDelAreaTrueAndCorrespondencia_Area_IdConRelaciones(idArea)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class AcuseCorrespondenciaAdapter implements AcuseCorrespondenciaReposito
 
     @Override
     public List<AcuseCorrespondencia> findByCorrespondencia(Long idCorrespondencia) {
-        return repository.findByCorrespondencia_Id(idCorrespondencia)
+        return repository.findByCorrespondencia_IdConRelaciones(idCorrespondencia)
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class AcuseCorrespondenciaAdapter implements AcuseCorrespondenciaReposito
 
     @Override
 public List<AcuseCorrespondencia> findAll() {
-    return repository.findAll()
+    return repository.findAllConRelaciones()
         .stream()
         .map(mapper::toDomain)
         .collect(Collectors.toList());

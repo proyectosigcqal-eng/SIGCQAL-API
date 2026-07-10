@@ -1,11 +1,11 @@
 package com.sigcqal.api.application.ModuloCorrespondencia.OficioContestacionExterna;
 
-import java.util.Optional;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.exception.InvalidRequestException;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -16,6 +16,7 @@ import com.sigcqal.api.web.ModuloCorrespondencia.OficioContestacionExterna.Dto.O
 
 @Service
 public class OficioContestacionExternaService {
+
     @Autowired
     private OficioContestacionExternaRepositoryPort repositoryPort;
 
@@ -25,6 +26,7 @@ public class OficioContestacionExternaService {
     @Autowired
     private FileUploadPort fileUploadPort;
 
+    @Transactional
     public OficioContestacionExternaDTOs.Response guardar(OficioContestacionExternaDTOs.Request request) {
         validarRequest(request);
 
@@ -35,7 +37,6 @@ public class OficioContestacionExternaService {
         dom.setAsuntoContestacion(request.getAsuntoContestacion());
         dom.setCuerpoOficioTexto(request.getCuerpoOficioTexto());
         dom.setUrlPdfFinal(request.getUrlPdfFinal());
-        
 
         repositoryPort.buscarPorCorrespondencia(request.getIdCorrespondencia())
                 .ifPresent(existente -> dom.setIdOficioContestacion(existente.getIdOficioContestacion()));
@@ -44,6 +45,7 @@ public class OficioContestacionExternaService {
         return mapper.toResponse(saved);
     }
 
+    @Transactional
     public OficioContestacionExternaDTOs.Response guardarPdfFinal(Long idCorrespondencia, byte[] pdfBytes) {
         if (idCorrespondencia == null || idCorrespondencia <= 0) {
             throw new InvalidRequestException("El idCorrespondencia debe ser mayor a 0");
@@ -53,7 +55,8 @@ public class OficioContestacionExternaService {
         }
 
         OficioContestacionExterna existente = repositoryPort.buscarPorCorrespondencia(idCorrespondencia)
-                .orElseThrow(() -> new InvalidRequestException("No existe OficioContestacionExterna para la correspondencia: " + idCorrespondencia));
+                .orElseThrow(() -> new InvalidRequestException(
+                    "No existe OficioContestacionExterna para la correspondencia: " + idCorrespondencia));
 
         String nombreArchivo = "OFICIO_CONTESTACION_" + idCorrespondencia + "_FIRMADO.pdf";
         String url = fileUploadPort.guardarArchivoOficio(pdfBytes, nombreArchivo);
@@ -63,6 +66,7 @@ public class OficioContestacionExternaService {
         return mapper.toResponse(saved);
     }
 
+    @Transactional(readOnly = true)
     public Optional<OficioContestacionExternaDTOs.Response> buscarPorCorrespondencia(Long idCorrespondencia) {
         if (idCorrespondencia == null || idCorrespondencia <= 0) {
             throw new InvalidRequestException("El idCorrespondencia debe ser mayor a 0");
@@ -71,6 +75,7 @@ public class OficioContestacionExternaService {
         return repositoryPort.buscarPorCorrespondencia(idCorrespondencia).map(mapper::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public List<OficioContestacionExternaDTOs.Response> listarTodos() {
         return repositoryPort.listarTodos().stream().map(mapper::toResponse).toList();
     }

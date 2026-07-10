@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -24,6 +24,7 @@ import com.sigcqal.api.web.ModuloAreaSustantiva.RLCir.Dto.RLCirRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.RLCir.Dto.RLCirResponseDTO;
 
 @Service
+@Transactional(readOnly = true)
 public class RLCirApplicationService {
 
     @Autowired

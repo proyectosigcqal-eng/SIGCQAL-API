@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -16,11 +17,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.sigcqal.api.application.Catalogo.Rol.RolService;
 import com.sigcqal.api.application.exception.ResourceNotFoundException;
+import com.sigcqal.api.test.support.WebMvcTestSecurityConfig;
 import com.sigcqal.api.web.Catalogo.Rol.Dto.RolDTO;
 import com.sigcqal.api.web.exception.ApiExceptionHandler;
 
 @WebMvcTest(controllers = RolController.class)
-@Import(ApiExceptionHandler.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import({ApiExceptionHandler.class, WebMvcTestSecurityConfig.class})
 class RolControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -32,7 +35,7 @@ class RolControllerTest {
     void listarRoles_ok() throws Exception {
         when(rolService.obtenerRoles()).thenReturn(List.of(new RolDTO(1L, "Rol 1", "Desc 1")));
 
-        mockMvc.perform(get("/api/roles"))
+        mockMvc.perform(get("/catalogos/roles"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].nombre").value("Rol 1"))
@@ -43,7 +46,7 @@ class RolControllerTest {
     void obtenerRol_ok() throws Exception {
         when(rolService.obtenerRol(2L)).thenReturn(new RolDTO(2L, "Rol 2", "Desc 2"));
 
-        mockMvc.perform(get("/api/roles/2"))
+        mockMvc.perform(get("/catalogos/roles/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.nombre").value("Rol 2"))
@@ -54,7 +57,7 @@ class RolControllerTest {
     void obtenerRol_noExiste_devuelve404() throws Exception {
         when(rolService.obtenerRol(99L)).thenThrow(new ResourceNotFoundException("Rol", 99L));
 
-        mockMvc.perform(get("/api/roles/99"))
+        mockMvc.perform(get("/catalogos/roles/99"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Recurso no encontrado"));
     }

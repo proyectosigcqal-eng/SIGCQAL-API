@@ -29,7 +29,7 @@ public class SeguimientoMemorandumAdapter implements ISeguimientoMemorandumPort 
 
     @Override
     public List<SeguimientoMemorandum> listarTodos() {
-        return repository.findAll()
+        return repository.findAllConRelaciones()
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -37,14 +37,14 @@ public class SeguimientoMemorandumAdapter implements ISeguimientoMemorandumPort 
 
     @Override
     public List<SeguimientoMemorandum> listarPorMemorandumId(Long idMemo) {
-        return repository.findByMemorandum_Id(idMemo)
+        return repository.findByMemorandum_IdConRelaciones(idMemo)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
     @Override
     public Optional<SeguimientoMemorandum> buscarPorId(Long idSeguimiento) {
-        return repository.findById(idSeguimiento)
+        return repository.findByIdConRelaciones(idSeguimiento)
                 .map(mapper::toDomain);
     }
 

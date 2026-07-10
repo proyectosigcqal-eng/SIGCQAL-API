@@ -28,12 +28,12 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
 
     @Override
     public Optional<Usuario> findById(Long id) {
-        return jpaRepository.findById(id).map(mapper::toDomain);
+        return jpaRepository.findByIdConRelaciones(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Usuario> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+        return jpaRepository.findAllConRelaciones().stream().map(mapper::toDomain).toList();
     }
 
     @Override
@@ -83,7 +83,7 @@ public void actualizarRoles(Long idUsuario, List<Long> idRoles) {
     // En UsuarioAdapter
 @Override
 public Optional<Usuario> findByUsuarioLogin(String login) {
-    return jpaRepository.findByUsuarioLogin(login)
+    return jpaRepository.findByUsuarioLoginConRelaciones(login)
             .map(mapper::toDomain);
 }
 }

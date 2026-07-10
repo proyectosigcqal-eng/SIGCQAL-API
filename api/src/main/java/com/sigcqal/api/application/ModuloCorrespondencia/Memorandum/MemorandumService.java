@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -18,9 +19,9 @@ import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumReques
 import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumResponseDTO;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemorandumService {
 
     @Autowired

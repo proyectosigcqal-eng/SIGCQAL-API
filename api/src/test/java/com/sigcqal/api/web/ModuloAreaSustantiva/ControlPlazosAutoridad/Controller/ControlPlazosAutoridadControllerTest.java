@@ -10,18 +10,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.ControlPlazosAutoridad.ControlPlazosAutoridadService;
+import com.sigcqal.api.test.support.WebMvcTestSecurityConfig;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ControlPlazosAutoridad.Dto.RegistroInformeAutoridadResponseDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ControlPlazosAutoridad.Dto.SemaforoAutoridadResponseDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.ControlPlazosAutoridad.Dto.SemaforoEstadoEnum;
 
 @WebMvcTest(controllers = ControlPlazosAutoridadController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(WebMvcTestSecurityConfig.class)
 class ControlPlazosAutoridadControllerTest {
 
     @Autowired

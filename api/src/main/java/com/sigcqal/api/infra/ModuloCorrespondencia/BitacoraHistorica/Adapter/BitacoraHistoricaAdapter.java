@@ -22,7 +22,7 @@ public class BitacoraHistoricaAdapter implements BitacoraHistoricaRepositoryPort
 
     @Override
     public List<BitacoraHistorica> findByIdCorrespondencia(Long idCorrespondencia) {
-        return repository.findByCorrespondenciaIdOrderByFechaMovimientoAsc(idCorrespondencia)
+        return repository.findByCorrespondenciaIdConRelacionesOrderByFechaMovimientoAsc(idCorrespondencia)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());

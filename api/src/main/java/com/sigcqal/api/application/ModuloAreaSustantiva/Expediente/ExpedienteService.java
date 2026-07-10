@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.ModuloAreaSustantiva.Turnado.TurnadoService;
 import com.sigcqal.api.application.exception.DuplicateResourceException;
@@ -18,13 +19,13 @@ import com.sigcqal.api.web.ModuloAreaSustantiva.DetalleAsesoria.Dto.DetalleAseso
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteRequestDTO;
 import com.sigcqal.api.web.ModuloAreaSustantiva.Expediente.DTO.ExpedienteResponseDTO;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ExpedienteService {
 
     private final ExpedienteRepositoryPort port;
@@ -33,9 +34,6 @@ public class ExpedienteService {
     private final TurnadoService           turnadoService;
     private final PersonaRepositoryPort    personaPort;
 
-    // -----------------------------------------------------------------------
-    // GUARDAR
-    // -----------------------------------------------------------------------
     @Transactional
     public ExpedienteResponseDTO guardar(ExpedienteRequestDTO request) {
         String folioGenerado = request.getFolioGobierno().trim();
@@ -61,10 +59,8 @@ public class ExpedienteService {
                         request.getArchivoDocumentoAcreditaPersonalidad())
                 .build();
 
-        // 1. Guardar el expediente primero
         Expediente guardado = port.save(expediente);
 
-        // 2. Turnar automáticamente — si falla no revienta el guardado
         try {
             turnadoService.turnarAutomatico(folioGenerado);
         } catch (Exception e) {
@@ -75,9 +71,6 @@ public class ExpedienteService {
         return mapper.toResponse(guardado);
     }
 
-    // -----------------------------------------------------------------------
-    // GUARDAR DOCUMENTO
-    // -----------------------------------------------------------------------
     @Transactional
     public ExpedienteResponseDTO guardarDocumentoPersonalidad(
             String folio, byte[] archivo) {
@@ -95,9 +88,6 @@ public class ExpedienteService {
         return mapper.toResponse(port.save(expediente));
     }
 
-    // -----------------------------------------------------------------------
-    // BUSCAR POR FOLIO
-    // -----------------------------------------------------------------------
     public ExpedienteResponseDTO buscarPorFolio(String folio) {
         return port.findByFolio(folio)
                 .map(mapper::toResponse)
@@ -105,9 +95,6 @@ public class ExpedienteService {
                         "Folio no encontrado: " + folio));
     }
 
-    // -----------------------------------------------------------------------
-    // LISTAR TODOS
-    // -----------------------------------------------------------------------
     public List<ExpedienteResponseDTO> listarTodos() {
         return port.findAll()
                 .stream()
@@ -115,9 +102,6 @@ public class ExpedienteService {
                 .collect(Collectors.toList());
     }
 
-    // -----------------------------------------------------------------------
-    // HELPERS PRIVADOS
-    // -----------------------------------------------------------------------
     private void validarNoBloqueado(Expediente expediente, String folio) {
         if (Boolean.TRUE.equals(expediente.getBloqueado())) {
             throw new InvalidRequestException(
@@ -127,86 +111,82 @@ public class ExpedienteService {
         }
     }
 
-  public DetalleAsesoriaResponseDTO obtenerDetalleCompletoPorFolio(String folio) {
+    public DetalleAsesoriaResponseDTO obtenerDetalleCompletoPorFolio(String folio) {
 
-    ExpedienteEntity entity = port.findEntityByFolio(folio)
-            .orElseThrow(() -> new RuntimeException("Folio no encontrado: " + folio));
+        ExpedienteEntity entity = port.findEntityByFolio(folio)
+                .orElseThrow(() -> new RuntimeException("Folio no encontrado: " + folio));
 
-   String nombreContribuyente = null;
-   String identificacionOficialContribuyente = null;
-if (entity.getContribuyente() != null 
-        && entity.getContribuyente().getPersona() != null) {
-    var p = entity.getContribuyente().getPersona();
-    nombreContribuyente = String.join(" ",
-        p.getNombre()          != null ? p.getNombre()          : "",
-        p.getApellidoPaterno() != null ? p.getApellidoPaterno() : "",
-        p.getApellidoMaterno() != null ? p.getApellidoMaterno() : ""
-    ).trim();
-    identificacionOficialContribuyente = p.getIdentificacionOficial();
-}
-
-    // ✅ Nombre del asesor — AsesorEntity solo tiene idPersona, necesitas buscarlo
-  String nombreAsesor = null;
-if (entity.getAsesor() != null && entity.getAsesor().getIdPersona() != null) {
-    try {
-        com.sigcqal.api.domain.Catalogo.Persona.Model.Persona personaAsesor = 
-            personaPort.findById(entity.getAsesor().getIdPersona())
-                .orElse(null);
-
-        if (personaAsesor != null) {
-            nombreAsesor = String.join(" ",
-                personaAsesor.getNombre()          != null ? personaAsesor.getNombre()          : "",
-                personaAsesor.getApellidoPaterno() != null ? personaAsesor.getApellidoPaterno() : "",
-                personaAsesor.getApellidoMaterno() != null ? personaAsesor.getApellidoMaterno() : ""
+        String nombreContribuyente = null;
+        String identificacionOficialContribuyente = null;
+        if (entity.getContribuyente() != null
+                && entity.getContribuyente().getPersona() != null) {
+            var p = entity.getContribuyente().getPersona();
+            nombreContribuyente = String.join(" ",
+                p.getNombre()          != null ? p.getNombre()          : "",
+                p.getApellidoPaterno() != null ? p.getApellidoPaterno() : "",
+                p.getApellidoMaterno() != null ? p.getApellidoMaterno() : ""
             ).trim();
+            identificacionOficialContribuyente = p.getIdentificacionOficial();
         }
-    } catch (Exception e) {
-        log.warn("No se pudo obtener persona del asesor: {}", e.getMessage());
+
+        String nombreAsesor = null;
+        if (entity.getAsesor() != null && entity.getAsesor().getIdPersona() != null) {
+            try {
+                com.sigcqal.api.domain.Catalogo.Persona.Model.Persona personaAsesor =
+                    personaPort.findById(entity.getAsesor().getIdPersona())
+                        .orElse(null);
+
+                if (personaAsesor != null) {
+                    nombreAsesor = String.join(" ",
+                        personaAsesor.getNombre()          != null ? personaAsesor.getNombre()          : "",
+                        personaAsesor.getApellidoPaterno() != null ? personaAsesor.getApellidoPaterno() : "",
+                        personaAsesor.getApellidoMaterno() != null ? personaAsesor.getApellidoMaterno() : ""
+                    ).trim();
+                }
+            } catch (Exception e) {
+                log.warn("No se pudo obtener persona del asesor: {}", e.getMessage());
+            }
+        }
+
+        String estatus = entity.getEstatusExpediente() != null
+                ? entity.getEstatusExpediente().getNombre()
+                : "En Revisión";
+
+        String tipoTramite = entity.getTipoTramite() != null
+                ? entity.getTipoTramite().getNombre()
+                : null;
+
+        String municipio = entity.getMunicipio() != null
+                ? entity.getMunicipio().getNombreMunicipio()
+                : null;
+
+        return DetalleAsesoriaResponseDTO.builder()
+                .idExpediente(entity.getId().longValue())
+                .folio(entity.getFolioGobierno())
+                .fechaRegistro(entity.getFechaSolicitud() != null
+                        ? entity.getFechaSolicitud().toString() : null)
+                .contribuyente(nombreContribuyente)
+                .identificacionOficial(identificacionOficialContribuyente)
+                .autoridadResponsable(nombreAsesor)
+                .estatusActual(estatus)
+                .descripcionSintetica(tipoTramite)
+                .progresoPorcentaje(calcularProgreso(estatus))
+                .analisisLegal(null)
+                .bitacora(null)
+                .build();
     }
-}
 
-    // ✅ Estatus
-    String estatus = entity.getEstatusExpediente() != null
-            ? entity.getEstatusExpediente().getNombre()
-            : "En Revisión";
-
-    // ✅ Tipo de trámite
-    String tipoTramite = entity.getTipoTramite() != null
-            ? entity.getTipoTramite().getNombre()
-            : null;
-
-    // ✅ Municipio
-    String municipio = entity.getMunicipio() != null
-            ? entity.getMunicipio().getNombreMunicipio()
-            : null;
-
-    return DetalleAsesoriaResponseDTO.builder()
-            .idExpediente(entity.getId().longValue())
-            .folio(entity.getFolioGobierno())
-            .fechaRegistro(entity.getFechaSolicitud() != null
-                    ? entity.getFechaSolicitud().toString() : null)
-            .contribuyente(nombreContribuyente)
-            .identificacionOficial(identificacionOficialContribuyente)
-            .autoridadResponsable(nombreAsesor)
-            .estatusActual(estatus)
-            .descripcionSintetica(tipoTramite)
-            .progresoPorcentaje(calcularProgreso(estatus))
-            .analisisLegal(null)  // se llena cuando hay detalle_asesoria
-            .bitacora(null)
-            .build();
-}
-
-private Integer calcularProgreso(String estatus) {
-    if (estatus == null) return 0;
-    return switch (estatus.toUpperCase()) {
-        case "EN REVISIÓN", "EN REVISION" -> 10;
-        case "EN CALIFICACIÓN", "EN CALIFICACION" -> 25;
-        case "SEGUIMIENTO DE QUEJA" -> 50;
-        case "EMISIÓN DE CIR", "EMISION DE CIR" -> 65;
-        case "ARI EMITIDO" -> 75;
-        case "OFICIO ENVIADO" -> 85;
-        case "FINALIZADO", "CONCLUIDO" -> 100;
-        default -> 0;
-    };
-}
+    private Integer calcularProgreso(String estatus) {
+        if (estatus == null) return 0;
+        return switch (estatus.toUpperCase()) {
+            case "EN REVISIÓN", "EN REVISION" -> 10;
+            case "EN CALIFICACIÓN", "EN CALIFICACION" -> 25;
+            case "SEGUIMIENTO DE QUEJA" -> 50;
+            case "EMISIÓN DE CIR", "EMISION DE CIR" -> 65;
+            case "ARI EMITIDO" -> 75;
+            case "OFICIO ENVIADO" -> 85;
+            case "FINALIZADO", "CONCLUIDO" -> 100;
+            default -> 0;
+        };
+    }
 }

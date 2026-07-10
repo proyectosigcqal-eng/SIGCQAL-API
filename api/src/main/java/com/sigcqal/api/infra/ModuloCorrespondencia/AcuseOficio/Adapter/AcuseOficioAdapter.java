@@ -20,7 +20,7 @@ public class AcuseOficioAdapter implements AcuseOficioRepositoryPort {
 
     @Override
     public Optional<AcuseOficio> findById(Long id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findByIdConRelaciones(id).map(mapper::toDomain);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class AcuseOficioAdapter implements AcuseOficioRepositoryPort {
 
     @Override
     public List<AcuseOficio> findByAreaAndEsDelAreaTrue(Long idArea) {
-        return repository.findByEsDelAreaTrueAndOficio_Area_Id(idArea)
+        return repository.findByEsDelAreaTrueAndOficio_Area_IdConRelaciones(idArea)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class AcuseOficioAdapter implements AcuseOficioRepositoryPort {
     }
     @Override
 public List<AcuseOficio> findByIdOficio(Long idOficio) {
-    return repository.findByOficio_Id(idOficio)
+    return repository.findByOficio_IdConRelaciones(idOficio)
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());

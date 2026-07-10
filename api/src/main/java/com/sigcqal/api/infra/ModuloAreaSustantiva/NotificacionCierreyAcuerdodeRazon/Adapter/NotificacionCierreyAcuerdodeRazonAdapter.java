@@ -61,7 +61,7 @@ public class NotificacionCierreyAcuerdodeRazonAdapter implements NotificacionCie
 
     @Override
     public List<NotificacionCierreyAcuerdodeRazon> findById(Integer idExpediente) {
-        return jpaRepository.findByExpediente_Id(idExpediente).stream()
+        return jpaRepository.findByExpediente_IdConRelaciones(idExpediente).stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }

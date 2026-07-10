@@ -1,5 +1,6 @@
 package com.sigcqal.api.application.ModuloAreaSustantiva.QuejasAri;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Documento.GeneradorDocumentoService;
 import com.sigcqal.api.domain.Catalogo.Persona.Model.Persona;
@@ -29,9 +31,6 @@ import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Port.QuejaRepositoryPor
 
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Service
+@Transactional(readOnly = true)
 public class QuejasAriApplicationService {
 
     

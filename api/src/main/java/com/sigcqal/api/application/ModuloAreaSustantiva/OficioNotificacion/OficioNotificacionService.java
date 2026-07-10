@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OficioNotificacionService {
 
     private final FileUploadPort                   fileUploadPort;

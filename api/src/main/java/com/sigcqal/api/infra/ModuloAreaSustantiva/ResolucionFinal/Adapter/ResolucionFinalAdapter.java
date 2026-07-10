@@ -32,13 +32,13 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
 
     @Override
     public Optional<ResolucionFinal> findById(Integer idResolucionFinal) {
-        return repository.findById(idResolucionFinal)
+        return repository.findByIdConRelaciones(idResolucionFinal)
                 .map(mapper::toDomain);
     }
 
     @Override
     public List<ResolucionFinal> findAll() {
-        return repository.findAll()
+        return repository.findAllConRelaciones()
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
 
     @Override
     public List<ResolucionFinal> findByIdExpediente(Integer idExpediente) {
-        return repository.findByIdExpediente(idExpediente)
+        return repository.findByIdExpedienteConRelaciones(idExpediente)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class ResolucionFinalAdapter implements ResolucionFinalRepositoryPort {
     public ResolucionFinal actualizarOficioGenerado(
             Integer idResolucionFinal, String rutaResolucionFinal, LocalDateTime fechaEmision) {
 
-        ResolucionFinalEntity entity = repository.findById(idResolucionFinal)
+        ResolucionFinalEntity entity = repository.findByIdConRelaciones(idResolucionFinal)
                 .orElseThrow(() -> new RuntimeException(
                         "Resolución final no encontrada: " + idResolucionFinal));
 

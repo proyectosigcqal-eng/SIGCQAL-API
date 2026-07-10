@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoOficio.Model.SeguimientoOficio;
 import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoOficio.Port.SeguimientoOficioPort;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SeguimientoOficioService {
 
     @Autowired
@@ -27,6 +29,7 @@ public class SeguimientoOficioService {
     @Autowired
     private SeguimientoOficioMapper mapper;
 
+    @Transactional
     public SeguimientoOficioResponseDTO guardar(SeguimientoOficioRequestDTO request) {
         SeguimientoOficio seguimientoOficio = new SeguimientoOficio();
 
@@ -68,6 +71,7 @@ public class SeguimientoOficioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void concluir(Integer idSeguimiento, SeguimientoOficioRequestDTO request) {
     SeguimientoOficio seguimiento = port.buscarPorId(idSeguimiento)
         .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));

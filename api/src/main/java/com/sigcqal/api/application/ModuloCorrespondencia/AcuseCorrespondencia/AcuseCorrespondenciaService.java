@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Model.AcuseCorrespondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.AcuseCorrespondencia.Port.AcuseCorrespondenciaRepositoryPort;
@@ -17,12 +18,14 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AcuseCorrespondenciaService {
 
     private final AcuseCorrespondenciaRepositoryPort repository;
     private final AcuseCorrespondenciaMapper mapper;
 
   
+    @Transactional
     public void crear(AcuseCorrespondenciaRequestDTO request) {
 
         AcuseCorrespondencia acuse = new AcuseCorrespondencia();

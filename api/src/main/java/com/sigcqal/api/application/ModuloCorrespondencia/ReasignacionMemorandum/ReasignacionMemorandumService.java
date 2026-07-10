@@ -5,12 +5,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.ReasignacionMemorandum.Port.IReasignacionMemorandumPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.ReasignacionMemorandum.Mapper.ReasignacionMemorandumMapper;
 import com.sigcqal.api.web.ModuloCorrespondencia.ReasignacionMemorandum.Dto.ReasignacionMemorandumResponseDTO;
 
 @Service
+@Transactional(readOnly = true)
 public class ReasignacionMemorandumService {
 
     @Autowired

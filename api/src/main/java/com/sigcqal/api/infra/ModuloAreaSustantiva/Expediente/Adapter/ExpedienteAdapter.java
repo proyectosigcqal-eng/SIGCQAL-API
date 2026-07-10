@@ -29,10 +29,8 @@ public class ExpedienteAdapter implements ExpedienteRepositoryPort {
 
     @Override
     public Optional<Expediente> findByFolio(String folio) {
-        Optional<ExpedienteEntity> entityOptional = repository.findByFolioGobierno(folio);
+        Optional<ExpedienteEntity> entityOptional = repository.findByFolioGobiernoConRelaciones(folio);
     
-    // 2. Si la encuentra, la mapeamos al modelo de dominio. Si no, devolvemos Optional vacío.
-    // Asumiendo que tienes un mapper o un método para convertir:
     return entityOptional.map(entity -> mapper.toDomain(entity));
 
     }
@@ -62,21 +60,18 @@ public class ExpedienteAdapter implements ExpedienteRepositoryPort {
 
 @Override
 public Optional<ExpedienteEntity> findEntityByFolio(String folio) {
-    // Si tu adaptador usa un JpaRepository, será algo así:
-    return repository.findByFolioGobierno(folio);
+    return repository.findByFolioGobiernoConRelaciones(folio);
 }
 
 @Override
 public Optional<Expediente> findById(Integer id) {
-    return repository.findById(id)
-            .map(mapper::toDomain); // Map your entity back to the domain model
+    return repository.findByIdConRelaciones(id)
+            .map(mapper::toDomain);
 }
 
     public Optional<Expediente> buscarPorId(Long id) {
-        // Buscamos la entidad en la base de datos (usando id.intValue() siguiendo tu lógica de existsById)
-        Optional<ExpedienteEntity> entityOptional = repository.findById(id.intValue());
+        Optional<ExpedienteEntity> entityOptional = repository.findByIdConRelaciones(id.intValue());
         
-        // Si existe, la mapeamos al dominio; si no, devuelve un Optional vacío de manera limpia
         return entityOptional.map(entity -> mapper.toDomain(entity));
     }
   

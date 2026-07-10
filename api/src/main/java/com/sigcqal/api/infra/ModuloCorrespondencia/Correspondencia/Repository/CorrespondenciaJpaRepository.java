@@ -1,7 +1,7 @@
 package com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Repository;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +15,61 @@ public interface CorrespondenciaJpaRepository extends JpaRepository<Corresponden
     boolean existsByNumeroOficio(String numeroOficio);
 
     Optional<CorrespondenciaEntity> findTopByFolioUnicoEndingWithOrderByIdDesc(String suffix);
+
+    @Query("""
+        SELECT c FROM CorrespondenciaEntity c
+        LEFT JOIN FETCH c.estatus
+        LEFT JOIN FETCH c.usuarioCaptura
+        LEFT JOIN FETCH c.area
+        LEFT JOIN FETCH c.tipoCorrespondencia
+        WHERE c.id = :id
+        """)
+    Optional<CorrespondenciaEntity> findByIdConRelaciones(@Param("id") Long id);
+
+    @Query("""
+        SELECT DISTINCT c FROM CorrespondenciaEntity c
+        LEFT JOIN FETCH c.estatus
+        LEFT JOIN FETCH c.usuarioCaptura
+        LEFT JOIN FETCH c.area
+        LEFT JOIN FETCH c.tipoCorrespondencia
+        """)
+    List<CorrespondenciaEntity> findAllConRelaciones();
+
+    @Query("""
+        SELECT c FROM CorrespondenciaEntity c
+        LEFT JOIN FETCH c.estatus
+        LEFT JOIN FETCH c.usuarioCaptura
+        LEFT JOIN FETCH c.area
+        LEFT JOIN FETCH c.tipoCorrespondencia
+        WHERE c.area.id = :idArea
+        """)
+    List<CorrespondenciaEntity> findByArea_IdConRelaciones(@Param("idArea") Long idArea);
+
+    @Query("""
+        SELECT c FROM CorrespondenciaEntity c
+        LEFT JOIN FETCH c.estatus
+        LEFT JOIN FETCH c.usuarioCaptura
+        LEFT JOIN FETCH c.area
+        LEFT JOIN FETCH c.tipoCorrespondencia
+        WHERE c.area.id = :idArea
+        AND NOT EXISTS (
+            SELECT 1
+            FROM AcuseCorrespondenciaEntity a
+            WHERE a.correspondencia.id = c.id
+        )
+        """)
+    List<CorrespondenciaEntity> findByArea_IdAndWithoutAcuseConRelaciones(@Param("idArea") Long idArea);
+
+    @Query("""
+        SELECT c FROM CorrespondenciaEntity c
+        LEFT JOIN FETCH c.estatus
+        LEFT JOIN FETCH c.usuarioCaptura
+        LEFT JOIN FETCH c.area
+        LEFT JOIN FETCH c.tipoCorrespondencia
+        JOIN c.tipoCorrespondencia t
+        WHERE UPPER(t.descripcion) = UPPER(:descripcion)
+        """)
+    List<CorrespondenciaEntity> findByTipoDescripcionConRelaciones(@Param("descripcion") String descripcion);
 
     List<CorrespondenciaEntity> findByArea_Id(Long idArea);
 

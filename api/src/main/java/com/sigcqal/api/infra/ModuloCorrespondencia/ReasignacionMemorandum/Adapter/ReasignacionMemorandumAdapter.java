@@ -21,7 +21,7 @@ public class ReasignacionMemorandumAdapter implements IReasignacionMemorandumPor
 
     @Override
     public List<ReasignacionMemorandum> findPendientes() {
-        return repository.findByEsDelAreaFalse()
+        return repository.findByEsDelAreaFalseConRelaciones()
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());

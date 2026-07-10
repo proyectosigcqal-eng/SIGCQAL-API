@@ -19,6 +19,7 @@ import com.sigcqal.api.domain.ModuloAreaSustantiva.Queja.Model.EstatusQuejaIds;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificacionCierreyAcuerdodeRazonService {
 
     private final NotificacionCierreyAcuerdodeRazonRepositoryPort cierreRepository;

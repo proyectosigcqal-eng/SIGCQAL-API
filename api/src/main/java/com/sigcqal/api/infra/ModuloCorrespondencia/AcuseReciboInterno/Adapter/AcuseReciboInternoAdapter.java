@@ -22,7 +22,7 @@ public class AcuseReciboInternoAdapter implements AcuseReciboInternoRepositoryPo
 
     @Override
     public List<AcuseReciboInterno> findByUsuario(Long idUsuario) {
-        return repository.findByUsuarioRevisor_Id(idUsuario)
+        return repository.findByUsuarioRevisor_IdConRelaciones(idUsuario)
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -30,7 +30,7 @@ public class AcuseReciboInternoAdapter implements AcuseReciboInternoRepositoryPo
 
     @Override
     public Optional<AcuseReciboInterno> findById(Long id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findByIdConRelaciones(id).map(mapper::toDomain);
     }
 
     @Override
@@ -48,7 +48,7 @@ public boolean existePorMemorandum(Long idMemorandum) {
 
 @Override
 public List<AcuseReciboInterno> findByArea(Long idArea) {
-    return repository.findByEsDelAreaTrueAndMemorandum_Area_Id(idArea)
+    return repository.findByEsDelAreaTrueAndMemorandum_Area_IdConRelaciones(idArea)
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
@@ -56,15 +56,14 @@ public List<AcuseReciboInterno> findByArea(Long idArea) {
 
 @Override
 public List<AcuseReciboInterno> findByIdMemorandum(Long idMemorandum) {
-    return repository.findByMemorandum_Id(idMemorandum)
-            .stream()
-            .map(mapper::toDomain)
-            .collect(Collectors.toList());
+    return repository.findByMemorandum_IdConRelaciones(idMemorandum)
+        .stream()
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
 }
-
 @Override
 public List<AcuseReciboInterno> findAll() {
-    return repository.findAll()
+    return repository.findAllConRelaciones()
         .stream()
         .map(mapper::toDomain)
         .collect(Collectors.toList());

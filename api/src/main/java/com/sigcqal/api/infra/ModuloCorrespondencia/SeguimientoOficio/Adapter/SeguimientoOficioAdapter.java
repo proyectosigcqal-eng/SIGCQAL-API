@@ -28,7 +28,7 @@ public class SeguimientoOficioAdapter implements SeguimientoOficioPort {
 
     @Override
     public List<SeguimientoOficio> listarTodos() {
-        return repository.findAll()
+        return repository.findAllConRelaciones()
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -36,7 +36,7 @@ public class SeguimientoOficioAdapter implements SeguimientoOficioPort {
 
     @Override
     public List<SeguimientoOficio> listarPorOficioId(Integer idOficio) {
-        return repository.findByOficio_IdOficio(idOficio.longValue())
+        return repository.findByOficio_IdConRelaciones(idOficio.longValue())
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class SeguimientoOficioAdapter implements SeguimientoOficioPort {
 
     @Override
 public Optional<SeguimientoOficio> buscarPorId(Integer idSeguimiento) {
-    return repository.findById(idSeguimiento)
+    return repository.findByIdConRelaciones(idSeguimiento)
             .map(mapper::toDomain);
 }
 }
