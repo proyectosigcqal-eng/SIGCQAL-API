@@ -19,11 +19,11 @@ public class AcuseReciboInternoEntity {
     @Column(name = "id_acuse")
     private Long idAcuse;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_memorandum")
     private MemorandumEntity memorandum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuario_revisor")
     private UsuarioEntity usuarioRevisor;
 
