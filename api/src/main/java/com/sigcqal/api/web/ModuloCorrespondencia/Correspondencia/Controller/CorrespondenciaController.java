@@ -26,11 +26,13 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/correspondencias")
 @CrossOrigin(origins = "*")
 public class CorrespondenciaController {
+
     @Autowired
     private RegistrarCorrespondenciaService service;
 
     @PostMapping("/entrada")
-    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> registrarEntrada(@Valid @RequestBody RegistrarCorrespondenciaRequestDTO request) {
+    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> registrarEntrada(
+            @Valid @RequestBody RegistrarCorrespondenciaRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.registrar(request));
     }
 
@@ -39,23 +41,35 @@ public class CorrespondenciaController {
         return ResponseEntity.ok(service.listarTodas());
     }
 
+    // ✅ RUTAS ESPECÍFICAS PRIMERO (antes del {id})
+    @GetMapping("/entrada/pendiente-revision")
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarPendientesRevision() {
+        return ResponseEntity.ok(service.listarPendientesDeRevision());
+    }
+
     @GetMapping("/entrada/tipo/{tipo}")
-    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarPorTipo(@PathVariable String tipo) {
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> listarPorTipo(
+            @PathVariable String tipo) {
         return ResponseEntity.ok(service.listarPorTipo(tipo));
     }
 
+    @GetMapping("/entrada/pendienteacuse/area/{idArea}")
+    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> obtenerPorArea(
+            @PathVariable Long idArea) {
+        return ResponseEntity.ok(service.obtenerPorArea(idArea));
+    }
+
+    // ✅ RUTAS CON {id} AL FINAL
     @GetMapping("/entrada/{id}")
-    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> obtenerEntrada(@PathVariable Long id) {
+    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> obtenerEntrada(
+            @PathVariable Long id) {
         return ResponseEntity.ok(service.obtenerPorId(id));
     }
 
     @PatchMapping("/entrada/{id}")
-    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> asignarArea(@PathVariable Long id, @Valid @RequestBody AsignarAreaRequestDTO request) {
+    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> asignarArea(
+            @PathVariable Long id,
+            @Valid @RequestBody AsignarAreaRequestDTO request) {
         return ResponseEntity.ok(service.asignarArea(id, request.getIdArea()));
     }
-
-    @GetMapping("/entrada/pendienteacuse/area/{idArea}")
-    public ResponseEntity<List<RegistrarCorrespondenciaResponseDTO>> obtenerPorArea(@PathVariable Long idArea) {
-    return ResponseEntity.ok(service.obtenerPorArea(idArea));
-}
 }

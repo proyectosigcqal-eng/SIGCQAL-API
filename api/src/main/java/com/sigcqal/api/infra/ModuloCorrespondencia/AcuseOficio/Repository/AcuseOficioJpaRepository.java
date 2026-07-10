@@ -35,17 +35,22 @@ public interface AcuseOficioJpaRepository extends JpaRepository<AcuseOficioEntit
         WHERE a.idAcuseOficio = :id
         """)
     Optional<AcuseOficioEntity> findByIdConRelaciones(@Param("id") Long id);
-
-    @Query("""
-        SELECT a FROM AcuseOficioEntity a
-        LEFT JOIN FETCH a.oficio o
-        LEFT JOIN FETCH o.correspondencia
-        LEFT JOIN FETCH o.area
-        LEFT JOIN FETCH a.usuarioRevisor
-        WHERE a.esDelArea = true AND o.area.id = :idArea
-        """)
-    List<AcuseOficioEntity> findByEsDelAreaTrueAndOficio_Area_IdConRelaciones(
-            @Param("idArea") Long idArea);
+@Query("""
+    SELECT DISTINCT a FROM AcuseOficioEntity a
+    LEFT JOIN FETCH a.oficio o
+    LEFT JOIN FETCH o.correspondencia
+    LEFT JOIN FETCH o.area
+    LEFT JOIN FETCH a.usuarioRevisor
+    WHERE a.esDelArea = true 
+    AND o.area.id = :idArea
+    AND NOT EXISTS (
+        SELECT s FROM SeguimientoOficioEntity s
+        WHERE s.oficio.id = o.id
+        AND s.estatus.idEstatus = 6
+    )
+    """)
+List<AcuseOficioEntity> findByEsDelAreaTrueAndOficio_Area_IdConRelaciones(
+        @Param("idArea") Long idArea);
 
     @Query("""
         SELECT a FROM AcuseOficioEntity a

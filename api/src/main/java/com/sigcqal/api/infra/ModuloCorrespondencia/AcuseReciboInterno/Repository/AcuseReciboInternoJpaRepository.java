@@ -47,19 +47,24 @@ public interface AcuseReciboInternoJpaRepository
         """)
     List<AcuseReciboInternoEntity> findByUsuarioRevisor_IdConRelaciones(@Param("idUsuario") Long idUsuario);
 
-    @Query("""
-        SELECT a FROM AcuseReciboInternoEntity a
-        LEFT JOIN FETCH a.memorandum m
-        LEFT JOIN FETCH m.correspondencia
-        LEFT JOIN FETCH m.usuarioEmisor
-        LEFT JOIN FETCH m.usuarioFirmante
-        LEFT JOIN FETCH m.area
-        LEFT JOIN FETCH a.usuarioRevisor
-        WHERE a.esDelArea = true AND m.area.id = :idArea
-        """)
-    List<AcuseReciboInternoEntity> findByEsDelAreaTrueAndMemorandum_Area_IdConRelaciones(
-            @Param("idArea") Long idArea);
-
+@Query("""
+    SELECT DISTINCT a FROM AcuseReciboInternoEntity a
+    LEFT JOIN FETCH a.memorandum m
+    LEFT JOIN FETCH m.correspondencia
+    LEFT JOIN FETCH m.usuarioEmisor
+    LEFT JOIN FETCH m.usuarioFirmante
+    LEFT JOIN FETCH m.area
+    LEFT JOIN FETCH a.usuarioRevisor
+    WHERE a.esDelArea = true 
+    AND m.area.id = :idArea
+    AND NOT EXISTS (
+        SELECT s FROM SeguimientoMemorandumEntity s
+        WHERE s.memorandum.id = m.id
+        AND s.estatus.idEstatus = 6
+    )
+    """)
+List<AcuseReciboInternoEntity> findByEsDelAreaTrueAndMemorandum_Area_IdConRelaciones(
+        @Param("idArea") Long idArea);
     @Query("""
         SELECT a FROM AcuseReciboInternoEntity a
         LEFT JOIN FETCH a.memorandum m

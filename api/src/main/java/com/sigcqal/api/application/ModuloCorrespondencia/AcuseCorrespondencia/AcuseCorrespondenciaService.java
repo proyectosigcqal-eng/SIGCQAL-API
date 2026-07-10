@@ -28,7 +28,11 @@ public class AcuseCorrespondenciaService {
     @Transactional
     public void crear(AcuseCorrespondenciaRequestDTO request) {
 
+
+        
         AcuseCorrespondencia acuse = new AcuseCorrespondencia();
+
+
 
         acuse.setIdCorrespondencia(request.getIdCorrespondencia());
         acuse.setIdUsuarioRevisor(request.getIdUsuarioRevisor());

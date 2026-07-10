@@ -19,15 +19,21 @@ public interface AcuseCorrespondenciaJpaRepository
         """)
     List<AcuseCorrespondenciaEntity> findAllConRelaciones();
 
-    @Query("""
-        SELECT a FROM AcuseCorrespondenciaEntity a
-        LEFT JOIN FETCH a.correspondencia c
-        LEFT JOIN FETCH c.area
-        LEFT JOIN FETCH a.usuarioRevisor
-        WHERE a.esDelArea = true AND c.area.id = :idArea
-        """)
-    List<AcuseCorrespondenciaEntity> findByEsDelAreaTrueAndCorrespondencia_Area_IdConRelaciones(
-            @Param("idArea") Long idArea);
+@Query("""
+    SELECT DISTINCT a FROM AcuseCorrespondenciaEntity a
+    LEFT JOIN FETCH a.correspondencia c
+    LEFT JOIN FETCH c.area
+    LEFT JOIN FETCH a.usuarioRevisor
+    WHERE a.esDelArea = true 
+    AND c.area.id = :idArea
+    AND NOT EXISTS (
+        SELECT s FROM SeguimientoCorrespondenciaEntity s
+        WHERE s.correspondencia.id = c.id
+        AND s.estatus.idEstatus = 6
+    )
+    """)
+List<AcuseCorrespondenciaEntity> findByEsDelAreaTrueAndCorrespondencia_Area_IdConRelaciones(
+        @Param("idArea") Long idArea);
 
     @Query("""
         SELECT a FROM AcuseCorrespondenciaEntity a
@@ -43,4 +49,6 @@ public interface AcuseCorrespondenciaJpaRepository
         findByEsDelAreaTrueAndCorrespondencia_Area_Id(Long idArea);
 
     List<AcuseCorrespondenciaEntity> findByCorrespondencia_Id(Long idCorrespondencia);
+
+    
 }

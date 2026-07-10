@@ -92,4 +92,15 @@ List<CorrespondenciaEntity> findByArea_IdAndWithoutAcuse(@Param("idArea") Long i
     """)
     List<CorrespondenciaEntity> findByTipoDescripcion(@Param("descripcion") String descripcion);
 
+    @Query("""
+    SELECT c FROM CorrespondenciaEntity c
+    LEFT JOIN FETCH c.estatus
+    LEFT JOIN FETCH c.usuarioCaptura
+    LEFT JOIN FETCH c.area
+    LEFT JOIN FETCH c.tipoCorrespondencia
+    WHERE c.area IS NULL
+    """)
+List<CorrespondenciaEntity> findSinAreaAsignada();
+
 }
+

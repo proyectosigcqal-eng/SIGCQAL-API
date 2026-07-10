@@ -186,4 +186,12 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
 
         return repositoryPort.findByTipo(tipo.trim()).stream().map(mapper::toResponse).toList();
     }
+
+    // Método NUEVO para "Pendiente de Revisión"
+public List<RegistrarCorrespondenciaResponseDTO> listarPendientesDeRevision() {
+    return repositoryPort.findSinAreaAsignada()
+            .stream()
+            .map(mapper::toResponse)
+            .toList();
+}
 }

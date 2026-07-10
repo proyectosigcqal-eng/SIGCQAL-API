@@ -90,4 +90,12 @@ public class CorrespondenciaRepositoryAdapter implements CorrespondenciaReposito
                 .map(mapper::toDomain)
                 .toList();
     }
+
+@Override
+public List<Correspondencia> findSinAreaAsignada() {
+    return jpaRepository.findSinAreaAsignada()
+            .stream()
+            .map(mapper::toDomain)
+            .toList();
+}
 }

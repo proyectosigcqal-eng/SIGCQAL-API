@@ -22,4 +22,6 @@ public interface CorrespondenciaRepositoryPort {
     List<Correspondencia> findByIdAreaWithoutAcuse(Long idArea);
 
     List<Correspondencia> findByTipo(String descripcion);
+
+    List<Correspondencia> findSinAreaAsignada();
 }
