@@ -55,6 +55,7 @@ public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaReq
         return repositoryPort.findById(id).map(mapper::toResponse).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
     }
 
+    @Transactional
     public List<RegistrarCorrespondenciaResponseDTO> listarTodas() {
         return repositoryPort.findAll().stream().map(mapper::toResponse).toList();
     }
