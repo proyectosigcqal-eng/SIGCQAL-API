@@ -165,16 +165,18 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
     if (idArea == null || idArea <= 0) {
         throw new InvalidRequestException("El id del área debe ser mayor a 0");
     }
+    
 
-    List<Correspondencia> lista = repositoryPort.findByIdAreaWithoutAcuse(idArea);
+   // Buscamos los registros en la base de datos
+        List<Correspondencia> lista = repositoryPort.findByIdAreaWithoutAcuse(idArea);
 
-    if (lista.isEmpty()) {
-    throw new ResourceNotFoundException("No se encontraron correspondencias para el area", idArea);
-    }
-
-    return lista.stream()
-            .map(mapper::toResponse)
-            .toList();
+        // Eliminamos el bloque "if (lista.isEmpty()) { throw... }"
+        
+        // Si la lista está vacía, el stream simplemente devolverá una lista vacía de DTOs,
+        // lo cual se traducirá en un "[]" en formato JSON para tu Frontend.
+        return lista.stream()
+                .map(mapper::toResponse)
+                .toList();
 }
 
     public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String tipo) {

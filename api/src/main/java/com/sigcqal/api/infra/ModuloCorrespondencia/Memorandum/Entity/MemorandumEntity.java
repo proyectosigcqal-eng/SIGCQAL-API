@@ -37,18 +37,18 @@ public class MemorandumEntity {
     @JoinColumn(name = "id_correspondencia") 
     private CorrespondenciaEntity correspondencia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuario_emisor") 
     private UsuarioEntity usuarioEmisor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuario_firmante")
     private UsuarioEntity usuarioFirmante;
 
     @Column(name = "id_plantilla")
 private Long idPlantilla;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_area") 
     private AreaEntity area;
 
