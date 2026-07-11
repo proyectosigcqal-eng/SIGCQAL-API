@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.domain.FileUpload.Port.FileUploadPort;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SeguimientoMemorandumService {
 
     @Autowired
@@ -36,7 +34,6 @@ public class SeguimientoMemorandumService {
     @Autowired
     private FileUploadPort fileUploadPort;
 
-    @Transactional
     public SeguimientoMemorandumResponseDTO guardar(SeguimientoMemorandumRequestDTO request) {
         SeguimientoMemorandum seguimiento = mapearDesdeRequest(request);
         var saved = port.guardar(seguimiento);
@@ -48,7 +45,6 @@ public class SeguimientoMemorandumService {
         return mapper.toResponse(saved);
     }
 
-    @Transactional
     public SeguimientoMemorandumResponseDTO guardarAdjunto(Long idSeguimientoMemorandum, MultipartFile archivo) {
         if (archivo == null || archivo.isEmpty()) {
             throw new IllegalArgumentException("Debe enviar un archivo PDF en el campo 'archivo' o 'archivoAdjunto'");
@@ -120,7 +116,6 @@ public class SeguimientoMemorandumService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public void concluir(Long idSeguimiento, SeguimientoMemorandumRequestDTO request) {
         SeguimientoMemorandum seguimiento = port.buscarPorId(idSeguimiento)
                 .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));

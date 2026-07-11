@@ -21,6 +21,7 @@ public class AcuseOficioService {
 
     private final AcuseOficioRepositoryPort repository;
     private final AcuseOficioMapper mapper;
+    
 
     @Transactional
     public AcuseOficioResponseDTO crearAcuseAutomatico(AcuseOficioRequestDTO request) {

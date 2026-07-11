@@ -57,4 +57,23 @@ public Optional<Memorandum> buscarPorId(Long id) {
                         .map(mapper::toDomain);
 }
 
+@Override
+public List<Memorandum> findAsignadosActivosPorArea(Long idArea) {
+    return jpaRepository.findAsignadosActivosPorArea(idArea)
+        .stream()
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
+}
+
+@Override
+public List<Memorandum> findTodosAsignadosActivos() {
+    return jpaRepository.findTodosAsignadosActivos()
+        .stream().map(mapper::toDomain).collect(Collectors.toList());
+}
+
+@Override
+public List<Memorandum> findTodosSinAcuse() {
+    return jpaRepository.findTodosSinAcuse()
+        .stream().map(mapper::toDomain).collect(Collectors.toList());
+}
 }

@@ -49,11 +49,14 @@ public class SeguimientoMemorandumAdapter implements ISeguimientoMemorandumPort 
     }
 
     @Override
-    public SeguimientoMemorandum actualizar(SeguimientoMemorandum seguimiento) {
-        var entity = mapper.toEntity(seguimiento);
-        var saved  = repository.save(entity); // save en JPA hace update si el ID existe
-        return mapper.toDomain(saved);
-    }
+public SeguimientoMemorandum actualizar(SeguimientoMemorandum seguimiento) {
+    var entity = mapper.toEntity(seguimiento);
+    var saved  = repository.save(entity);
+    // Recargar con JOIN FETCH para evitar LazyInitializationException
+    return repository.findByIdConRelaciones(saved.getId())
+        .map(mapper::toDomain)
+        .orElseThrow(() -> new RuntimeException("No se encontró el seguimiento tras guardar"));
+}
 
     
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sigcqal.api.application.ModuloCorrespondencia.Oficio.OficioService;
+import com.sigcqal.api.web.ModuloCorrespondencia.Memorandum.Dto.MemorandumResponseDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Oficio.Dto.OficioRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Oficio.Dto.OficioResponseDTO;
 
@@ -72,5 +73,22 @@ public ResponseEntity<?> finalizar(
 ) throws IOException {
     oficioService.finalizarAsignacion(id, archivo.getBytes(), idArea);
     return ResponseEntity.ok().build();
+}
+
+// OficioController.java — agregar:
+@GetMapping("/asignados/area/{idArea}")
+public ResponseEntity<List<OficioResponseDTO>> listarAsignadosActivos(
+        @PathVariable Long idArea) {
+    return ResponseEntity.ok(service.listarAsignadosActivos(idArea));
+}
+
+@GetMapping("/asignados/todos")
+public ResponseEntity<List<OficioResponseDTO>> listarTodosAsignadosActivos() {
+    return ResponseEntity.ok(service.listarTodosAsignadosActivos());
+}
+
+@GetMapping("/pendientesacuse/todos")
+public ResponseEntity<List<OficioResponseDTO>> listarTodosPendientesAcuse() {
+    return ResponseEntity.ok(service.listarTodosPendientesAcuse());
 }
 }

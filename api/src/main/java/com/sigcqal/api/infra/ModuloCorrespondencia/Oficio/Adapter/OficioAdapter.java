@@ -62,4 +62,24 @@ public List<Oficio> findSinAcuseByArea(Long idArea) {
                    .map(mapper::toDomain)
                    .collect(Collectors.toList());
 }
+
+@Override
+public List<Oficio> findAsignadosActivosPorArea(Long idArea) {
+    return jpaRepository.findAsignadosActivosPorArea(idArea)
+        .stream()
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
+}
+
+@Override
+public List<Oficio> findTodosAsignadosActivos() {
+    return jpaRepository.findTodosAsignadosActivos()
+        .stream().map(mapper::toDomain).collect(Collectors.toList());
+}
+
+@Override
+public List<Oficio> findTodosSinAcuse() {
+    return jpaRepository.findTodosSinAcuse()
+        .stream().map(mapper::toDomain).collect(Collectors.toList());
+}
 }

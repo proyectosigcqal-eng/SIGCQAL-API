@@ -141,19 +141,22 @@ public OficioResponseDTO buscarPorId(Long id) {
         
         repositoryPort.save(oficio);
 
-        // 4. NUEVO: Creamos el Acuse de Oficio pendiente de revisión
-        // (Asegúrate de importar tu clase de dominio AcuseOficio)
-        com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio acuse = 
-            new com.sigcqal.api.domain.ModuloCorrespondencia.AcuseOficio.Model.AcuseOficio();
-        
-        acuse.setIdOficio(idOficio);
-        acuse.setEsDelArea(true); // FUNDAMENTAL para que tu query del frontend lo encuentre
-        
-        // Nota: NO seteamos usuarioRevisor, fechaAceptacion ni horaAceptacion 
-        // porque apenas está "pendiente". Se llenarán cuando alguien lo revise.
-
-        // 5. Guardamos el acuse en la base de datos
-        acuseOficioRepositoryPort.save(acuse); 
     }
 
+    public List<OficioResponseDTO> listarAsignadosActivos(Long idArea) {
+    return repositoryPort.findAsignadosActivosPorArea(idArea)
+        .stream()
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
+
+public List<OficioResponseDTO> listarTodosAsignadosActivos() {
+    return repositoryPort.findTodosAsignadosActivos()
+        .stream().map(mapper::toResponse).collect(Collectors.toList());
+}
+
+public List<OficioResponseDTO> listarTodosPendientesAcuse() {
+    return repositoryPort.findTodosSinAcuse()
+        .stream().map(mapper::toResponse).collect(Collectors.toList());
+}
 }

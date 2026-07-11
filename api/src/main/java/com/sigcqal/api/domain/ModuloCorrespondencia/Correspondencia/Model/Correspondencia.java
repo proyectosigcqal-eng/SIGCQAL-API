@@ -30,5 +30,5 @@ public class Correspondencia {
     private Integer idTipoCorrespondencia;
     private String idNaturalTipo;
     private String descripcionTipo;
-
+private String nombreUsuarioCaptura;  // ← agregar
 }
