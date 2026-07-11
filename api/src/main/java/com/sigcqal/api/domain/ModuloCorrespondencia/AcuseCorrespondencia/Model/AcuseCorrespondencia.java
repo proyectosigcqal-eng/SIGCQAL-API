@@ -19,7 +19,6 @@ public class AcuseCorrespondencia {
     private LocalTime horaAceptacion;
     private Boolean esDelArea;
 
-
     private String folioUnico;
     private String numeroOficio;
     private String dependenciaRemitente;
@@ -29,4 +28,6 @@ public class AcuseCorrespondencia {
     private String fechaRecibido;
     private String observaciones;
     private Long idArea;
+    private Long idEstatus;
+
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoCorrespondencia.Model.SeguimientoCorrespondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.SeguimientoCorrespondencia.Port.ISeguimientoCorrespondenciaPort;
+import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.CorrespondenciaRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.SeguimientoCorrespondencia.Mapper.SeguimientoCorrespondenciaMapper;
 import com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoCorrespondencia.Dto.SeguimientoCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.SeguimientoCorrespondencia.Dto.SeguimientoCorrespondenciaResponseDTO;
@@ -21,13 +22,16 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class SeguimientoCorrespondenciaService  {
+public class SeguimientoCorrespondenciaService {
 
     @Autowired
     private ISeguimientoCorrespondenciaPort port;
 
     @Autowired
     private SeguimientoCorrespondenciaMapper mapper;
+
+    @Autowired
+    private CorrespondenciaRepositoryPort correspondenciaRepositoryPort;
 
     @Transactional
     public SeguimientoCorrespondenciaResponseDTO guardar(SeguimientoCorrespondenciaRequestDTO request) {
@@ -37,17 +41,19 @@ public class SeguimientoCorrespondenciaService  {
         seguimientoCorrespondencia.setIdSeguimientoCorrespondencia(request.getIdSeguimientoCorrespondencia());
         seguimientoCorrespondencia.setIdCorrespondencia(request.getIdCorrespondencia());
         seguimientoCorrespondencia.setFolioRespuesta(request.getFolioRespuesta());
-        seguimientoCorrespondencia.setRespuestaSeguimientoCorrespondencia(request.getRespuestaSeguimientoCorrespondencia());
+        seguimientoCorrespondencia
+                .setRespuestaSeguimientoCorrespondencia(request.getRespuestaSeguimientoCorrespondencia());
         seguimientoCorrespondencia.setIdUsuario(request.getIdUsuario());
         seguimientoCorrespondencia.setIdEstatus(request.getIdEstatus());
 
         // --- AJUSTE PARA EL ARCHIVO ---
-        // Extraemos el nombre del archivo del MultipartFile para guardarlo en la BD como String
+        // Extraemos el nombre del archivo del MultipartFile para guardarlo en la BD
+        // como String
         if (request.getArchivoAdjunto() != null && !request.getArchivoAdjunto().isEmpty()) {
             String nombreArchivo = request.getArchivoAdjunto().getOriginalFilename();
             seguimientoCorrespondencia.setArchivoAdjunto(nombreArchivo);
-            
-            // NOTA: Si deseas guardar el archivo físico en el servidor, 
+
+            // NOTA: Si deseas guardar el archivo físico en el servidor,
             // aquí deberías usar request.getArchivoAdjunto().transferTo(dest);
         }
 
@@ -62,6 +68,16 @@ public class SeguimientoCorrespondenciaService  {
         seguimientoCorrespondencia.setFechaRegistro(LocalDateTime.now());
 
         var saved = port.guardar(seguimientoCorrespondencia);
+
+        // 👇 NUEVO: actualizar estatus de correspondencia a "5 ATENDIDO"
+        if (request.getIdCorrespondencia() != null) {
+            correspondenciaRepositoryPort.findById(request.getIdCorrespondencia().longValue())
+                    .ifPresent(correspondencia -> {
+                        correspondencia.setIdEstatus(5L);
+                        correspondenciaRepositoryPort.save(correspondencia);
+                    });
+        }
+
         return mapper.toResponse(saved);
     }
 
@@ -81,19 +97,27 @@ public class SeguimientoCorrespondenciaService  {
 
     @Transactional
     public void concluir(Long idSeguimiento, SeguimientoCorrespondenciaRequestDTO request) {
-    SeguimientoCorrespondencia seguimiento = port.buscarPorId(idSeguimiento)
-        .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));
+        SeguimientoCorrespondencia seguimiento = port.buscarPorId(idSeguimiento)
+                .orElseThrow(() -> new RuntimeException("Seguimiento no encontrado: " + idSeguimiento));
 
-    seguimiento.setIdEstatus(6);
-    seguimiento.setFechaResolucion(LocalDate.now());
-    seguimiento.setHoraResolucion(LocalTime.now());
+        seguimiento.setIdEstatus(6);
+        seguimiento.setFechaResolucion(LocalDate.now());
+        seguimiento.setHoraResolucion(LocalTime.now());
 
-    if (request.getRespuestaSeguimientoCorrespondencia() != null) {
-        seguimiento.setRespuestaSeguimientoCorrespondencia(
-            request.getRespuestaSeguimientoCorrespondencia()
-        );
+        if (request.getRespuestaSeguimientoCorrespondencia() != null) {
+            seguimiento.setRespuestaSeguimientoCorrespondencia(
+                    request.getRespuestaSeguimientoCorrespondencia());
+        }
+
+        port.actualizar(seguimiento);
+
+        // 👇 NUEVO: actualizar estatus de correspondencia a "6 CONCLUIDO"
+        if (seguimiento.getIdCorrespondencia() != null) {
+            correspondenciaRepositoryPort.findById(seguimiento.getIdCorrespondencia().longValue())
+                    .ifPresent(correspondencia -> {
+                        correspondencia.setIdEstatus(6L);
+                        correspondenciaRepositoryPort.save(correspondencia);
+                    });
+        }
     }
-
-    port.actualizar(seguimiento);
-}
 }
