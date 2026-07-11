@@ -29,4 +29,55 @@ public interface MemorandumJpaRepository extends JpaRepository<MemorandumEntity,
             )
         """)
         List<MemorandumEntity> findByAreaSinAcuse(@Param("idArea") Long idArea);
+
+        // Memorándums CON acuse del área PERO sin seguimiento = "Asignados en curso"
+@Query("""
+    SELECT m FROM MemorandumEntity m
+    LEFT JOIN FETCH m.area
+    LEFT JOIN FETCH m.usuarioEmisor
+    LEFT JOIN FETCH m.usuarioFirmante
+    LEFT JOIN FETCH m.correspondencia
+    WHERE m.area.id = :idArea
+    AND EXISTS (
+        SELECT a FROM AcuseReciboInternoEntity a
+        WHERE a.memorandum.id = m.id
+        AND a.esDelArea = true
+    )
+    AND NOT EXISTS (
+    SELECT s FROM SeguimientoMemorandumEntity s
+    WHERE s.memorandum.id = m.id
+    AND s.estatus.idEstatus IN (5, 6)
+)
+    """)
+List<MemorandumEntity> findAsignadosActivosPorArea(@Param("idArea") Long idArea);
+
+// Admin ve todos los asignados activos (todas las áreas)
+@Query("""
+    SELECT m FROM MemorandumEntity m
+    LEFT JOIN FETCH m.area
+    LEFT JOIN FETCH m.usuarioEmisor
+    LEFT JOIN FETCH m.usuarioFirmante
+    LEFT JOIN FETCH m.correspondencia
+    WHERE EXISTS (
+        SELECT a FROM AcuseReciboInternoEntity a
+        WHERE a.memorandum.id = m.id
+        AND a.esDelArea = true
+    )
+    AND NOT EXISTS (
+    SELECT s FROM SeguimientoMemorandumEntity s
+    WHERE s.memorandum.id = m.id
+    AND s.estatus.idEstatus IN (5, 6)
+)
+    """)
+List<MemorandumEntity> findTodosAsignadosActivos();
+
+@Query("""
+    SELECT m FROM MemorandumEntity m
+    LEFT JOIN FETCH m.area
+    WHERE NOT EXISTS (
+        SELECT a FROM AcuseReciboInternoEntity a
+        WHERE a.memorandum.id = m.id
+    )
+    """)
+List<MemorandumEntity> findTodosSinAcuse();
 }

@@ -136,5 +136,21 @@ public MemorandumResponseDTO buscarPorId(Long id) {
         repositoryPort.save(memorandum);
     }
 
+public List<MemorandumResponseDTO> listarAsignadosActivos(Long idArea) {
+    return repositoryPort.findAsignadosActivosPorArea(idArea)
+        .stream()
+        .filter(m -> m != null)
+        .map(mapper::toResponse)
+        .collect(Collectors.toList());
+}
 
+public List<MemorandumResponseDTO> listarTodosAsignadosActivos() {
+    return repositoryPort.findTodosAsignadosActivos()
+        .stream().map(mapper::toResponse).collect(Collectors.toList());
+}
+
+public List<MemorandumResponseDTO> listarTodosPendientesAcuse() {
+    return repositoryPort.findTodosSinAcuse()
+        .stream().map(mapper::toResponse).collect(Collectors.toList());
+}
 }

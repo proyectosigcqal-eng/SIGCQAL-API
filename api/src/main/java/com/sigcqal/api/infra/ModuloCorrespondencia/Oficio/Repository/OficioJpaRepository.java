@@ -40,4 +40,53 @@ public interface OficioJpaRepository extends JpaRepository<OficioEntity, Long> {
            "WHERE NOT EXISTS (SELECT a FROM AcuseOficioEntity a WHERE a.oficio.id = o.id) " +
            "AND o.area.id = :idArea")
     List<OficioEntity> findOficiosSinAcusePorArea(@Param("idArea") Long idArea);
+
+  @Query("""
+    SELECT o FROM OficioEntity o
+    LEFT JOIN FETCH o.area
+    LEFT JOIN FETCH o.usuarioEmisor
+    LEFT JOIN FETCH o.usuarioFirmante
+    LEFT JOIN FETCH o.correspondencia
+    WHERE o.area.id = :idArea
+    AND EXISTS (
+        SELECT a FROM AcuseOficioEntity a
+        WHERE a.oficio.id = o.id
+        AND a.esDelArea = true
+    )
+    AND NOT EXISTS (
+    SELECT s FROM SeguimientoOficioEntity s
+    WHERE s.oficio.id = o.id
+    AND s.estatus.idEstatus IN (5, 6)
+)
+    """)
+List<OficioEntity> findAsignadosActivosPorArea(@Param("idArea") Long idArea);
+
+@Query("""
+    SELECT o FROM OficioEntity o
+    LEFT JOIN FETCH o.area
+    LEFT JOIN FETCH o.usuarioEmisor
+    LEFT JOIN FETCH o.usuarioFirmante
+    LEFT JOIN FETCH o.correspondencia
+    WHERE EXISTS (
+        SELECT a FROM AcuseOficioEntity a
+        WHERE a.oficio.id = o.id
+        AND a.esDelArea = true
+    )
+    AND NOT EXISTS (
+    SELECT s FROM SeguimientoOficioEntity s
+    WHERE s.oficio.id = o.id
+    AND s.estatus.idEstatus IN (5, 6)
+)
+    """)
+List<OficioEntity> findTodosAsignadosActivos();
+
+@Query("""
+    SELECT o FROM OficioEntity o
+    LEFT JOIN FETCH o.area
+    WHERE NOT EXISTS (
+        SELECT a FROM AcuseOficioEntity a
+        WHERE a.oficio.id = o.id
+    )
+    """)
+List<OficioEntity> findTodosSinAcuse();
 }

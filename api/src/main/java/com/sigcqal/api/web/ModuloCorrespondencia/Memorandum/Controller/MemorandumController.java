@@ -73,4 +73,20 @@ public ResponseEntity<MemorandumResponseDTO> obtenerPorId(@PathVariable Long id)
         memorandumService.finalizarAsignacion(id, archivo.getBytes(), idArea);
         return ResponseEntity.ok().build();
     }
+    // MemorandumController.java — agregar:
+@GetMapping("/asignados/area/{idArea}")
+public ResponseEntity<List<MemorandumResponseDTO>> listarAsignadosActivos(
+        @PathVariable Long idArea) {
+    return ResponseEntity.ok(service.listarAsignadosActivos(idArea));
+}
+
+@GetMapping("/asignados/todos")
+public ResponseEntity<List<MemorandumResponseDTO>> listarTodosAsignadosActivos() {
+    return ResponseEntity.ok(service.listarTodosAsignadosActivos());
+}
+
+@GetMapping("/pendientesacuse/todos")
+public ResponseEntity<List<MemorandumResponseDTO>> listarTodosPendientesAcuse() {
+    return ResponseEntity.ok(service.listarTodosPendientesAcuse());
+}
 }

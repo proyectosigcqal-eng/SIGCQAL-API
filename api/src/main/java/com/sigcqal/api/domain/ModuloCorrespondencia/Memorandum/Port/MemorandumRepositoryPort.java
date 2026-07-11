@@ -12,5 +12,8 @@ public interface MemorandumRepositoryPort {
 
     List<Memorandum> findByArea(Long idArea);
     Optional<Memorandum> buscarPorId(Long id);
+    List<Memorandum> findAsignadosActivosPorArea(Long idArea);
+    List<Memorandum> findTodosAsignadosActivos();
+List<Memorandum> findTodosSinAcuse();
 }
 

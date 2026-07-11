@@ -14,4 +14,8 @@ public interface OficioRepositoryPort {
     Optional<Oficio> buscarPorId(Long id);
 
 List<Oficio> findSinAcuseByArea(Long idArea);
+List<Oficio> findAsignadosActivosPorArea(Long idArea);
+
+List<Oficio> findTodosAsignadosActivos();
+List<Oficio> findTodosSinAcuse();
 }
