@@ -12,7 +12,8 @@ import com.sigcqal.api.web.ModuloCorrespondencia.AcuseCorrespondencia.Dto.AcuseC
 public class AcuseCorrespondenciaMapper {
 
     public AcuseCorrespondencia toDomain(AcuseCorrespondenciaEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
 
         AcuseCorrespondencia d = new AcuseCorrespondencia();
 
@@ -43,8 +44,13 @@ public class AcuseCorrespondenciaMapper {
 
             d.setObservaciones(c.getObservaciones());
 
+            // DESPUÉS
             if (c.getArea() != null)
                 d.setIdArea(c.getArea().getId());
+
+            // 👇 NUEVO: extraer idEstatus de la correspondencia
+            if (c.getIdEstatus() != null)
+                d.setIdEstatus(c.getIdEstatus());
         }
 
         return d;
@@ -82,12 +88,10 @@ public class AcuseCorrespondenciaMapper {
         dto.setEsDelArea(d.getEsDelArea());
 
         dto.setFechaAceptacion(
-            d.getFechaAceptacion() != null ? d.getFechaAceptacion().toString() : null
-        );
+                d.getFechaAceptacion() != null ? d.getFechaAceptacion().toString() : null);
 
         dto.setHoraAceptacion(
-            d.getHoraAceptacion() != null ? d.getHoraAceptacion().toString() : null
-        );
+                d.getHoraAceptacion() != null ? d.getHoraAceptacion().toString() : null);
 
         dto.setFolioUnico(d.getFolioUnico());
         dto.setNumeroOficio(d.getNumeroOficio());
@@ -96,8 +100,10 @@ public class AcuseCorrespondenciaMapper {
         dto.setAsunto(d.getAsunto());
         dto.setFechaExpedicion(d.getFechaExpedicion());
         dto.setFechaRecibido(d.getFechaRecibido());
+        // DESPUÉS
         dto.setObservaciones(d.getObservaciones());
         dto.setIdArea(d.getIdArea());
+        dto.setIdEstatus(d.getIdEstatus());
 
         return dto;
     }

@@ -20,6 +20,8 @@ public class AcuseCorrespondenciaResponseDTO {
     private String asunto;
     private String fechaExpedicion;
     private String fechaRecibido;
+    // DESPUÉS
     private String observaciones;
     private Long idArea;
+    private Long idEstatus;
 }
