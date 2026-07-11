@@ -1,5 +1,7 @@
 package com.sigcqal.api.web.ModuloCorrespondencia.Oficio.Dto;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 @Data
@@ -14,7 +16,7 @@ public class OficioRequestDTO {
     private String folioUnico;
     private String urlSolicitudMemorandum;
      private String nombreEmisor;
-
+    private LocalDateTime fechaEmision;
     // ← Agregar estos
     private String areaDestinatario;
     private String nombreFirmante;

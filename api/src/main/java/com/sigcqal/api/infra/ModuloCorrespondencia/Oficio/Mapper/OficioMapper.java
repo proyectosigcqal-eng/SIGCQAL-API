@@ -26,6 +26,7 @@ public class OficioMapper {
         entity.setInstruccionSeguimiento(domain.getInstruccionSeguimiento());
         entity.setObservaciones(domain.getObservaciones());
         entity.setUrlMemorandumGenerado(domain.getUrlSolicitudMemorandum());
+        entity.setFechaEmision(domain.getFechaEmision());
 
         if (domain.getIdCorrespondencia() != null) {
             CorrespondenciaEntity correspondencia = new CorrespondenciaEntity();
