@@ -8,14 +8,17 @@ public class MemorandumRequestDTO {
     private String observaciones;
     private Long idUsuarioEmisor;
     private Long idUsuarioFirmante;
+    private Long idUsuarioEncargado;
     private Long idPlantilla;
     private Long idArea;
     private String folioUnico;
     private String urlSolicitudMemorandum;
     private String nombreEmisor;
-
+    private String nombreEncargado;
     // ← Agregar estos — vienen del front cuando selecciona el firmante y área
     private String areaDestinatario;   // nombre del área destinataria
     private String nombreFirmante;     // nombre completo del firmante
     private String areaFirmante;       // área del firmante
+    private String cargoEncargado;
+    private String numeroOficio; // ← Agregar este campo para el número de oficio
 }

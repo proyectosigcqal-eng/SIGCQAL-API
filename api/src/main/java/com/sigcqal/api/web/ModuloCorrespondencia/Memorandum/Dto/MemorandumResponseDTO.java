@@ -28,4 +28,7 @@ public class MemorandumResponseDTO {
     private String nombreRemitente;
     private String folioUnicoCorrespondencia;
     private String asuntoCorrespondenciaCompleto;
+    private String nombreEncargado;
+    private String cargoEncargado;
+    private String numeroOficio;
 }

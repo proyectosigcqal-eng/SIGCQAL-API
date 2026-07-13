@@ -15,8 +15,15 @@ public interface MemorandumJpaRepository extends JpaRepository<MemorandumEntity,
     Optional<MemorandumEntity> findByFolioUnico(String folioUnico);
     List<MemorandumEntity> findByAreaId(Long idArea);
     
-    @Query("SELECT m FROM MemorandumEntity m LEFT JOIN FETCH m.area LEFT JOIN FETCH m.usuarioEmisor LEFT JOIN FETCH m.usuarioFirmante WHERE m.id = :id")
-    Optional<MemorandumEntity> findByIdWithRelations(@Param("id") Long id);
+    @Query("""
+    SELECT m FROM MemorandumEntity m 
+    LEFT JOIN FETCH m.correspondencia c
+    LEFT JOIN FETCH m.area 
+    LEFT JOIN FETCH m.usuarioEmisor 
+    LEFT JOIN FETCH m.usuarioFirmante 
+    WHERE m.id = :id
+    """)
+Optional<MemorandumEntity> findByIdWithRelations(@Param("id") Long id);
 
     @Query("""
             SELECT m 

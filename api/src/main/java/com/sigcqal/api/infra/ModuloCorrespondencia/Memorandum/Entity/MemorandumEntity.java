@@ -38,7 +38,12 @@ public class MemorandumEntity {
     private CorrespondenciaEntity correspondencia;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_usuario_emisor") 
+    @JoinColumn(name = "cargo_usuario") 
+    private UsuarioEntity cargoUsuario;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_usuario_emisor")
     private UsuarioEntity usuarioEmisor;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -69,6 +74,9 @@ private Long idPlantilla;
 
     @Column(name = "folio_unico")
     private String folioUnico;
+
+    @Column(name = "cargo_encargado")
+private String cargoEncargado;
 
     @PrePersist
     protected void onCreate() {

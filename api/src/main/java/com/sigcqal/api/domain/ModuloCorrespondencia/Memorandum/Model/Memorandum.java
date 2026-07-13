@@ -18,6 +18,7 @@ private Long id;
     private Long idUsuarioEmisor;   
     private Long idUsuarioFirmante; 
     private Long idCorrespondencia; 
+    private Long idUsuarioEncargado;
     private Long idPlantilla;       
     private Long idArea;
     
@@ -27,6 +28,7 @@ private Long id;
     private String urlSolicitudMemorandum;
     private LocalDateTime fechaEmision;
     private String nombreArea;
+    private String cargoEncargado;
 
     private String asunto;          
     private String numeroOficio;    
@@ -43,4 +45,5 @@ private Long id;
     private String nombreRemitente;
     private String folioUnicoCorrespondencia;
     private String asuntoCorrespondenciaCompleto;
+    private String nombreEncargado;
 }

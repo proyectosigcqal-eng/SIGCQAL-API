@@ -27,6 +27,7 @@ public class MemorandumMapper {
         entity.setObservaciones(domain.getObservaciones());
         entity.setUrlMemorandumGenerado(domain.getUrlSolicitudMemorandum());
         entity.setFechaEmision(domain.getFechaEmision());
+        entity.setCargoEncargado(domain.getCargoEncargado());
 
         if (domain.getIdCorrespondencia() != null) {
             CorrespondenciaEntity correspondencia = new CorrespondenciaEntity();
@@ -47,6 +48,12 @@ public class MemorandumMapper {
             emisor.setId(domain.getIdUsuarioEmisor());
             entity.setUsuarioEmisor(emisor);
         }
+
+        if (domain.getNombreEncargado() != null) {
+    UsuarioEntity encargado = new UsuarioEntity();
+    encargado.setId(domain.getIdUsuarioEncargado());
+     entity.setCargoUsuario(encargado);
+}
 
         if (domain.getIdArea() != null) {
             AreaEntity area = new AreaEntity();
@@ -69,6 +76,7 @@ public class MemorandumMapper {
         domain.setObservaciones(entity.getObservaciones());
         domain.setUrlSolicitudMemorandum(entity.getUrlMemorandumGenerado());
         domain.setFechaEmision(entity.getFechaEmision());
+        domain.setCargoEncargado(entity.getCargoEncargado());
 
      
         if (entity.getCorrespondencia() != null) {
@@ -96,6 +104,11 @@ domain.setNombrePlantilla(null);
             domain.setNombreUsuarioFirmante(entity.getUsuarioFirmante().getUsuarioLogin());
         }
 
+        if(entity.getCargoUsuario() != null) {
+            domain.setIdUsuarioEncargado(entity.getCargoUsuario().getId());
+            domain.setNombreEncargado(entity.getCargoUsuario().getUsuarioLogin());
+        }
+
          if (entity.getArea() != null) {
             domain.setIdArea(entity.getArea().getId());
             domain.setNombreArea(entity.getArea().getNombre());
@@ -114,6 +127,7 @@ domain.setNombrePlantilla(null);
         dto.setObservaciones(domain.getObservaciones());
         dto.setFechaEmision(domain.getFechaEmision());
         dto.setIdArea(domain.getIdArea());
+dto.setNumeroOficio(domain.getNumeroOficio()); // ← agregar esta línea
 
         dto.setIdCorrespondencia(domain.getIdCorrespondencia());
         dto.setIdUsuarioEmisor(domain.getIdUsuarioEmisor());
@@ -124,6 +138,7 @@ domain.setNombrePlantilla(null);
         dto.setAsuntoCorrespondencia(domain.getAsunto()); 
         dto.setNombreUsuarioEmisor(domain.getNombreUsuarioEmisor());
         dto.setNombreUsuarioFirmante(domain.getNombreUsuarioFirmante());
+        dto.setNombreEncargado(domain.getNombreEncargado());
         dto.setNombrePlantilla(domain.getNombrePlantilla());
         dto.setUrlMemorandumGenerado(domain.getUrlSolicitudMemorandum());
         
@@ -132,6 +147,7 @@ domain.setNombrePlantilla(null);
         dto.setNombreRemitente(domain.getNombreRemitente());
         dto.setFolioUnicoCorrespondencia(domain.getFolioUnicoCorrespondencia());
         dto.setAsuntoCorrespondenciaCompleto(domain.getAsuntoCorrespondenciaCompleto());
+        dto.setCargoEncargado(domain.getCargoEncargado());
 
         return dto;
     }

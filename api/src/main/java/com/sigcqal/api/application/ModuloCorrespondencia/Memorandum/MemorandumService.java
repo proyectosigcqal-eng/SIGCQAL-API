@@ -51,28 +51,34 @@ public class MemorandumService {
         memo.setUrlSolicitudMemorandum(request.getUrlSolicitudMemorandum());
         memo.setIdArea(request.getIdArea());
         memo.setFechaEmision(LocalDateTime.now());
+        memo.setIdUsuarioEncargado(request.getIdUsuarioEncargado());
+        memo.setCargoEncargado(request.getCargoEncargado());
+        memo.setNumeroOficio(request.getNumeroOficio());
         
 
        try {
-        Map<String, String> variables = Map.of(
-            "{{FOLIO}}",              memo.getFolioUnico(),
-            "{{ASUNTO}}",             nvl(request.getObservaciones(), "El que se indica."),
-            "{{FECHA}}",              generadorDocumentoService.fechaActual(),
-            "{{AREA_DESTINATARIO}}",  nvl(request.getAreaDestinatario(), ""),
-            "{{NOMBRE_EMISOR}}",      nvl(request.getNombreEmisor(), null),
-            "{{INSTRUCCION}}",        nvl(request.getInstruccionSeguimiento(), ""),
-            "{{NOMBRE_FIRMANTE}}",    nvl(request.getNombreFirmante(), ""),
-            "{{AREA_FIRMANTE}}",      nvl(request.getAreaFirmante(), "")
-        );
-
-        byte[] bytes = generadorDocumentoService
-            .generarDesPlantilla("plantilla_memorandum.docx", variables);
-        String url = fileUploadPort.guardarArchivo(bytes, memo.getFolioUnico() + ".docx");
-        memo.setUrlSolicitudMemorandum(url);
-
-    } catch (Exception e) {
-        System.err.println("Error generando DOCX memorándum: " + e.getMessage());
-    }
+    Map<String, String> variables = Map.ofEntries(
+        Map.entry("{{FOLIO}}",             memo.getFolioUnico()),
+        Map.entry("{{NUM_OFICIO}}",      nvl(request.getNumeroOficio(), memo.getFolioUnico())),
+        Map.entry("{{ASUNTO}}",            nvl(request.getObservaciones(), "El que se indica.")),
+        Map.entry("{{FECHA}}",             generadorDocumentoService.fechaActual()),
+        Map.entry("{{AREA_DESTINATARIO}}", nvl(request.getAreaDestinatario(), "")),
+        Map.entry("{{NOMBRE_EMISOR}}",     nvl(request.getNombreEmisor(), "")),
+        Map.entry("{{INSTRUCCION}}",       nvl(request.getInstruccionSeguimiento(), "")),
+        Map.entry("{{NOMBRE_FIRMANTE}}",   nvl(request.getNombreFirmante(), "")),
+        Map.entry("{{AREA_FIRMANTE}}",     nvl(request.getAreaFirmante(), "")),
+        Map.entry("{{USUARIO_ENCARGADO}}", nvl(request.getNombreEncargado(), "")),
+        Map.entry("{{CARGO_ENCARGADO}}",   nvl(request.getCargoEncargado(), ""))
+    );
+ 
+    byte[] bytes = generadorDocumentoService
+        .generarDesPlantilla("plantilla_memorandum.docx", variables);
+    String url = fileUploadPort.guardarArchivo(bytes, memo.getFolioUnico() + ".docx");
+    memo.setUrlSolicitudMemorandum(url);
+ 
+} catch (Exception e) {
+    System.err.println("Error generando DOCX memorándum: " + e.getMessage());
+}
 
     return mapper.toResponse(repositoryPort.save(memo));
 }

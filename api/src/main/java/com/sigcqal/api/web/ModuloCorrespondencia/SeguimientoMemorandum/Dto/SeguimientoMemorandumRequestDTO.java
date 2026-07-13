@@ -20,4 +20,5 @@ public class SeguimientoMemorandumRequestDTO {
 
     private Long idUsuario;
     private Long idEstatus;
+    private String nombreEncargado;
 }
