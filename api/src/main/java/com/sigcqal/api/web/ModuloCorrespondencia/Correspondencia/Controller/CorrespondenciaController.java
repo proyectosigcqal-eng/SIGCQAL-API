@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
 import com.sigcqal.api.application.ModuloCorrespondencia.Correspondencia.RegistrarCorrespondenciaService;
+import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.ActualizarTipoCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.AsignarAreaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
@@ -71,5 +71,12 @@ public class CorrespondenciaController {
             @PathVariable Long id,
             @Valid @RequestBody AsignarAreaRequestDTO request) {
         return ResponseEntity.ok(service.asignarArea(id, request.getIdArea()));
+    }
+
+    @PatchMapping("/entrada/{id}/tipo-correspondencia")
+    public ResponseEntity<RegistrarCorrespondenciaResponseDTO> actualizarTipoCorrespondencia(
+            @PathVariable Long id,
+            @Valid @RequestBody ActualizarTipoCorrespondenciaRequestDTO request) {
+        return ResponseEntity.ok(service.actualizarTipoCorrespondencia(id, request.getIdTipoCorrespondencia()));
     }
 }

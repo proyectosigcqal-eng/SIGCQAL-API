@@ -31,28 +31,31 @@ public class RegistrarCorrespondenciaService {
     @Autowired
     private CorrespondenciaMapper mapper;
 
-   @Transactional
-public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaRequestDTO request) {
-    validarRequest(request);
+    @Transactional
+    public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaRequestDTO request) {
+        validarRequest(request);
 
-    if (repositoryPort.existsByNumeroOficio(request.getNumeroOficio())) {
-        throw new InvalidRequestException("El número de oficio ya existe en el sistema");
+        if (repositoryPort.existsByNumeroOficio(request.getNumeroOficio())) {
+            throw new InvalidRequestException("El número de oficio ya existe en el sistema");
+        }
+
+        // REEMPLAZA TODA LA CREACIÓN MANUAL POR LA LLAMADA AL MÉTODO QUE GENERA EL
+        // FOLIO
+        Correspondencia saved = guardarConFolioUnico(request);
+
+        return mapper.toResponse(saved);
     }
-
-    // REEMPLAZA TODA LA CREACIÓN MANUAL POR LA LLAMADA AL MÉTODO QUE GENERA EL FOLIO
-    Correspondencia saved = guardarConFolioUnico(request);
-    
-    return mapper.toResponse(saved);
-}
 
     public RegistrarCorrespondenciaResponseDTO obtenerPorId(Long id) {
         if (id == null || id <= 0) {
             throw new InvalidRequestException("El id debe ser mayor a 0");
         }
 
-        Correspondencia dom = repositoryPort.findById(id).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
+        Correspondencia dom = repositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
 
-        return repositoryPort.findById(id).map(mapper::toResponse).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
+        return repositoryPort.findById(id).map(mapper::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
     }
 
     @Transactional
@@ -69,53 +72,75 @@ public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaReq
             throw new InvalidRequestException("El id del área debe ser mayor a 0");
         }
 
-        Correspondencia dom = repositoryPort.findById(id).orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
+        Correspondencia dom = repositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
         dom.setIdArea(idArea);
 
         Correspondencia saved = repositoryPort.save(dom);
         return mapper.toResponse(saved);
     }
 
-private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {
-    Integer anio = request.getFechaRecibido().getYear();
-    int intentos = 0;
-    
-    while (intentos < 3) {
-        intentos++;
-
-        Long last = repositoryPort.findLastConsecutivoByAnio(anio).orElse(0L);
-        Long consecutivo = last + 1;
-        String folio = "CEDECON-CORR-" + consecutivo + "/" + anio;
-
-        Correspondencia dom = new Correspondencia();
-        dom.setConsecutivo(consecutivo);
-        dom.setFolioUnico(folio);
-        dom.setNumeroOficio(request.getNumeroOficio());
-        dom.setFechaExpedicion(request.getFechaExpedicion());
-        dom.setDependenciaRemitente(request.getDependenciaRemitente());
-        dom.setTitularDependencia(request.getTitularDependencia());
-        dom.setAsunto(request.getAsunto());
-        dom.setFechaRecibido(request.getFechaRecibido());
-        dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
-        dom.setObservaciones(request.getObservaciones()); 
-        if (request.getIdTipoCorrespondencia() == null) {
-            dom.setIdTipoCorrespondencia(1);
-        } else {
-            dom.setIdTipoCorrespondencia(request.getIdTipoCorrespondencia());
+    @Transactional
+    public RegistrarCorrespondenciaResponseDTO actualizarTipoCorrespondencia(Long id, Integer idTipoCorrespondencia) {
+        if (id == null || id <= 0) {
+            throw new InvalidRequestException("El id debe ser mayor a 0");
         }
-        // dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura()); // Descomenta si ya tienes el ID del usuario
+        if (idTipoCorrespondencia == null || idTipoCorrespondencia <= 0) {
+            throw new InvalidRequestException("El id del tipo de correspondencia debe ser mayor a 0");
+        }
+        Correspondencia dom = repositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
 
-        try {
-            return repositoryPort.save(dom); 
-        } catch (DataIntegrityViolationException ex) {
-            if (intentos >= 3) {
-                throw new InvalidRequestException("No fue posible generar un folio único tras 3 intentos. Por favor, intente de nuevo.");
+        dom.setIdTipoCorrespondencia(idTipoCorrespondencia);
+
+        Correspondencia saved = repositoryPort.save(dom);
+
+        return mapper.toResponse(saved);
+    }
+
+    private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {
+        Integer anio = request.getFechaRecibido().getYear();
+        int intentos = 0;
+
+        while (intentos < 3) {
+            intentos++;
+
+            Long last = repositoryPort.findLastConsecutivoByAnio(anio).orElse(0L);
+            Long consecutivo = last + 1;
+            String folio = "CEDECON-CORR-" + consecutivo + "/" + anio;
+
+            Correspondencia dom = new Correspondencia();
+            dom.setConsecutivo(consecutivo);
+            dom.setFolioUnico(folio);
+            dom.setNumeroOficio(request.getNumeroOficio());
+            dom.setFechaExpedicion(request.getFechaExpedicion());
+            dom.setDependenciaRemitente(request.getDependenciaRemitente());
+            dom.setTitularDependencia(request.getTitularDependencia());
+            dom.setAsunto(request.getAsunto());
+            dom.setFechaRecibido(request.getFechaRecibido());
+            dom.setIdEstatus(ESTATUS_REGISTRADO_ID);
+            dom.setObservaciones(request.getObservaciones());
+            if (request.getIdTipoCorrespondencia() == null) {
+                dom.setIdTipoCorrespondencia(1);
+            } else {
+                dom.setIdTipoCorrespondencia(request.getIdTipoCorrespondencia());
+            }
+            // dom.setIdUsuarioCaptura(request.getIdUsuarioCaptura()); // Descomenta si ya
+            // tienes el ID del usuario
+
+            try {
+                return repositoryPort.save(dom);
+            } catch (DataIntegrityViolationException ex) {
+                if (intentos >= 3) {
+                    throw new InvalidRequestException(
+                            "No fue posible generar un folio único tras 3 intentos. Por favor, intente de nuevo.");
+                }
             }
         }
-    }
-    throw new InvalidRequestException("Error inesperado al generar el folio.");
+        throw new InvalidRequestException("Error inesperado al generar el folio.");
 
-}
+    }
+
     private void validarRequest(RegistrarCorrespondenciaRequestDTO request) {
         if (request == null) {
             throw new InvalidRequestException("La solicitud no puede ser nula");
@@ -145,8 +170,9 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
             throw new InvalidRequestException("La fecha de recibido es obligatoria");
         }
 
-        // if (request.getIdUsuarioCaptura() == null || request.getIdUsuarioCaptura() <= 0) {
-        //     throw new InvalidRequestException("El usuario de captura es obligatorio");
+        // if (request.getIdUsuarioCaptura() == null || request.getIdUsuarioCaptura() <=
+        // 0) {
+        // throw new InvalidRequestException("El usuario de captura es obligatorio");
         // }
 
         LocalDate expedicion = request.getFechaExpedicion();
@@ -162,22 +188,22 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
 
     public List<RegistrarCorrespondenciaResponseDTO> obtenerPorArea(Long idArea) {
 
-    if (idArea == null || idArea <= 0) {
-        throw new InvalidRequestException("El id del área debe ser mayor a 0");
-    }
-    
+        if (idArea == null || idArea <= 0) {
+            throw new InvalidRequestException("El id del área debe ser mayor a 0");
+        }
 
-   // Buscamos los registros en la base de datos
+        // Buscamos los registros en la base de datos
         List<Correspondencia> lista = repositoryPort.findByIdAreaWithoutAcuse(idArea);
 
         // Eliminamos el bloque "if (lista.isEmpty()) { throw... }"
-        
-        // Si la lista está vacía, el stream simplemente devolverá una lista vacía de DTOs,
+
+        // Si la lista está vacía, el stream simplemente devolverá una lista vacía de
+        // DTOs,
         // lo cual se traducirá en un "[]" en formato JSON para tu Frontend.
         return lista.stream()
                 .map(mapper::toResponse)
                 .toList();
-}
+    }
 
     public List<RegistrarCorrespondenciaResponseDTO> listarPorTipo(String tipo) {
         if (isBlank(tipo)) {
@@ -188,10 +214,10 @@ private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO 
     }
 
     // Método NUEVO para "Pendiente de Revisión"
-public List<RegistrarCorrespondenciaResponseDTO> listarPendientesDeRevision() {
-    return repositoryPort.findSinAreaAsignada()
-            .stream()
-            .map(mapper::toResponse)
-            .toList();
-}
+    public List<RegistrarCorrespondenciaResponseDTO> listarPendientesDeRevision() {
+        return repositoryPort.findSinAreaAsignada()
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
 }
