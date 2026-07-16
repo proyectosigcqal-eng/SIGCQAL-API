@@ -14,6 +14,7 @@ import com.sigcqal.api.domain.ModuloCorrespondencia.BitacoraHistorica.Port.Bitac
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Model.Correspondencia;
 import com.sigcqal.api.domain.ModuloCorrespondencia.Correspondencia.Port.CorrespondenciaRepositoryPort;
 import com.sigcqal.api.infra.ModuloCorrespondencia.Correspondencia.Mapper.CorrespondenciaMapper;
+import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.ActualizarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaRequestDTO;
 import com.sigcqal.api.web.ModuloCorrespondencia.Correspondencia.Dto.RegistrarCorrespondenciaResponseDTO;
 
@@ -193,5 +194,32 @@ public List<RegistrarCorrespondenciaResponseDTO> listarPendientesDeRevision() {
             .stream()
             .map(mapper::toResponse)
             .toList();
+}
+
+@Transactional
+public RegistrarCorrespondenciaResponseDTO actualizar(Long id, ActualizarCorrespondenciaRequestDTO request) {
+    if (id == null || id <= 0) {
+        throw new InvalidRequestException("El id debe ser mayor a 0");
+    }
+ 
+    Correspondencia dom = repositoryPort.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
+ 
+    // Solo actualiza los campos permitidos
+    if (request.getNumeroOficio() != null && !request.getNumeroOficio().isBlank()) {
+        // Validar que el nuevo número de oficio no exista en otro registro
+        if (!request.getNumeroOficio().equals(dom.getNumeroOficio())
+                && repositoryPort.existsByNumeroOficio(request.getNumeroOficio())) {
+            throw new InvalidRequestException("El número de oficio ya existe en el sistema");
+        }
+        dom.setNumeroOficio(request.getNumeroOficio());
+    }
+ 
+    if (request.getAsunto() != null && !request.getAsunto().isBlank()) {
+        dom.setAsunto(request.getAsunto());
+    }
+ 
+    Correspondencia saved = repositoryPort.save(dom);
+    return mapper.toResponse(saved);
 }
 }
