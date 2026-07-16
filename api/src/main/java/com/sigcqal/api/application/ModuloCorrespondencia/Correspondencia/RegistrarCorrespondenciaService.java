@@ -76,6 +76,24 @@ public RegistrarCorrespondenciaResponseDTO registrar(RegistrarCorrespondenciaReq
         return mapper.toResponse(saved);
     }
 
+    @Transactional
+    public RegistrarCorrespondenciaResponseDTO actualizarTipoCorrespondencia(Long id, Integer idTipoCorrespondencia) {
+        if (id == null || id <= 0) {
+            throw new InvalidRequestException("El id debe ser mayor a 0");
+        }
+        if (idTipoCorrespondencia == null || idTipoCorrespondencia <= 0) {
+            throw new InvalidRequestException("El id del tipo de correspondencia debe ser mayor a 0");
+        }
+        Correspondencia dom = repositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Correspondencia", id));
+        
+        dom.setIdTipoCorrespondencia(idTipoCorrespondencia);
+
+        Correspondencia saved = repositoryPort.save(dom);
+        
+        return mapper.toResponse(saved);
+    }
+
 private Correspondencia guardarConFolioUnico(RegistrarCorrespondenciaRequestDTO request) {
     Integer anio = request.getFechaRecibido().getYear();
     int intentos = 0;
@@ -194,4 +212,5 @@ public List<RegistrarCorrespondenciaResponseDTO> listarPendientesDeRevision() {
             .map(mapper::toResponse)
             .toList();
 }
+
 }
