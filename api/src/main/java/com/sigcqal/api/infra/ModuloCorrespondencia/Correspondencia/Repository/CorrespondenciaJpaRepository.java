@@ -68,6 +68,7 @@ public interface CorrespondenciaJpaRepository extends JpaRepository<Corresponden
         LEFT JOIN FETCH c.tipoCorrespondencia
         JOIN c.tipoCorrespondencia t
         WHERE UPPER(t.descripcion) = UPPER(:descripcion)
+        ORDER BY c.fechaRecibido DESC, c.id DESC
         """)
     List<CorrespondenciaEntity> findByTipoDescripcionConRelaciones(@Param("descripcion") String descripcion);
 
@@ -89,6 +90,7 @@ List<CorrespondenciaEntity> findByArea_IdAndWithoutAcuse(@Param("idArea") Long i
         SELECT c FROM CorrespondenciaEntity c
         JOIN c.tipoCorrespondencia t
         WHERE UPPER(t.descripcion) = UPPER(:descripcion)
+        ORDER BY c.fechaRecibido DESC, c.id DESC
     """)
     List<CorrespondenciaEntity> findByTipoDescripcion(@Param("descripcion") String descripcion);
 
