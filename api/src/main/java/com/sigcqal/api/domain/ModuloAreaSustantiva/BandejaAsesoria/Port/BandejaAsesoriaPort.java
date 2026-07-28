@@ -4,5 +4,5 @@ import com.sigcqal.api.domain.ModuloAreaSustantiva.BandejaAsesoria.Model.Tramite
 import java.util.List;
 
 public interface BandejaAsesoriaPort {
-    List<TramiteBandeja> obtenerBandeja(String search, String estatus, String tipoTramite);
+    List<TramiteBandeja> obtenerBandeja(String search, String estatus, String tipoTramite, Long idAsesor);
 }

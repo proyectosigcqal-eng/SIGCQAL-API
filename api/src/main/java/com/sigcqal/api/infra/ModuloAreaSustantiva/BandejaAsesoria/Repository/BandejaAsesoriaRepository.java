@@ -93,11 +93,16 @@ AND (
 )
 AND (:tipoTramite IS NULL OR :tipoTramite = ''
      OR CAST(e.id_tipo_tramite AS VARCHAR) = :tipoTramite)
+     AND (
+      :idAsesor IS NULL              -- ← Admin/Comisionado: ve todo
+      OR e.id_asesor = :idAsesor     -- ← Asesor: solo sus expedientes
+  )
 ORDER BY da.fecha_notificacion DESC NULLS LAST
    """, nativeQuery = true)
 List<Object[]> obtenerBandejaRaw(
     @Param("search") String search,
     @Param("estatus") String estatus,
-    @Param("tipoTramite") String tipoTramite
+    @Param("tipoTramite") String tipoTramite,
+    @Param("idAsesor") Long idAsesor 
 );
 }

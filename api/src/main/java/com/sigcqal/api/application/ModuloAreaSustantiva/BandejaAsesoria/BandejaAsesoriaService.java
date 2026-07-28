@@ -4,39 +4,49 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BandejaAsesoria.Port.BandejaAsesoriaPort;
 import com.sigcqal.api.domain.ModuloAreaSustantiva.BandejaAsesoria.Model.TramiteBandeja;
+import com.sigcqal.api.infra.Catalogo.Asesor.Repository.AsesorJpaRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BandejaAsesoriaService {
 
     private final BandejaAsesoriaPort bandejaAsesoriaPort;
+    private final AsesorJpaRepository asesorRepository;
 
-    public List<TramiteBandeja> obtenerBandeja(String search, String estatus, String tipoTramite) {
-        
-        // 1. Traducimos el texto del frontend al ID numérico de tu base de datos
+    // ID de rol Asesor según tu tabla cat_roles
+    private static final String ROL_ASESOR = "ROLE_Asesor";
+
+    public List<TramiteBandeja> obtenerBandeja(String search, String estatus,
+                                                String tipoTramite, String username,
+                                                String rol) {
         String idTipoTramiteConvertido = traducirTipoTramite(tipoTramite);
 
-        System.out.println("DEBUG: Buscando con -> Search: " + search + ", Estatus: " + estatus + ", ID Tipo Tramite: " + idTipoTramiteConvertido);
-
-        // 2. Llamamos al puerto usando el ID ya convertido
-        return bandejaAsesoriaPort.obtenerBandeja(search, estatus, idTipoTramiteConvertido);
-    }
-
-    // ── Método Auxiliar de Traducción ──────────────────────────────────────
-    private String traducirTipoTramite(String tipoTramiteFrontend) {
-        
-        // Si el frontend manda nulo o vacío (por ejemplo al cargar la página por primera vez)
-        if (tipoTramiteFrontend == null || tipoTramiteFrontend.trim().isEmpty()) {
-            return null; 
+        // Solo los asesores tienen restricción — admin y demás ven todo
+        Long idAsesor = null;
+       // En BandejaAsesoriaService — si es asesor pero no tiene registro, devolver lista vacía
+        if (ROL_ASESOR.equals(rol)) {
+            Optional<Long> idAsesorOpt = asesorRepository.findIdAsesorByUsername(username);
+            if (idAsesorOpt.isEmpty()) {
+                // Usuario marcado como Asesor pero sin registro en tabla asesores
+                return List.of();
+            }
+            idAsesor = idAsesorOpt.get();
         }
 
-        // Mapeamos los textos que manda React a los IDs numéricos de Postgres
+        return bandejaAsesoriaPort.obtenerBandeja(
+            search, estatus, idTipoTramiteConvertido, idAsesor
+        );
+    }
+
+    private String traducirTipoTramite(String tipoTramiteFrontend) {
+        if (tipoTramiteFrontend == null || tipoTramiteFrontend.trim().isEmpty()) return null;
         return switch (tipoTramiteFrontend) {
-            case "ASESORIA_SIMPLIFICADA" -> "1";  // ⚠️ Cambia el "1" por tu ID real
-            case "QUEJAS_Y_RECLAMACIONES" -> "2"; // ⚠️ Cambia el "2" por tu ID real
-            case "REPRESENTACION_LEGAL" -> "3";   // ⚠️ Cambia el "3" por tu ID real
-            default -> null; // Si mandan un texto desconocido, pasamos null
+            case "ASESORIA_SIMPLIFICADA"   -> "1";
+            case "QUEJAS_Y_RECLAMACIONES"  -> "2";
+            case "REPRESENTACION_LEGAL"    -> "3";
+            default -> null;
         };
     }
 }

@@ -17,14 +17,13 @@ public class BandejaAsesoriaAdapter implements BandejaAsesoriaPort {
     private final BandejaAsesoriaMapper mapper;
 
     @Override
-    public List<TramiteBandeja> obtenerBandeja(String search, String estatus, String tipoTramite) {
-        List<Object[]> rows = repository.obtenerBandejaRaw(search, estatus, tipoTramite);
-        if (rows == null) {
-            return List.of();
-        }
-        return rows.stream()
-            .filter(row -> row != null)
-            .map(mapper::toDomain)
-            .collect(Collectors.toList());
-    }
+public List<TramiteBandeja> obtenerBandeja(String search, String estatus, 
+                                            String tipoTramite, Long idAsesor) {
+    List<Object[]> rows = repository.obtenerBandejaRaw(search, estatus, tipoTramite, idAsesor);
+    if (rows == null) return List.of();
+    return rows.stream()
+        .filter(row -> row != null)
+        .map(mapper::toDomain)
+        .collect(Collectors.toList());
+}
 }

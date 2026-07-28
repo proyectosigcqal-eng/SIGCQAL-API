@@ -71,8 +71,7 @@ public class PersonaMapper {
         if (domain.getIdDireccion() != null) {
             // Reemplaza "DireccionEntity" con el nombre real de tu clase Entity
             DireccionEntity direccion = new DireccionEntity();
-            direccion.setId(domain.getIdDireccion());
-            entity.setDireccion(direccion);
+            direccion.setId(domain.getId());
         }
 
         // Instanciación y asignación del objeto TipoPersonaEntity
